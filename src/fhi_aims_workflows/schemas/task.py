@@ -4,18 +4,114 @@ import logging
 from pathlib import Path
 from typing import Union, List, Dict, Any, Type, TypeVar, Tuple, Optional
 
+from emmet.core.math import Vector3D, Matrix3D
 from emmet.core.structure import StructureMetadata, MoleculeMetadata
-from pydantic import Field
+from pydantic import Field, BaseModel
 from pymatgen.core import Structure, Molecule
 from pymatgen.entries.computed_entries import ComputedEntry
 
-from fhi_aims_workflows.schemas.calculation import Status, AimsObject
+from fhi_aims_workflows.schemas.calculation import Status, AimsObject, Calculation
 from fhi_aims_workflows.utils import datetime_str
 
 
 _T = TypeVar("_T", bound="TaskDocument")
 _VOLUMETRIC_FILES_GLOB = "*.cube"
 logger = logging.getLogger(__name__)
+
+
+class InputSummary(BaseModel):
+    """Summary of inputs for an FHI-aims calculation."""
+
+    structure: Union[Structure, Molecule] = Field(
+        None, description="The input structure object"
+    )
+
+    species_info: SpeciesSummary = Field(
+        None, description="Summary of the species defaults used for each atom kind"
+    )
+    xc: str = Field(
+        None, description="Exchange-correlation functional used if not the default"
+    )
+
+    @classmethod
+    def from_aims_calc_doc(cls, calc_doc: Calculation) -> "InputSummary":
+        """
+        Create calculation input summary from a calculation document.
+
+        Parameters
+        ----------
+        calc_doc
+            An FHI-aims calculation document.
+
+        Returns
+        -------
+        InputSummary
+            A summary of the input structure and parameters.
+        """
+        summary = SpeciesSummary.from_species_info(
+            calc_doc.input.species_info
+        )
+
+        return cls(
+            structure=calc_doc.input.structure,
+            atomic_kind_info=summary,
+            xc=str(calc_doc.run_type),
+        )
+
+
+class OutputSummary(BaseModel):
+    """Summary of the outputs for an FHI-aims calculation."""
+
+    structure: Union[Structure, Molecule] = Field(
+        None, description="The output structure object"
+    )
+    energy: float = Field(
+        None, description="The final total DFT energy for the last calculation"
+    )
+    energy_per_atom: float = Field(
+        None, description="The final DFT energy per atom for the last calculation"
+    )
+    bandgap: float = Field(None, description="The DFT bandgap for the last calculation")
+    cbm: float = Field(None, description="CBM for this calculation")
+    vbm: float = Field(None, description="VBM for this calculation")
+    forces: List[Vector3D] = Field(
+        None, description="Forces on atoms from the last calculation"
+    )
+    stress: Matrix3D = Field(
+        None, description="Stress on the unit cell from the last calculation"
+    )
+
+    @classmethod
+    def from_aims_calc_doc(cls, calc_doc: Calculation) -> "OutputSummary":
+        """
+        Create a summary of FHI-aims calculation outputs from an FHI-aims calculation document.
+
+        Parameters
+        ----------
+        calc_doc
+            An FHI-aims calculation document.
+
+        Returns
+        -------
+        OutputSummary
+            The calculation output summary.
+        """
+        if calc_doc.output.ionic_steps:
+            forces = calc_doc.output.ionic_steps[-1].get("forces", None)
+            stress = calc_doc.output.ionic_steps[-1].get("stress", None)
+        else:
+            forces = None
+            stress = None
+        return cls(
+            structure=calc_doc.output.structure,
+            energy=calc_doc.output.energy,
+            energy_per_atom=calc_doc.output.energy_per_atom,
+            bandgap=calc_doc.output.bandgap,
+            cbm=calc_doc.output.cbm,
+            vbm=calc_doc.output.vbm,
+            forces=forces,
+            stress=stress,
+        )
 
 
 class TaskDocument(StructureMetadata, MoleculeMetadata):
@@ -94,7 +190,7 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
         **aims_calculation_kwargs,
     ) -> _T:
         """
-        Create a task document from a directory containing CP2K files.
+        Create a task document from a directory containing FHi-aims files.
 
         Parameters
         ----------
@@ -190,8 +286,8 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
             "tags": tags,
             # "author": author,
             "completed_at": calcs_reversed[-1].completed_at,
-            "input": InputSummary.from_cp2k_calc_doc(calcs_reversed[0]),
-            "output": OutputSummary.from_cp2k_calc_doc(calcs_reversed[-1]),
+            "input": InputSummary.from_aims_calc_doc(calcs_reversed[0]),
+            "output": OutputSummary.from_aims_calc_doc(calcs_reversed[-1]),
             "state": _get_state(calcs_reversed, analysis),
             "entry": cls.get_entry(calcs_reversed),
             "run_stats": _get_run_stats(calcs_reversed),
@@ -208,12 +304,12 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
         calc_docs: List[Calculation], job_id: Optional[str] = None
     ) -> ComputedEntry:
         """
-        Get a computed entry from a list of CP2K calculation documents.
+        Get a computed entry from a list of FHI-aims calculation documents.
 
         Parameters
         ----------
         calc_docs
-            A list of CP2K calculation documents.
+            A list of FHI-aims calculation documents.
         job_id
             The job identifier.
 
@@ -236,3 +332,4 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
             },
         }
         return ComputedEntry.from_dict(entry_dict)
+
