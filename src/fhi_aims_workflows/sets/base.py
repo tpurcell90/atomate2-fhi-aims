@@ -38,6 +38,9 @@ from atomate2.abinit.utils.common import (
 )
 
 import json
+
+from warninings import warn
+
 DEFAULT_AIMS_PROPERTIES = [
     "energy",
     "free_energy",
@@ -47,7 +50,6 @@ DEFAULT_AIMS_PROPERTIES = [
     "dipole",
     "magmom",
 ]
-_BASE_AIMS_SET = loadfn(resource_filename("fhi_aims_workflows.sets", "BaseAimsSet.yaml"))
 
 __all__ = ["AimsInputSet", "AimsInputGenerator"]
 
@@ -113,6 +115,11 @@ class AimsInputSet(InputSet):
         """Get the AimsInput object."""
         return self[GEOMETRY_FILE_NAME]
 
+    @property
+    def parameters_json(self):
+        """Get the AimsInput object."""
+        return self[PARAMS_JSON_FILE_NAME]
+
     def set_parameters(self, *args, **kwargs) -> dict:
         """Set the parameters object for the AimsTemplate
 
@@ -135,7 +142,10 @@ class AimsInputSet(InputSet):
 
         aims_control_in, _ = self.get_input_files()
         self.inputs[CONTROL_FILE_NAME] = aims_control_in
-        self[CONTROL_FILE_NAME] = aims_control_in
+        self.inputs[PARAMS_JSON_FILE_NAME] = json.dumps(
+            self._parameters, indent=2, cls=MontyEncoder
+        )
+        self.__dict__.update(self.inputs)
 
         return self._parameters
 
@@ -169,10 +179,11 @@ class AimsInputSet(InputSet):
 
     def set_atoms(self, atoms: Atoms) -> Atoms:
         """Set the atoms object for this input set."""
-        self._atoms = atoms.todict()
+        self._atoms = MSONableAtoms(atoms)
+
         _, aims_geometry_in = self.get_input_files()
         self.inputs[GEOMETRY_FILE_NAME] = aims_geometry_in
-        self[GEOMETRY_FILE_NAME] = aims_geometry_in
+        self.__dict__.update(self.inputs)
 
         return self.aims_input.set_structure(structure)
 
@@ -195,8 +206,8 @@ class AimsInputGenerator(InputGenerator):
 
 
     """
+
     user_parameters: dict = field(default_factory=dict)
-    config_dict: dict = field(default_factory=lambda: _BASE_AIMS_INPUT_SET)
 
     symprec: float = SETTINGS.SYMPREC
 
@@ -218,19 +229,17 @@ class AimsInputGenerator(InputGenerator):
         prev_atoms, prev_parameters, prev_results = self._read_previous(prev_dir)
         atoms = atoms if atoms is not None else prev_atoms
         parameters = self._get_input_paramesters(prev_parameters)
-        properties = ["energy", "free_energy"]
-
-        for key in prev_results.keys():
-            if key not in properties and key in DEFAULT_AIMS_PROPERTIES:
-                properties.append(key)
+        properties = self._get_properties(properties, parameters, prev_results)
 
         return AimsInputSet(
-            parameters = parameters,
-            atoms = atoms,
-            properties = properties,
+            parameters=parameters,
+            atoms=atoms,
+            properties=properties,
         )
 
-    def _read_previous(self, prev_dir: str | Path = None) -> tuple[Atoms, Dict[str, Any], Dict[str, Iterable[float]]]:
+    def _read_previous(
+        self, prev_dir: str | Path = None
+    ) -> tuple[Atoms, Dict[str, Any], Dict[str, Iterable[float]]]:
         """Read in previous results
 
         Parameters
@@ -242,25 +251,181 @@ class AimsInputGenerator(InputGenerator):
         prev_parameters = {}
         prev_results = {}
 
-        if (prev_dir):
+        if prev_dir:
             prev_parameters = json.load(
                 open(f"{prev_dir}/parameters.json", "rt"), cls=MontyDecoder
             )
             try:
                 prev_atoms = read_aims_output(f"{prev_dir}/aims.out")
                 prev_results = prev_atoms.calc.results
-            except IndexError, AimsParseError:
+            except (IndexError, AimsParseError):
                 pass
 
         return prev_atoms, prev_parameters, prev_results
 
-    def _get_input_paramesters(self, prev_parameters: Dict[str, Any]=None) -> Dict[str, Any]:
+    def _get_properties(
+        properties: Iterable[str] = None,
+        parameters: Dict[str, Any] = None,
+        prev_results: Dict[str, Iterable[float]] = None,
+    ) -> Iterable[str]:
+        """Get the properties to calculate
 
+        Parameters
+        ----------
+        properties
+            The currently requested properties
+        parameters
+            The parameters for this calculation
+        prev_results
+            The previous calculation results
+
+        Returns
+        -------
+        The list of properties to calculate
+        """
+        if properties is None:
+            properties = ["energy", "free_energy"]
+
+        for key in prev_results.keys():
+            if key not in properties and key in DEFAULT_AIMS_PROPERTIES:
+                properties.append(key)
+
+        if "compute_forces" in parameters and not "forces" in properties:
+            properties.append("forces")
+        if "compute_heat_flux":
+            properties.append("stress")
+            properties.append("stresses")
+        elif "compute_analytical_stress" or "compute_numerical_stress":
+            properties.append("stress")
+
+        return properties
+
+    def _get_input_paramesters(
+        self, atoms: Atoms, prev_parameters: Dict[str, Any] = None
+    ) -> Dict[str, Any]:
+        """Create the input parameters
+
+        Parameters
+        ----------
+        atoms: ase.atoms.Atoms
+            The atoms object for the structures
+        prev_parameters
+            The previous calculation's calculation parameters
+
+        Returns
+        -------
+        The input object
+        """
+
+        # Get the default configuration
+        # FHI-aims recommends using their defaults so bare-bones default parameters
+        parameters = {
+            "xc": "pbe",
+            "relativistic": "atomic_zora scalar",
+        }
+
+        # Override default parameters with previous parameters
         prev_parameters = {} if prev_parameters is None else prev_parameters
-        parameters = dict(self.config_dict["aims_default_parameters"])
-
-        # Generate base input but override with user input settings
         parameters = recursive_update(parameters, prev_parameters)
+
+        # Override default parameters with job-specific updates
+        parameter_updates = get_parameter_updates(atoms, prev_parameters)
+        parameters = recursive_update(parameters, self.parameter_updates)
+
+        # Override default parameters with user_parameters
         parameters = recursive_update(parameters, self.user_parameters)
 
+        if np.any(atoms.pbc) and "k_grid" not in parameters:
+            warn(
+                "WARNING: the k_grid was not set, setting to a grid with a k-point density of 5.0"
+            )
+            parameters["k_grid"] = d2k(atoms)
+
         return parameters
+
+    def get_parameter_updates(
+        self, atoms: Atoms, prev_parameters: Dict[str, Any]
+    ) -> dict:
+        """
+        Updates the parameters for a given calculation type
+
+        Parameters
+        ----------
+        atoms : Atoms
+            ASE Atoms object.
+        prev_parameters
+            Previous calculation parameters.
+
+        Returns
+        -------
+        dict
+            A dictionary of updates to apply.
+        """
+        raise NotImplementedError
+
+    def d2k(
+        atoms: Atoms, kptdensity: float | Iterable[float] = 5.0, even: bool = True
+    ) -> Interable[float]:
+        """Convert k-point density to Monkhorst-Pack grid size.
+
+        inspired by [ase.calculators.calculator.kptdensity2monkhorstpack]
+
+        Parameters
+        ----------
+        atoms: Atoms object
+            Contains unit cell and information about boundary conditions.
+        kptdensity: float or list of floats
+            Required k-point density.  Default value is 5.0 point per Ang^-1.
+        even: bool
+            Round up to even numbers.
+
+        Returns
+        -------
+        list
+            Monkhorst-Pack grid size in all directions
+        """
+        recipcell = atoms.get_reciprocal_cell()
+        return d2k_recipcell(recipcell, atoms.pbc, kptdensity, even)
+
+    def d2k_recipcell(
+        recipcell,
+        pbc: Iterable[bool],
+        kptdensity: float | Iterable[float] = 5.0,
+        even: bool = True,
+    ) -> Interable[float]:
+        """Convert k-point density to Monkhorst-Pack grid size.
+
+        Parameters
+        ----------
+        recipcell: ASE Cell object
+            The reciprocal cell
+        pbc: list of Bools
+            If element of pbc is True then system is periodic in that direction
+        kptdensity: float or list of floats
+            Required k-point density.  Default value is 3.5 point per Ang^-1.
+        even: bool
+            Round up to even numbers.
+
+        Returns
+        -------
+        list
+            Monkhorst-Pack grid size in all directions
+        """
+        if not isinstance(kptdensity, list) and not isinstance(kptdensity, np.ndarray):
+            kptdensity = 3 * [float(kptdensity)]
+        kpts = []
+        for i in range(3):
+            if pbc[i]:
+                k = (
+                    2
+                    * np.pi
+                    * np.sqrt((recipcell[i] ** 2).sum())
+                    * float(kptdensity[i])
+                )
+                if even:
+                    kpts.append(2 * int(np.ceil(k / 2)))
+                else:
+                    kpts.append(int(np.ceil(k)))
+            else:
+                kpts.append(1)
+        return kpts
