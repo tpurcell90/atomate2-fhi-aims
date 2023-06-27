@@ -2,29 +2,18 @@
 
 import logging
 import os
+import shutil
 import contextlib
 
 TMPDIR_NAME = "tmpdir"
-OUTDIR_NAME = "outdata"
-INDIR_NAME = "indata"
-TMPDATAFILE_PREFIX = "tmp"
-OUTDATAFILE_SUFFIX = "out"
-INDATAFILE_SUFFIX = "in"
-TMPDATA_PREFIX = os.path.join(TMPDIR_NAME, TMPDATAFILE_PREFIX)
-OUTDATA_PREFIX = os.path.join(OUTDIR_NAME, OUTDATAFILE_PREFIX)
-INDATA_PREFIX = os.path.join(INDIR_NAME, INDATAFILE_PREFIX)
-STDERR_FILE_NAME = "run.err"
-LOG_FILE_NAME = "run.log"
 OUTPUT_FILE_NAME: str = "aims.out"
 CONTROL_FILE_NAME: str = "control.in"
 PARAMS_JSON_FILE_NAME: str = "parameters.json"
 GEOMETRY_FILE_NAME: str = "geometry.in"
-MPIABORTFILE = "__AIMS_MPIABORTFILE__"
-DUMMY_FILENAME = "__DUMMY__"
 
 
 @contextlib.contextmanager
-def cwd(path, mkdir=False, debug=False):
+def cwd(path: str, mkdir: bool = False, rmdir: bool = False):
     """Change cwd intermediately
 
     Example
@@ -39,20 +28,17 @@ def cwd(path, mkdir=False, debug=False):
         Path to change working directory to
     mkdir: bool
         If True make path if it does not exist
-    debug: bool
-        If True enter debug mode
+    rmdir: bool
+        If True remove the working directory upon exiting
     """
     CWD = os.getcwd()
 
     if os.path.exists(path) is False and mkdir:
         os.makedirs(path)
 
-    if debug:
-        os.chdir(path)
-        yield
-        os.chdir(CWD)
-        return
-
     os.chdir(path)
     yield
+
     os.chdir(CWD)
+    if rmdir:
+        shutil.rmtree(path)

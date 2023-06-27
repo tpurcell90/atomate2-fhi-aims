@@ -19,27 +19,21 @@ from fhi_aims_workflows.utils.pymatgen_core_io import (
     InputFile,
 )
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
-
-from pymatgen.symmetry.bandstructure import HighSymmKpath
-
 from ase.calculators.aims import AimsTemplate
 from ase.atoms import Atoms
 
 from pathlib import Path
 
-from atomate2 import SETTINGS
-from atomate2.abinit.files import fname2ext, load_aims_input, out_to_in
-from atomate2.abinit.utils.common import (
+from fhi_aims_workflows.utils.common import (
     TMPDIR_NAME,
     OUTPUT_FILE_NAME,
     CONTROL_FILE_NAME,
     GEOMETRY_FILE_NAME,
     PARAMS_JSON_FILE_NAME,
+    cwd,
 )
 
-import json
-
-from warninings import warn
+from warnings import warn
 
 DEFAULT_AIMS_PROPERTIES = [
     "energy",
@@ -81,6 +75,7 @@ class AimsInputSet(InputSet):
     ):
         self._parameters = parameters
         self._atoms = MSONableAtoms(atoms)
+        self._properties = properties
 
         aims_control_in, aims_geometry_in = self.get_input_files()
 
@@ -95,10 +90,11 @@ class AimsInputSet(InputSet):
         )
 
     def get_input_files(self):
-        atoms = self._atoms.atoms
-        with cwd(TMPDIR_NAME, mkdir=True):
+        with cwd(TMPDIR_NAME, mkdir=True, rmdir=True):
             aims_template = AimsTemplate()
-            aims_template.write_input(Path("./"), atoms, self._parameters, properties)
+            aims_template.write_input(
+                Path("./"), self._atoms, self._parameters, self._properties
+            )
 
             aims_control_in = AimsInputFile.from_file("control.in")
             aims_geometry_in = AimsInputFile.from_file("geometry.in")
@@ -203,13 +199,9 @@ class AimsInputGenerator(InputGenerator):
         Updates the default parameters for the FHI-aims calculator
     config_dict
         The config dictionary to use containing the base input set settings.
-
-
     """
 
     user_parameters: dict = field(default_factory=dict)
-
-    symprec: float = SETTINGS.SYMPREC
 
     def get_input_set(  # type: ignore
         self,
@@ -228,7 +220,7 @@ class AimsInputGenerator(InputGenerator):
         """
         prev_atoms, prev_parameters, prev_results = self._read_previous(prev_dir)
         atoms = atoms if atoms is not None else prev_atoms
-        parameters = self._get_input_paramesters(prev_parameters)
+        parameters = self._get_input_paramesters(atoms, prev_parameters)
         properties = self._get_properties(properties, parameters, prev_results)
 
         return AimsInputSet(
@@ -264,6 +256,7 @@ class AimsInputGenerator(InputGenerator):
         return prev_atoms, prev_parameters, prev_results
 
     def _get_properties(
+        self,
         properties: Iterable[str] = None,
         parameters: Dict[str, Any] = None,
         prev_results: Dict[str, Iterable[float]] = None,
@@ -292,10 +285,14 @@ class AimsInputGenerator(InputGenerator):
 
         if "compute_forces" in parameters and not "forces" in properties:
             properties.append("forces")
-        if "compute_heat_flux":
+        if "compute_heat_flux" in parameters and not "stresses" in properties:
             properties.append("stress")
             properties.append("stresses")
-        elif "compute_analytical_stress" or "compute_numerical_stress":
+        if "stress" not in properties and (
+            ("compute_analytical_stress" in parameters)
+            or ("compute_numerical_stress" in parameters)
+            or ("compute_heat_flux" in parameters)
+        ):
             properties.append("stress")
 
         return properties
@@ -329,17 +326,20 @@ class AimsInputGenerator(InputGenerator):
         parameters = recursive_update(parameters, prev_parameters)
 
         # Override default parameters with job-specific updates
-        parameter_updates = get_parameter_updates(atoms, prev_parameters)
-        parameters = recursive_update(parameters, self.parameter_updates)
+        parameter_updates = self.get_parameter_updates(atoms, prev_parameters)
+        parameters = recursive_update(parameters, parameter_updates)
 
         # Override default parameters with user_parameters
         parameters = recursive_update(parameters, self.user_parameters)
 
-        if np.any(atoms.pbc) and "k_grid" not in parameters:
+        if np.any(atoms.pbc) and ("k_grid" not in parameters):
             warn(
                 "WARNING: the k_grid was not set, setting to a grid with a k-point density of 5.0"
             )
-            parameters["k_grid"] = d2k(atoms)
+            parameters["k_grid"] = self.d2k(atoms)
+        elif not np.any(atoms.pbc) and "k_grid" in parameters:
+            warn("WARNING: removing unnecessary k_grid information")
+            del parameters["k_grid"]
 
         return parameters
 
@@ -364,7 +364,7 @@ class AimsInputGenerator(InputGenerator):
         raise NotImplementedError
 
     def d2k(
-        atoms: Atoms, kptdensity: float | Iterable[float] = 5.0, even: bool = True
+        self, atoms: Atoms, kptdensity: float | Iterable[float] = 5.0, even: bool = True
     ) -> Interable[float]:
         """Convert k-point density to Monkhorst-Pack grid size.
 
@@ -384,10 +384,11 @@ class AimsInputGenerator(InputGenerator):
         list
             Monkhorst-Pack grid size in all directions
         """
-        recipcell = atoms.get_reciprocal_cell()
-        return d2k_recipcell(recipcell, atoms.pbc, kptdensity, even)
+        recipcell = atoms.cell.reciprocal()
+        return self.d2k_recipcell(recipcell, atoms.pbc, kptdensity, even)
 
     def d2k_recipcell(
+        self,
         recipcell,
         pbc: Iterable[bool],
         kptdensity: float | Iterable[float] = 5.0,
@@ -429,3 +430,34 @@ class AimsInputGenerator(InputGenerator):
             else:
                 kpts.append(1)
         return kpts
+
+
+def recursive_update(d: dict, u: dict):
+    """
+    Update a dictionary recursively and return it.
+
+    Parameters
+    ----------
+        d: Dict
+            Input dictionary to modify
+        u: Dict
+            Dictionary of updates to apply
+
+    Returns
+    -------
+    Dict
+        The updated dictionary.
+
+    Example
+    ----------
+        d = {'activate_hybrid': {"hybrid_functional": "HSE06"}}
+        u = {'activate_hybrid': {"cutoff_radius": 8}}
+
+        yields {'activate_hybrid': {"hybrid_functional": "HSE06", "cutoff_radius": 8}}}
+    """
+    for k, v in u.items():
+        if isinstance(v, dict):
+            d[k] = recursive_update(d.get(k, {}), v)
+        else:
+            d[k] = v
+    return d

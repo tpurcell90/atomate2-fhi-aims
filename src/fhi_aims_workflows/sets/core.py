@@ -6,7 +6,7 @@ from typing import Callable
 
 import numpy as np
 
-from fhi_aims_workflows.sets.base import FHIaimsInputGenerator
+from fhi_aims_workflows.sets.base import AimsInputGenerator
 
 __all__ = [
     "StaticSetGenerator",
@@ -73,6 +73,6 @@ class RelaxSetGenerator(AimsInputGenerator):
         updates = {
             "relax_geometry": "trm 1e-3",
         }
-        if atoms.pbc:
+        if any(atoms.pbc):
             updates["relax_unit_cell"] = "full"
         return updates
