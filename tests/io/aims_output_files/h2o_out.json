@@ -201,6 +201,106 @@
         "direct_gap": 7.14517533
       },
       "@version": null
+    },
+    {
+      "@module": "fhi_aims_workflows.utils.MSONableAtoms",
+      "@class": "MSONableAtoms",
+      "numbers": {
+        "@module": "numpy",
+        "@class": "array",
+        "dtype": "int64",
+        "data": [
+          8,
+          1,
+          1
+        ]
+      },
+      "positions": {
+        "@module": "numpy",
+        "@class": "array",
+        "dtype": "float64",
+        "data": [
+          [
+            0.0,
+            -0.0,
+            0.1198904
+          ],
+          [
+            0.0,
+            0.76726299,
+            -0.4773612
+          ],
+          [
+            -0.0,
+            -0.76726299,
+            -0.4773612
+          ]
+        ]
+      },
+      "cell": {
+        "@module": "numpy",
+        "@class": "array",
+        "dtype": "float64",
+        "data": [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      },
+      "pbc": {
+        "@module": "numpy",
+        "@class": "array",
+        "dtype": "bool",
+        "data": [
+          false,
+          false,
+          false
+        ]
+      },
+      "calculated_results": {
+        "energy": -2080.83225551071,
+        "free_energy": -2080.83225551071,
+        "forces": {
+          "@module": "numpy",
+          "@class": "array",
+          "dtype": "float64",
+          "data": [
+            [
+              4.05648561641326e-29,
+              5.51198801267693e-13,
+              -0.000541321794005289
+            ],
+            [
+              -1.21694568492398e-28,
+              0.000657031192731074,
+              0.000270660897217135
+            ],
+            [
+              -1.21694568492398e-28,
+              -0.000657031193282273,
+              0.000270660896788161
+            ]
+          ]
+        },
+        "fermi_energy": -0.8196098,
+        "homo": -7.06938675,
+        "lumo": 0.06782564,
+        "gap": 7.1372124,
+        "direct_gap": 7.1372124
+      },
+      "@version": null
     }
   ],
   "metadata": {
