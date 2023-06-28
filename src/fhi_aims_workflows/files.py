@@ -9,10 +9,14 @@ from atomate2.common.files import get_zfile, copy_files, gunzip_files
 from atomate2.utils.file_client import auto_fileclient, FileClient
 from atomate2.utils.path import strip_hostname
 
+from fhi_aims_workflows.sets.base import AimsInputGenerator
+from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+
 logger = logging.getLogger(__name__)
 
 __all__ = [
     "copy_aims_outputs",
+    "write_aims_input_set"
 ]
 
 
@@ -78,3 +82,36 @@ def copy_aims_outputs(
     )
 
     logger.info("Finished copying inputs")
+
+
+def write_aims_input_set(
+    structure: MSONableAtoms,
+    input_set_generator: AimsInputGenerator,
+    directory: str | Path = ".",
+    from_prev: bool = False,
+    **kwargs,
+):
+    """
+    Write FHI-aims input set.
+
+    Parameters
+    ----------
+    structure : .MSONableAtoms
+        A structure.
+    input_set_generator : .AimsInputGenerator
+        An GHI-aims input set generator.
+    directory : str or Path
+        The directory to write the input files to.
+    from_prev : bool
+        Whether to initialize the input set from a previous calculation.
+    **kwargs
+        Keyword arguments to pass to :obj:`.AimsInputSet.write_input`.
+    """
+    properties = kwargs.get("properties", [])
+    prev_dir = "." if from_prev else None
+    aims_is = input_set_generator.get_input_set(
+        structure, prev_dir=prev_dir, properties=properties
+    )
+
+    logger.info("Writing FHI-aims input set.")
+    aims_is.write_input(directory, **kwargs)

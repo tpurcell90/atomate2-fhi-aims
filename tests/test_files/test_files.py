@@ -21,12 +21,14 @@ def tmp_dir():
     shutil.rmtree(newpath)
 
 
-def test_copy_aims_outputs_static(tmp_dir):
-    files = ["aims.out", "geometry.in.next_step", "D_spin_01_kpt_000001.csc"]
+def test_copy_aims_outputs(tmp_dir):
     from fhi_aims_workflows.files import copy_aims_outputs
 
-    path = TEST_DIR / "outputs"
-    copy_aims_outputs(src_dir=path, )
+    files = ["aims.out"]
+    restart_files = ["geometry.in.next_step", "D_spin_01_kpt_000001.csc"]
 
-    for f in files:
+    path = TEST_DIR / "outputs"
+    copy_aims_outputs(src_dir=path)
+
+    for f in files + restart_files:
         assert Path(f).exists()
