@@ -4,6 +4,7 @@ from __future__ import annotations
 import logging
 from glob import glob
 from pathlib import Path
+from typing import Sequence
 
 from atomate2.common.files import get_zfile, copy_files, gunzip_files
 from atomate2.utils.file_client import auto_fileclient, FileClient
@@ -16,7 +17,8 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     "copy_aims_outputs",
-    "write_aims_input_set"
+    "write_aims_input_set",
+    "cleanup_aims_outputs"
 ]
 
 
@@ -115,3 +117,32 @@ def write_aims_input_set(
 
     logger.info("Writing FHI-aims input set.")
     aims_is.write_input(directory, **kwargs)
+
+
+@auto_fileclient
+def cleanup_aims_outputs(
+    directory: Path | str,
+    host: str | None = None,
+    file_patterns: Sequence[str] = ("*.csc",),
+    file_client: FileClient | None = None,
+):
+    """
+    Remove unnecessary files.
+
+    Parameters
+    ----------
+    directory:
+        Directory containing files
+    host:
+        File client host
+    file_patterns:
+        Glob patterns to find files for deletion.
+    file_client:
+        A file client to use for performing file operations.
+    """
+    files_to_delete = []
+    for pattern in file_patterns:
+        files_to_delete.extend(file_client.glob(Path(directory) / pattern, host=host))
+
+    for file in files_to_delete:
+        file_client.remove(file)
