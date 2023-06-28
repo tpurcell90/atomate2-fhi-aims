@@ -213,6 +213,8 @@ class AimsInputGenerator(InputGenerator):
             ASE Atoms object.
         prev_dir: str or Path
             Path to the previous working directory
+        properties: iterable of str
+            System properties that are being calculated
         """
         prev_atoms, prev_parameters, prev_results = self._read_previous(prev_dir)
         atoms = atoms if atoms is not None else prev_atoms
