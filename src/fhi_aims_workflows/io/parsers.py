@@ -10,6 +10,7 @@ from ase.constraints import FixAtoms, FixCartesian
 from ase.io import ParseError
 from ase.utils import lazymethod, lazyproperty, reader
 
+from typing import Any, Callable, Iterable, Dict
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 LINE_NOT_FOUND = object()
@@ -45,7 +46,7 @@ scalar_property_to_line_key = {
 class AimsOutChunk:
     """Base class for AimsOutChunks"""
 
-    def __init__(self, lines):
+    def __init__(self, lines: Iterable[str]):
         """Constructor
 
         Parameters
@@ -57,7 +58,7 @@ class AimsOutChunk:
         """
         self.lines = lines
 
-    def reverse_search_for(self, keys, line_start=0):
+    def reverse_search_for(self, keys: Iterable[str], line_start: int = 0):
         """Find the last time one of the keys appears in self.lines
 
         Parameters
@@ -78,7 +79,7 @@ class AimsOutChunk:
 
         return LINE_NOT_FOUND
 
-    def search_for_all(self, key, line_start=0, line_end=-1):
+    def search_for_all(self, key: str, line_start: int = 0, line_end: int = -1):
         """Find the all times the key appears in self.lines
 
         Parameters
@@ -101,7 +102,7 @@ class AimsOutChunk:
                 line_index.append(ll + line_start)
         return line_index
 
-    def parse_scalar(self, property):
+    def parse_scalar(self, property: str):
         """Parse a scalar property from the chunk
 
         Parameters
@@ -114,8 +115,7 @@ class AimsOutChunk:
         float
             The scalar value of the property
         """
-        line_start = self.reverse_search_for(
-            scalar_property_to_line_key[property])
+        line_start = self.reverse_search_for(scalar_property_to_line_key[property])
 
         if line_start == LINE_NOT_FOUND:
             return None
@@ -127,7 +127,7 @@ class AimsOutChunk:
 class AimsOutHeaderChunk(AimsOutChunk):
     """The header of the aims.out file containint general information"""
 
-    def __init__(self, lines):
+    def __init__(self, lines: Iterable[str]):
         """Constructor
 
         Parameters
@@ -138,6 +138,93 @@ class AimsOutHeaderChunk(AimsOutChunk):
         super().__init__(lines)
         self._k_points = None
         self._k_point_weights = None
+
+    @property
+    def commit_hash(self):
+        """Get the commit hash for the FHI-aims version"""
+        line_start = self.reverse_search_for(["Commit number"])
+        if line_start == LINE_NOT_FOUND:
+            raise AimsParseError("This file does not appear to be an aims-output file")
+
+        return self.lines[line_start].split(":")[1].strip()
+
+    @property
+    def aims_uuid(self):
+        """Get the aims-uuid for the calculation"""
+        line_start = self.reverse_search_for(["aims_uuid"])
+        if line_start == LINE_NOT_FOUND:
+            raise AimsParseError("This file does not appear to be an aims-output file")
+
+        return self.lines[line_start].split(":")[1].strip()
+
+    @property
+    def version_number(self):
+        """Get the commit hash for the FHI-aims version"""
+        line_start = self.reverse_search_for(["FHI-aims version"])
+        if line_start == LINE_NOT_FOUND:
+            raise AimsParseError("This file does not appear to be an aims-output file")
+
+        return int(self.lines[line_start].split(":")[1])
+
+    @property
+    def fortran_compiler(self):
+        """Get the fortran compiler used to make FHI-aims"""
+        line_start = self.reverse_search_for(["Fortran compiler      :"])
+        if line_start == LINE_NOT_FOUND:
+            raise AimsParseError("This file does not appear to be an aims-output file")
+
+        return self.lines[line_start].split(":")[1].split("/")[-1].strip()
+
+    @property
+    def c_compiler(self):
+        """Get the C compiler used to make FHI-aims"""
+        line_start = self.reverse_search_for(["C compiler            :"])
+        if line_start == LINE_NOT_FOUND:
+            return None
+
+        return self.lines[line_start].split(":")[1].spl.it("/")[-1].strip()
+
+    @property
+    def fortran_compiler_flags(self):
+        """Get the fortran compiler flags used to make FHI-aims"""
+        line_start = self.reverse_search_for(["Fortran compiler flags"])
+        if line_start == LINE_NOT_FOUND:
+            raise AimsParseError("This file does not appear to be an aims-output file")
+
+        return self.lines[line_start].split(":")[1].strip()
+
+    @property
+    def c_compiler_flags(self):
+        """Get the C compiler flags used to make FHI-aims"""
+        line_start = self.reverse_search_for(["C compiler flags"])
+        if line_start == LINE_NOT_FOUND:
+            return None
+
+        return self.lines[line_start].split(":")[1].strip()
+
+    @property
+    def build_type(self):
+        """Get the optional build flags passed to cmake"""
+        line_end = self.reverse_search_for("Linking against:")
+        line_inds = self.search_for_all("Using", line_end=line_end)
+
+        build_type_flags = [" ".join(line.split()[1:]).strip()]
+        return build_type_flags
+
+    @property
+    def linked_against(self):
+        """Get all libraries used to link the FHI-aims executable"""
+        line_start = self.reverse_search_for("Linking against:")
+        if line_start == LINE_NOT_FOUND:
+            return []
+
+        linked_libs = [self.line_start.split(":")[1].strip()]
+        line_start += 1
+        while "lib" in self.lines[line_start]:
+            linked_libs.append(line.strip())
+            line_start += 1
+
+        return linked_libs
 
     @property
     def constraints(self):
@@ -190,7 +277,7 @@ class AimsOutHeaderChunk(AimsOutChunk):
 
         return [
             [float(inp) for inp in line.split()[-3:]]
-            for line in self.lines[line_start + 1:line_start + 4]
+            for line in self.lines[line_start + 1 : line_start + 4]
         ]
 
     @property
@@ -199,16 +286,14 @@ class AimsOutHeaderChunk(AimsOutChunk):
         from the aims.out file"""
         line_start = self.reverse_search_for(["Atomic structure:"])
         if line_start == LINE_NOT_FOUND:
-            raise AimsParseError(
-                "No information about the structure in the chunk.")
+            raise AimsParseError("No information about the structure in the chunk.")
 
         line_start += 2
 
         cell = self.initial_cell
         positions = np.zeros((self.n_atoms, 3))
         symbols = [""] * self.n_atoms
-        for ll, line in enumerate(
-                self.lines[line_start:line_start + self.n_atoms]):
+        for ll, line in enumerate(self.lines[line_start : line_start + self.n_atoms]):
             inp = line.split()
             positions[ll, :] = [float(pos) for pos in inp[4:7]]
             symbols[ll] = inp[3]
@@ -232,8 +317,7 @@ class AimsOutHeaderChunk(AimsOutChunk):
     @property
     def is_relaxation(self):
         """Determine if the calculation is a geometry optimization or not"""
-        return LINE_NOT_FOUND != self.reverse_search_for(
-            ["Geometry relaxation:"])
+        return LINE_NOT_FOUND != self.reverse_search_for(["Geometry relaxation:"])
 
     def _parse_k_points(self):
         """Get the list of k-points used in the calculation"""
@@ -259,7 +343,7 @@ class AimsOutHeaderChunk(AimsOutChunk):
 
         k_points = np.zeros((n_kpts, 3))
         k_point_weights = np.zeros((n_kpts))
-        for kk, line in enumerate(self.lines[line_start + 1:line_end + 1]):
+        for kk, line in enumerate(self.lines[line_start + 1 : line_end + 1]):
             k_points[kk] = [float(inp) for inp in line.split()[4:7]]
             k_point_weights[kk] = float(line.split()[-1])
 
@@ -281,13 +365,12 @@ class AimsOutHeaderChunk(AimsOutChunk):
     @property
     def n_bands(self):
         """The number of Kohn-Sham states for the chunk"""
-        line_start = self.reverse_search_for(
-            scalar_property_to_line_key["n_bands"])
+        line_start = self.reverse_search_for(scalar_property_to_line_key["n_bands"])
 
         if line_start == LINE_NOT_FOUND:
             raise AimsParseError(
-                "No information about the number of Kohn-Sham states "
-                "in the header.")
+                "No information about the number of Kohn-Sham states " "in the header."
+            )
 
         line = self.lines[line_start]
         if "| Number of Kohn-Sham states" in line:
@@ -298,8 +381,7 @@ class AimsOutHeaderChunk(AimsOutChunk):
     @property
     def n_electrons(self):
         """The number of electrons for the chunk"""
-        line_start = self.reverse_search_for(
-            scalar_property_to_line_key["n_electrons"])
+        line_start = self.reverse_search_for(scalar_property_to_line_key["n_electrons"])
 
         if line_start == LINE_NOT_FOUND:
             raise AimsParseError(
@@ -324,8 +406,8 @@ class AimsOutHeaderChunk(AimsOutChunk):
         n_spins = self.parse_scalar("n_spins")
         if n_spins is None:
             raise AimsParseError(
-                "No information about the number of spin "
-                "channels in the header.")
+                "No information about the number of spin " "channels in the header."
+            )
         return int(n_spins)
 
     @property
@@ -390,8 +472,7 @@ class AimsOutCalcChunk(AimsOutChunk):
         """Create an atoms object for the subsequent structures
         calculated in the aims.out file"""
         start_keys = [
-            "Atomic structure (and velocities) as used in the preceding "
-            "time step",
+            "Atomic structure (and velocities) as used in the preceding " "time step",
             "Updated atomic structure",
             "Atomic structure that was used in the preceding time step of "
             "the wrapper",
@@ -403,8 +484,8 @@ class AimsOutCalcChunk(AimsOutChunk):
         line_start += 1
 
         line_end = self.reverse_search_for(
-            ['Writing the current geometry to file "geometry.in.next_step"'],
-            line_start)
+            ['Writing the current geometry to file "geometry.in.next_step"'], line_start
+        )
         if line_end == LINE_NOT_FOUND:
             line_end = len(self.lines)
 
@@ -416,8 +497,9 @@ class AimsOutCalcChunk(AimsOutChunk):
                 cell.append([float(inp) for inp in line.split()[1:]])
             elif "atom   " in line:
                 line_split = line.split()
-                atoms.append(Atom(line_split[4], tuple(
-                    [float(inp) for inp in line_split[1:4]])))
+                atoms.append(
+                    Atom(line_split[4], tuple([float(inp) for inp in line_split[1:4]]))
+                )
             elif "velocity   " in line:
                 velocities.append([float(inp) for inp in line.split()[1:]])
 
@@ -449,7 +531,7 @@ class AimsOutCalcChunk(AimsOutChunk):
         return np.array(
             [
                 [float(inp) for inp in line.split()[-3:]]
-                for line in self.lines[line_start:line_start + self.n_atoms]
+                for line in self.lines[line_start : line_start + self.n_atoms]
             ]
         )
 
@@ -463,7 +545,7 @@ class AimsOutCalcChunk(AimsOutChunk):
             return None
         line_start += 3
         stresses = []
-        for line in self.lines[line_start:line_start + self.n_atoms]:
+        for line in self.lines[line_start : line_start + self.n_atoms]:
             xx, yy, zz, xy, xz, yz = [float(d) for d in line.split()[2:8]]
             stresses.append([xx, yy, zz, yz, xz, xy])
 
@@ -479,14 +561,13 @@ class AimsOutCalcChunk(AimsOutChunk):
                 "Analytical stress tensor - Symmetrized",
                 "Numerical stress tensor",
             ]
-
         )  # Offest to relevant lines
         if line_start == LINE_NOT_FOUND:
             return
 
         stress = [
             [float(inp) for inp in line.split()[2:5]]
-            for line in self.lines[line_start + 5:line_start + 8]
+            for line in self.lines[line_start + 5 : line_start + 8]
         ]
         return full_3x3_to_voigt_6_stress(stress)
 
@@ -495,8 +576,11 @@ class AimsOutCalcChunk(AimsOutChunk):
         """Checks the outputfile to see if the chunk corresponds
         to a metallic system"""
         line_start = self.reverse_search_for(
-            ["material is metallic within the approximate finite "
-             "broadening function (occupation_type)"])
+            [
+                "material is metallic within the approximate finite "
+                "broadening function (occupation_type)"
+            ]
+        )
         return line_start != LINE_NOT_FOUND
 
     @property
@@ -531,14 +615,14 @@ class AimsOutCalcChunk(AimsOutChunk):
             return
 
         # we should find the tensor in the next three lines:
-        lines = self.lines[line_start + 1:line_start + 4]
+        lines = self.lines[line_start + 1 : line_start + 4]
 
         # make ndarray and return
-        return np.array([np.fromstring(line, sep=' ') for line in lines])
+        return np.array([np.fromstring(line, sep=" ") for line in lines])
 
     @lazyproperty
     def polarization(self):
-        """ Parse the polarization vector from the aims.out file"""
+        """Parse the polarization vector from the aims.out file"""
         line_start = self.reverse_search_for(["| Cartesian Polarization"])
         if line_start == LINE_NOT_FOUND:
             return
@@ -572,8 +656,7 @@ class AimsOutCalcChunk(AimsOutChunk):
             [float(self.lines[ind].split(":")[1]) for ind in line_inds]
         )
 
-        line_inds = self.search_for_all(
-            "Hirshfeld dipole vector", line_start, -1)
+        line_inds = self.search_for_all("Hirshfeld dipole vector", line_start, -1)
         hirshfeld_atomic_dipoles = np.array(
             [
                 [float(inp) for inp in self.lines[ind].split(":")[1].split()]
@@ -613,10 +696,9 @@ class AimsOutCalcChunk(AimsOutChunk):
         )
         line_end_2 = self.reverse_search_for(
             [
-                "What follows are estimated values for band gap, "
-                "HOMO, LUMO, etc.",
+                "What follows are estimated values for band gap, " "HOMO, LUMO, etc.",
                 "Current spin moment of the entire structure :",
-                "Highest occupied state (VBM)"
+                "Highest occupied state (VBM)",
             ],
             line_start,
         )
@@ -655,13 +737,11 @@ class AimsOutCalcChunk(AimsOutChunk):
             spin_def = self.search_for_all("Spin-", line_start, line_end)
             assert len(spin_def) == len(occupation_block_start)
 
-            spins = [int("Spin-down eigenvalues:" in self.lines[ll])
-                     for ll in spin_def]
+            spins = [int("Spin-down eigenvalues:" in self.lines[ll]) for ll in spin_def]
 
-        for occ_start, kpt_ind, spin in zip(
-                occupation_block_start, kpt_inds, spins):
+        for occ_start, kpt_ind, spin in zip(occupation_block_start, kpt_inds, spins):
             for ll, line in enumerate(
-                self.lines[occ_start + 1:occ_start + self.n_bands + 1]
+                self.lines[occ_start + 1 : occ_start + self.n_bands + 1]
             ):
                 if "***" in line:
                     warn_msg = f"The {ll+1}th eigenvalue for the "
@@ -678,7 +758,7 @@ class AimsOutCalcChunk(AimsOutChunk):
     @lazyproperty
     def atoms(self):
         """Convert AimsOutChunk to Atoms object and add all non-standard
-outputs to atoms.info"""
+        outputs to atoms.info"""
         atoms = self._parse_atoms()
 
         atoms.calc = SinglePointDFTCalculator(
@@ -718,9 +798,7 @@ outputs to atoms.info"""
             "polarization": self.polarization,
         }
 
-        return {
-            key: value for key,
-            value in results.items() if value is not None}
+        return {key: value for key, value in results.items() if value is not None}
 
     # Properties from the aims.out header
     @lazyproperty
@@ -786,7 +864,7 @@ outputs to atoms.info"""
     @lazyproperty
     def n_iter(self):
         """The number of SCF iterations needed to converge the SCF cycle for
-the chunk"""
+        the chunk"""
         return self.parse_scalar("number_of_iterations")
 
     @lazyproperty
@@ -847,16 +925,13 @@ def get_header_chunk(fd):
 
     # Stop the header once the first SCF cycle begins
     while (
-        "Convergence:    q app. |  density  | eigen (eV) | Etot (eV)"
-            not in line
-            and "Begin self-consistency iteration #" not in line
+        "Convergence:    q app. |  density  | eigen (eV) | Etot (eV)" not in line
+        and "Begin self-consistency iteration #" not in line
     ):
         try:
             line = next(fd).strip()  # Raises StopIteration on empty file
         except StopIteration:
-            raise ParseError(
-                "No SCF steps present, calculation failed at setup."
-            )
+            raise ParseError("No SCF steps present, calculation failed at setup.")
 
         header.append(line)
     return AimsOutHeaderChunk(header)
