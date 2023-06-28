@@ -14,6 +14,7 @@ from fhi_aims_workflows.files import copy_aims_outputs, write_aims_input_set, cl
 from fhi_aims_workflows.run import run_aims, should_stop_children
 from fhi_aims_workflows.schemas.task import TaskDocument
 from fhi_aims_workflows.sets.core import AimsInputGenerator
+from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 
 @dataclass
@@ -59,13 +60,13 @@ class BaseAimsMaker(Maker):
     store_output_data: bool = True
 
     @job
-    def make(self, structure: MSONableAtoms, prev_dir: str | Path | None = None):
+    def make(self, atoms: MSONableAtoms, prev_dir: str | Path | None = None):
         """
         Run an FHI-aims calculation.
 
         Parameters
         ----------
-        structure : MSONableAtoms
+        atoms : MSONableAtoms
             An ASE Atoms or pymatgen Structure object.
         prev_dir : str or Path or None
             A previous FHI-aims calculation directory to copy output files from.
@@ -80,7 +81,7 @@ class BaseAimsMaker(Maker):
         # write aims input files
         self.write_input_set_kwargs["from_prev"] = from_prev
         write_aims_input_set(
-            structure, self.input_set_generator, **self.write_input_set_kwargs
+            atoms, self.input_set_generator, **self.write_input_set_kwargs
         )
 
         # write any additional data

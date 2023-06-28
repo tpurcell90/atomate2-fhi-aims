@@ -91,7 +91,7 @@ class AimsOutput(MSONable):
 
     @property
     def initial_structure(self):
-        return self._atoms_summary['initial_cell']
+        return self._atoms_summary['initial_atoms']
 
     @property
     def final_structure(self):

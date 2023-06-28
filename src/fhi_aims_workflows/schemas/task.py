@@ -4,14 +4,14 @@ import logging
 from pathlib import Path
 from typing import Union, List, Dict, Any, Type, TypeVar, Tuple, Optional
 
+import numpy as np
 from emmet.core.math import Vector3D, Matrix3D
 from emmet.core.structure import StructureMetadata, MoleculeMetadata
 from emmet.core.tasks import get_uri
 from pydantic import Field, BaseModel
-from pymatgen.core import Structure, Molecule
 from pymatgen.entries.computed_entries import ComputedEntry
 
-from fhi_aims_workflows.schemas.calculation import Status, AimsObject, Calculation, RunStatistics
+from fhi_aims_workflows.schemas.calculation import Status, AimsObject, Calculation
 from fhi_aims_workflows.utils import datetime_str, MSONableAtoms
 
 _T = TypeVar("_T", bound="TaskDocument")
@@ -47,17 +47,6 @@ class AnalysisSummary(BaseModel):
 
         errors = []
 
-        # if isinstance(calc_docs[0].input.structure, Structure):
-        #     initial_vol = calc_docs[0].input.structure.get_volume()
-        #     final_vol = calc_docs[-1].output.structure.get_volume()
-        #     delta_vol = final_vol - initial_vol
-        #     percent_delta_vol = 100 * delta_vol / initial_vol
-        #
-        #     if abs(percent_delta_vol) > SETTINGS.AIMS_VOLUME_CHANGE_WARNING_TOL * 100:
-        #         warnings.append(
-        #             f"Volume change > {SETTINGS.AIMS_VOLUME_CHANGE_WARNING_TOL * 100}%"
-        #         )
-        # else:
         delta_vol = None
         percent_delta_vol = None
 
@@ -230,13 +219,6 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
     analysis: AnalysisSummary = Field(
         None, description="Summary of structural relaxation and forces"
     )
-    # run_stats: Dict[str, RunStatistics] = Field(
-    #     None,
-    #     description="Summary of runtime statistics for each calculation in this task",
-    # )
-    # orig_inputs: Dict[str, AimsInput] = Field(
-    #     None, description="Summary of the original FHI-aims inputs written by custodian"
-    # )
     task_label: str = Field(None, description="A description of the task")
     tags: List[str] = Field(None, description="Metadata tags for this task document")
     author: str = Field(None, description="Author extracted from transformations")
@@ -259,11 +241,6 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
     additional_json: Dict[str, Any] = Field(
         None, description="Additional json loaded from the calculation directory"
     )
-    # _schema: str = Field(
-    #     __version__,
-    #     description="Version of atomate2 used to create the document",
-    #     alias="schema",
-    # )
 
     @classmethod
     def from_directory(
@@ -339,24 +316,6 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
 
         # rewrite the original structure save!
 
-        # if isinstance(calcs_reversed[-1].output.structure, Structure):
-        #     attr = "from_structure"
-        #     dat = {
-        #         "structure": calcs_reversed[-1].output.structure,
-        #         "meta_structure": calcs_reversed[-1].output.structure,
-        #         "include_structure": True,
-        #     }
-        # elif isinstance(calcs_reversed[-1].output.structure, Molecule):
-        #     attr = "from_molecule"
-        #     dat = {
-        #         "structure": calcs_reversed[-1].output.structure,
-        #         "meta_structure": calcs_reversed[-1].output.structure,
-        #         "molecule": calcs_reversed[-1].output.structure,
-        #         "include_molecule": True,
-        #     }
-        #
-        # doc = getattr(cls, attr)(**dat)
-        # ddict = doc.dict()
         data = {
             "structure": calcs_reversed[-1].output.structure,
             "meta_structure": calcs_reversed[-1].output.structure,
@@ -427,7 +386,7 @@ def _find_aims_files(
     Find FHI-aims files in a directory.
 
     Only files in folders with names matching a task name (or alternatively files
-    with the task name as an extension, e.g., vasprun.relax1.xml) will be returned.
+    with the task name as an extension, e.g., aims.out) will be returned.
 
     CP2K files in the current directory will be given the task name "standard".
 
@@ -491,45 +450,6 @@ def _find_aims_files(
             task_files["standard"] = standard_files
 
     return task_files
-
-
-# def _parse_orig_inputs(dir_name: Path) -> Dict[str, AimsInput]:
-#     """
-#     Parse original input files.
-#
-#     Calculations using custodian generate a *.orig file for the inputs. This is useful
-#     to know how the calculation originally started.
-#
-#     Parameters
-#     ----------
-#     dir_name
-#         Path to calculation directory.
-#
-#     Returns
-#     -------
-#     Dict[str, AimsInput]
-#         The original data.
-#     """
-#     orig_inputs = {}
-#     input_mapping = {
-#         "input": {
-#             "filename": "control.in",
-#             "object": AimsInput,
-#         },
-#         "geometry": {
-#             "filename": "geometry.in",
-#             "object": MSONableAtoms.MSONableAtoms
-#         }
-#     }
-#
-#     for filename in dir_name.glob("*.orig*"):
-#         for name, aims_input in input_mapping.items():
-#             fn = aims_input.get("filename")
-#             obj = aims_input.get("object")
-#             if f"{fn}.orig" in str(filename):
-#                 orig_inputs[name.lower()] = obj.from_file(filename)
-#
-#     return orig_inputs
 
 
 def _get_max_force(calc_doc: Calculation) -> Optional[float]:
