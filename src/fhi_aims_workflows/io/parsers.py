@@ -3,8 +3,9 @@
 import warnings
 
 import numpy as np
+from pathlib import Path
 
-from ase import Atom, Atoms
+from ase import Atom
 from ase.calculators.singlepoint import SinglePointDFTCalculator
 from ase.constraints import FixAtoms, FixCartesian
 from ase.io import ParseError
@@ -182,7 +183,7 @@ class AimsOutHeaderChunk(AimsOutChunk):
         if line_start == LINE_NOT_FOUND:
             return None
 
-        return self.lines[line_start].split(":")[1].spl.it("/")[-1].strip()
+        return self.lines[line_start].split(":")[1].split("/")[-1].strip()
 
     @property
     def fortran_compiler_flags(self):
@@ -205,23 +206,25 @@ class AimsOutHeaderChunk(AimsOutChunk):
     @property
     def build_type(self):
         """Get the optional build flags passed to cmake"""
-        line_end = self.reverse_search_for("Linking against:")
+        line_end = self.reverse_search_for(["Linking against:"])
         line_inds = self.search_for_all("Using", line_end=line_end)
 
-        build_type_flags = [" ".join(line.split()[1:]).strip()]
+        build_type_flags = [
+            " ".join(self.lines[ind].split()[1:]).strip() for ind in line_inds
+        ]
         return build_type_flags
 
     @property
     def linked_against(self):
         """Get all libraries used to link the FHI-aims executable"""
-        line_start = self.reverse_search_for("Linking against:")
+        line_start = self.reverse_search_for(["Linking against:"])
         if line_start == LINE_NOT_FOUND:
             return []
 
-        linked_libs = [self.line_start.split(":")[1].strip()]
+        linked_libs = [self.lines[line_start].split(":")[1].strip()]
         line_start += 1
         while "lib" in self.lines[line_start]:
-            linked_libs.append(line.strip())
+            linked_libs.append(self.lines[line_start].strip())
             line_start += 1
 
         return linked_libs
@@ -298,7 +301,7 @@ class AimsOutHeaderChunk(AimsOutChunk):
             positions[ll, :] = [float(pos) for pos in inp[4:7]]
             symbols[ll] = inp[3]
 
-        atoms = Atoms(symbols=symbols, positions=positions)
+        atoms = MSONableAtoms(symbols=symbols, positions=positions)
 
         if cell:
             atoms.set_cell(cell)
@@ -455,15 +458,15 @@ class AimsOutHeaderChunk(AimsOutChunk):
     def metadata_summary(self) -> Dict[str, str]:
         """Dictionary containing all metadata for FHI-aims build"""
         return {
-            "commit_hash": commit_hash,
-            "aims_uuid": aims_uuid,
-            "version_number": version_number,
-            "fortran_compiler": fortran_compiler,
-            "c_compiler": c_compiler,
-            "fortran_compiler_flags": fortran_compiler_flags,
-            "c_compiler_flags": c_compiler_flags,
-            "build_type": build_type,
-            "linked_against": linked_against,
+            "commit_hash": self.commit_hash,
+            "aims_uuid": self.aims_uuid,
+            "version_number": self.version_number,
+            "fortran_compiler": self.fortran_compiler,
+            "c_compiler": self.c_compiler,
+            "fortran_compiler_flags": self.fortran_compiler_flags,
+            "c_compiler_flags": self.c_compiler_flags,
+            "build_type": self.build_type,
+            "linked_against": self.linked_against,
         }
 
 
@@ -647,16 +650,18 @@ class AimsOutCalcChunk(AimsOutChunk):
     @lazymethod
     def _parse_homo_lumo(self):
         """Parse the HOMO/LUMO values and get band gap if periodic"""
-        line_start = self.reverse_search_for("Highest occupied state (VBM)")
-        homo = float(self.lines(line_start).split("at")[1].split("eV").strip())
+        line_start = self.reverse_search_for(["Highest occupied state (VBM)"])
+        homo = float(self.lines[line_start].split(" at ")[1].split("eV")[0].strip())
 
-        line_start = self.reverse_search_for("Lowest unoccupied state (CBM)")
-        lumo = float(self.lines(line_start).split("at")[1].split("eV").strip())
+        line_start = self.reverse_search_for(["Lowest unoccupied state (CBM)"])
+        lumo = float(self.lines[line_start].split(" at ")[1].split("eV")[0].strip())
 
-        line_start = self.reverse_search_for("overall HOMO-LUMO gap")
-        homo_lumo_gap = float(self.lines(line_start).split(":")[1].split("eV").strip())
+        line_start = self.reverse_search_for(["verall HOMO-LUMO gap"])
+        homo_lumo_gap = float(
+            self.lines[line_start].split(":")[1].split("eV")[0].strip()
+        )
 
-        line_start = self.reverse_search_for("Smallest direct gap")
+        line_start = self.reverse_search_for(["Smallest direct gap"])
         if line_start == LINE_NOT_FOUND:
             return {
                 "homo": homo,
@@ -665,7 +670,7 @@ class AimsOutCalcChunk(AimsOutChunk):
                 "direct_gap": homo_lumo_gap,
             }
 
-        direct_gap = float(self.lines(line_start).split(":")[1].split("eV").strip())
+        direct_gap = float(self.lines[line_start].split(":")[1].split("eV")[0].strip())
         return {
             "homo": homo,
             "lumo": lumo,
@@ -805,18 +810,8 @@ class AimsOutCalcChunk(AimsOutChunk):
         outputs to atoms.info"""
         atoms = self._parse_atoms()
 
-        atoms.calc = SinglePointDFTCalculator(
-            atoms,
-            energy=self.energy,
-            free_energy=self.free_energy,
-            forces=self.forces,
-            stress=self.stress,
-            stresses=self.stresses,
-            magmom=self.magmom,
-            dipole=self.dipole,
-            dielectric_tensor=self.dielectric_tensor,
-            polarization=self.polarization,
-        )
+        atoms.calc = SinglePointDFTCalculator(atoms)
+        atoms.calc.results = self.results
         return atoms
 
     @property
@@ -842,7 +837,7 @@ class AimsOutCalcChunk(AimsOutChunk):
             "polarization": self.polarization,
             "homo": self.homo,
             "lumo": self.lumo,
-            "homo_lumo_gap": self.homo_lumo_gap,
+            "gap": self.gap,
             "direct_gap": self.direct_gap,
         }
 
@@ -976,9 +971,9 @@ class AimsOutCalcChunk(AimsOutChunk):
         return self._parse_homo_lumo()["lumo"]
 
     @lazyproperty
-    def homo_lumo_gap(self):
+    def gap(self):
         """The HOMO-LUMO gap (band gap) of the calculation"""
-        return self._parse_homo_lumo()["homo_lumo_gap"]
+        return self._parse_homo_lumo()["gap"]
 
     @lazyproperty
     def direct_gap(self):
@@ -1080,20 +1075,28 @@ def check_convergence(chunks, non_convergence_ok=False):
 
 
 @reader
-def read_aims_results(
-    fd: str | Path, index: int | slice = -1, non_convergence_ok: bool = False
-) -> Dict[str, Any]:
-    """Import FHI-aims output files and summarize all relevant information
-    into a dictionary"""
+def read_aims_header_info(
+    fd: str | Path,
+) -> tuple[Dict[str, str], Dict[str, Any]]:
+    """Read the FHI-aims header information"""
+    header_chunk = get_header_chunk(fd)
+
+    system_summary = header_chunk.header_summary
+    metadata = header_chunk.metadata_summary
+    return metadata, system_summary
+
+
+@reader
+def read_aims_output(fd, index=-1, non_convergence_ok=False):
+    """Import FHI-aims output files with all data available, i.e.
+    relaxations, MD information, force information etc etc etc."""
     header_chunk = get_header_chunk(fd)
     chunks = list(get_aims_out_chunks(fd, header_chunk))
     check_convergence(chunks, non_convergence_ok)
 
     # Relaxations have an additional footer chunk due to how it is split
     if header_chunk.is_relaxation:
-        chunks = chunks[:-1]
-
-    if isinstance(index, int):
-        return [chunks[index].results]
-
-    return [chunk.results for chunk in chunks[index]]
+        images = [chunk.atoms for chunk in chunks[:-1]]
+    else:
+        images = [chunk.atoms for chunk in chunks]
+    return images[index]
