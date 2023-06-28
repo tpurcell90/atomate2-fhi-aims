@@ -4,7 +4,7 @@ from pathlib import Path
 from monty.json import MontyDecoder
 import json
 
-outfile_dir = Path(__file__).parent / "aims_outupt_files"
+outfile_dir = Path(__file__).parent / "aims_output_files"
 
 
 def test_output_si():

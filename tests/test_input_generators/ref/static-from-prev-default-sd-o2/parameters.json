@@ -1,0 +1,5 @@
+{
+  "xc": "pbe",
+  "relativistic": "atomic_zora scalar",
+  "relax_geometry": "trm 1e-3"
+}
