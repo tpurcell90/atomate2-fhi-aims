@@ -645,6 +645,35 @@ class AimsOutCalcChunk(AimsOutChunk):
         return np.array([float(s) for s in line.split()[-3:]])
 
     @lazymethod
+    def _parse_homo_lumo(self):
+        """Parse the HOMO/LUMO values and get band gap if periodic"""
+        line_start = self.reverse_search_for("Highest occupied state (VBM)")
+        homo = float(self.lines(line_start).split("at")[1].split("eV").strip())
+
+        line_start = self.reverse_search_for("Lowest unoccupied state (CBM)")
+        lumo = float(self.lines(line_start).split("at")[1].split("eV").strip())
+
+        line_start = self.reverse_search_for("overall HOMO-LUMO gap")
+        homo_lumo_gap = float(self.lines(line_start).split(":")[1].split("eV").strip())
+
+        line_start = self.reverse_search_for("Smallest direct gap")
+        if line_start == LINE_NOT_FOUND:
+            return {
+                "homo": homo,
+                "lumo": lumo,
+                "gap": homo_lumo_gap,
+                "direct_gap": homo_lumo_gap,
+            }
+
+        direct_gap = float(self.lines(line_start).split(":")[1].split("eV").strip())
+        return {
+            "homo": homo,
+            "lumo": lumo,
+            "gap": homo_lumo_gap,
+            "direct_gap": direct_gap,
+        }
+
+    @lazymethod
     def _parse_hirshfeld(self):
         """Parse the Hirshfled charges volumes, and dipole moments from the
         ouput"""
@@ -811,6 +840,10 @@ class AimsOutCalcChunk(AimsOutChunk):
             # "occupancies": self.occupancies,
             "dielectric_tensor": self.dielectric_tensor,
             "polarization": self.polarization,
+            "homo": self.homo,
+            "lumo": self.lumo,
+            "homo_lumo_gap": self.homo_lumo_gap,
+            "direct_gap": self.direct_gap,
         }
 
         return {key: value for key, value in results.items() if value is not None}
@@ -932,6 +965,26 @@ class AimsOutCalcChunk(AimsOutChunk):
         """All outputted occupancies for the system"""
         return self._parse_eigenvalues()["occupancies"]
 
+    @lazyproperty
+    def homo(self):
+        """The HOMO (CBM) of the calculation"""
+        return self._parse_homo_lumo()["homo"]
+
+    @lazyproperty
+    def lumo(self):
+        """The LUMO (VBM) of the calculation"""
+        return self._parse_homo_lumo()["lumo"]
+
+    @lazyproperty
+    def homo_lumo_gap(self):
+        """The HOMO-LUMO gap (band gap) of the calculation"""
+        return self._parse_homo_lumo()["homo_lumo_gap"]
+
+    @lazyproperty
+    def direct_gap(self):
+        """The direct band gap of the calculation"""
+        return self._parse_homo_lumo()["direct_gap"]
+
 
 def get_header_chunk(fd):
     """Returns the header information from the aims.out file"""
@@ -1027,23 +1080,9 @@ def check_convergence(chunks, non_convergence_ok=False):
 
 
 @reader
-def read_aims_output(fd, index=-1, non_convergence_ok=False):
-    """Import FHI-aims output files with all data available, i.e.
-    relaxations, MD information, force information etc etc etc."""
-    header_chunk = get_header_chunk(fd)
-    chunks = list(get_aims_out_chunks(fd, header_chunk))
-    check_convergence(chunks, non_convergence_ok)
-
-    # Relaxations have an additional footer chunk due to how it is split
-    if header_chunk.is_relaxation:
-        images = [chunk.atoms for chunk in chunks[:-1]]
-    else:
-        images = [chunk.atoms for chunk in chunks]
-    return images[index]
-
-
-@reader
-def read_aims_results(fd, index=-1, non_convergence_ok=False):
+def read_aims_results(
+    fd: str | Path, index: int | slice = -1, non_convergence_ok: bool = False
+) -> Dict[str, Any]:
     """Import FHI-aims output files and summarize all relevant information
     into a dictionary"""
     header_chunk = get_header_chunk(fd)
@@ -1051,7 +1090,10 @@ def read_aims_results(fd, index=-1, non_convergence_ok=False):
     check_convergence(chunks, non_convergence_ok)
 
     # Relaxations have an additional footer chunk due to how it is split
-    if header_chunk.is_relaxation and (index == -1):
-        return chunks[-2].results
+    if header_chunk.is_relaxation:
+        chunks = chunks[:-1]
 
-    return chunks[index].results
+    if isinstance(index, int):
+        return [chunks[index].results]
+
+    return [chunk.results for chunk in chunks[index]]
