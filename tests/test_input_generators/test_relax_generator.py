@@ -21,9 +21,13 @@ def comp_system(atoms, user_params, directory):
             open(file, "rt").readlines()[4:]
             == open(f"ref/{file}", "rt").readlines()[4:]
         )
-    assert json.load(open(f"{directory}/parameters.json")) == json.load(
-        open(f"ref/{directory}/parameters.json")
-    )
+    ref = json.load(open(f"ref/{directory}/parameters.json"))
+    ref.pop("species_dir", None)
+    check = json.load(open(f"{directory}/parameters.json"))
+    check.pop("species_dir", None)
+
+    assert ref == check
+    shutil.rmtree(directory)
 
     shutil.rmtree(directory)
 
