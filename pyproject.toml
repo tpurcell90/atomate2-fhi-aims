@@ -7,7 +7,7 @@ name = "aims_workflows"
 description = "A collection of materials science workflows written for FHI-aims based on atomate2"
 readme = "README.md"
 keywords = ["automated", "dft", "high-throughput", "fhi-aims", "workflow"]
-license = { text = "MIT" }
+license = { text = "Apache" }
 authors = [{ name = "Thomas Purcell", email = "purcell@fhi-berlin.mpg.de" },
            { name = "Andrey Sobolev", email = "andrey.n.sobolev@gmail.com" }]
 dynamic = ["version"]
