@@ -37,8 +37,8 @@ def Si():
 
 
 @pytest.fixture
-def H2O():
-    return molecule("H2O")
+def O2():
+    return molecule("O2")
 
 
 def test_static_si(Si):
@@ -64,17 +64,17 @@ def test_static_default_species_dir(Si):
         os.unsetenv("AIMS_SPECIES_DIR")
 
 
-def test_static_h2o(H2O):
+def test_static_o2(O2):
     parameters = {"species_dir": str(base_dir / "species_dir")}
-    comp_system(H2O, parameters, "static-h2o/")
+    comp_system(O2, parameters, "static-o2/")
 
 
-def test_static_default_species_dir_h2o(H2O):
+def test_static_default_species_dir_o2(O2):
     sd_def = os.getenv("AIMS_SPECIES_DIR", None)
     os.environ["AIMS_SPECIES_DIR"] = str(base_dir / "species_dir")
     parameters = {"k_grid": [2, 2, 2]}
 
-    comp_system(H2O, parameters, "static-default-sd-h2o/")
+    comp_system(O2, parameters, "static-default-sd-o2/")
 
     if sd_def:
         os.environ["AIMS_SPECIES_DIR"] = sd_def

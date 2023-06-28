@@ -1,4 +1,4 @@
-from fhi_aims_workflows.sets.core import RelaxSetGenerator
+from fhi_aims_workflows.sets.core import StaticSetGenerator
 from ase.build import bulk, molecule
 
 from pathlib import Path
@@ -11,9 +11,11 @@ import json
 base_dir = Path(__file__).parent
 
 
-def comp_system(atoms, user_params, directory):
-    generator = RelaxSetGenerator(user_parameters=user_params)
-    input_set = generator.get_input_set(atoms)
+def comp_system(atoms, prev_dir, directory):
+    generator = StaticSetGenerator(user_parameters={})
+    input_set = generator.get_input_set(
+        atoms, prev_dir, properties=["energy", "forces", "stress"]
+    )
     input_set.write_input(directory)
 
     for file in glob(f"{directory}/*in"):
@@ -40,22 +42,23 @@ def O2():
     return molecule("O2")
 
 
-def test_relax_si(Si):
-    parameters = {"species_dir": str(base_dir / "species_dir"), "k_grid": [2, 2, 2]}
-    comp_system(Si, parameters, "relax-si/")
+def test_static_from_relax_si(Si):
+    comp_system(Si, f"{base_dir}/ref/relax-si/", "static-from-prev-si/")
 
 
-def test_relax_si_no_kgrid(Si):
-    parameters = {"species_dir": str(base_dir / "species_dir")}
-    comp_system(Si, parameters, "relax-no-kgrid-si/")
+def test_static_from_relax_si_no_kgrid(Si):
+    comp_system(
+        Si, f"{base_dir}/ref/relax-no-kgrid-si/", "static-from-prev-no-kgrid-si/"
+    )
 
 
-def test_relax_default_species_dir(Si):
+def test_static_from_relax_default_species_dir(Si):
     sd_def = os.getenv("AIMS_SPECIES_DIR", None)
     os.environ["AIMS_SPECIES_DIR"] = str(base_dir / "species_dir")
-    parameters = {"k_grid": [2, 2, 2]}
 
-    comp_system(Si, parameters, "relax-default-sd-si/")
+    comp_system(
+        Si, f"{base_dir}/ref/relax-default-sd-si/", "static-from-prev-default-sd-si/"
+    )
 
     if sd_def:
         os.environ["AIMS_SPECIES_DIR"] = sd_def
@@ -63,17 +66,17 @@ def test_relax_default_species_dir(Si):
         os.unsetenv("AIMS_SPECIES_DIR")
 
 
-def test_relax_o2(O2):
-    parameters = {"species_dir": str(base_dir / "species_dir")}
-    comp_system(O2, parameters, "relax-o2/")
+def test_static_from_relax_o2(O2):
+    comp_system(O2, f"{base_dir}/ref/relax-o2/", "static-from-prev-o2/")
 
 
-def test_relax_default_species_dir_o2(O2):
+def test_static_from_relax_default_species_dir_o2(O2):
     sd_def = os.getenv("AIMS_SPECIES_DIR", None)
     os.environ["AIMS_SPECIES_DIR"] = str(base_dir / "species_dir")
-    parameters = {"k_grid": [2, 2, 2]}
 
-    comp_system(O2, parameters, "relax-default-sd-o2/")
+    comp_system(
+        O2, f"{base_dir}/ref/relax-default-sd-o2/", "static-from-prev-default-sd-o2/"
+    )
 
     if sd_def:
         os.environ["AIMS_SPECIES_DIR"] = sd_def
