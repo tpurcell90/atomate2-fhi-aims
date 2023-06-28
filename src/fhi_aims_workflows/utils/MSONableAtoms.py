@@ -1,4 +1,6 @@
 from ase.atoms import Atoms
+from ase.calculators.singlepoint import SinglePointDFTCalculator
+
 from monty.json import MSONable, MontyDecoder
 
 
@@ -9,6 +11,9 @@ class MSONableAtoms(Atoms, MSONable):
         for key, val in self.todict().items():
             d[key] = val
 
+        if self.calc:
+            d["calculated_results"] = self.calc.results
+
         return d
 
     @classmethod
@@ -18,5 +23,11 @@ class MSONableAtoms(Atoms, MSONable):
             for k, v in d.items()
             if not k.startswith("@")
         }
+        calculated_results = decoded.pop("calculated_results", None)
 
-        return cls.fromdict(decoded)
+        atoms = Atoms.fromdict(decoded)
+
+        calculator = SinglePointDFTCalculator(atoms)
+        calculator.results = calculated_results
+
+        return cls(atoms, calculator=calculator)
