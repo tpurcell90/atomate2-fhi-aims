@@ -10,6 +10,7 @@ from typing import Any, Iterable, Dict, List
 import numpy as np
 
 from monty.json import MontyEncoder, MontyDecoder
+from fhi_aims_workflows.io.parsers import read_aims_output
 from fhi_aims_workflows.utils.pymatgen_core_io import (
     InputGenerator,
     InputSet,
