@@ -23,7 +23,6 @@ __all__ = [
     'Status',
     'AimsObject',
     'Calculation',
-    'RunStatistics'
 ]
 
 
@@ -41,33 +40,6 @@ class AimsObject(ValueEnum):
     BAND_STRUCTURE = "band_structure"
     ELECTRON_DENSITY = "electron_density"  # e_density
     WFN = "wfn"  # Wavefunction file
-
-
-class RunStatistics(BaseModel):
-    """Summary of the run statistics for a CP2K calculation."""
-
-    total_time: float = Field(0, description="The total CPU time for this calculation")
-
-    @classmethod
-    def from_aims_output(cls, output: AimsOutput) -> "RunStatistics":
-        """
-        Create a run statistics document from an CP2K Output object.
-
-        Parameters
-        ----------
-        output:
-            AimsOutput object
-
-        Returns
-        -------
-        RunStatistics
-            The run statistics.
-        """
-        # rename these statistics
-        run_stats = {}
-        output.parse_timing()
-        run_stats["total_time"] = output.timing["aims"]["total_time"]["maximum"]
-        return cls(**run_stats)
 
 
 class CalculationInput(BaseModel):
@@ -117,20 +89,16 @@ class CalculationOutput(BaseModel):
     vbm: float = Field(
         None, description="The valence band maximum in eV (if system is not metallic)"
     )
-    ionic_steps: List[Dict[str, Any]] = Field(
-        None, description="Energy, forces, and structure for each ionic step"
-    )
-    run_stats: RunStatistics = Field(
-        None, description="Summary of runtime statistics for this calculation"
-    )
-    scf: List = Field(None, description="SCF optimization steps")
+    # ionic_steps: List[Dict[str, Any]] = Field(
+    #     None, description="Energy, forces, and structure for each ionic step"
+    # )
+    # scf: List = Field(None, description="SCF optimization steps")
 
     @classmethod
     def from_aims_output(
         cls,
         output: AimsOutput,  # Must use auto_load kwarg when passed
         store_trajectory: bool = False,
-        store_scf: bool = False,
     ) -> "CalculationOutput":
         """
         Create an FHI-aims output document from FHI-aims outputs.
@@ -141,8 +109,6 @@ class CalculationOutput(BaseModel):
             An AimsOutput object.
         store_trajectory
             A flag setting to store output trajectory
-        store_scf
-            A flag setting to store self-consistent steps
 
         Returns
         -------
@@ -151,42 +117,41 @@ class CalculationOutput(BaseModel):
 
         structure = output.final_structure
 
-        if output.band_structure:
-            bandgap_info = output.band_structure.get_band_gap()
-            electronic_output = {
-                "efermi": output.band_structure.efermi,
-                "vbm": output.band_structure.get_vbm()["energy"],
-                "cbm": output.band_structure.get_cbm()["energy"],
-                "bandgap": bandgap_info["energy"],
-                "is_gap_direct": bandgap_info["direct"],
-                "is_metal": output.band_structure.is_metal(),
-                "direct_gap": output.band_structure.get_direct_band_gap(),
-                "transition": bandgap_info["transition"],
-            }
-        else:
-            electronic_output = {
-                "efermi": output.efermi,
-                "vbm": output.vbm,
-                "cbm": output.cbm,
-                "bandgap": output.band_gap,
-                "is_metal": output.is_metal,
-            }
+        # if output.band_structure:
+        #     bandgap_info = output.band_structure.get_band_gap()
+        #     electronic_output = {
+        #         "efermi": output.band_structure.efermi,
+        #         "vbm": output.band_structure.get_vbm()["energy"],
+        #         "cbm": output.band_structure.get_cbm()["energy"],
+        #         "bandgap": bandgap_info["energy"],
+        #         "is_gap_direct": bandgap_info["direct"],
+        #         "is_metal": output.band_structure.is_metal(),
+        #         "direct_gap": output.band_structure.get_direct_band_gap(),
+        #         "transition": bandgap_info["transition"],
+        #     }
+        # else:
+        electronic_output = {
+            "efermi": output.fermi_energy,
+            "homo": output.homo,
+            "lumo": output.lumo,
+            "bandgap": output.band_gap,
+            "direct_bandgap": output.direct_band_gap,
+            # "is_metal": output.is_metal,
+        }
 
-        if store_scf:
-            output.parse_scf_opt()
-            scf = output.data.get("electronic_steps")
-            scf = [item for sublist in scf for item in sublist]
-        else:
-            scf = None
+        # if store_scf:
+        #     output.parse_scf_opt()
+        #     scf = output.data.get("electronic_steps")
+        #     scf = [item for sublist in scf for item in sublist]
+        # else:
+        #     scf = None
 
         return cls(
             structure=structure,
             energy=output.final_energy,
             energy_per_atom=output.final_energy / len(structure),
             **electronic_output,
-            ionic_steps=None if store_trajectory else output.ionic_steps,
-            run_stats=RunStatistics.from_aims_output(output),
-            scf=scf,
+            # ionic_steps=output.structures,
         )
 
 
@@ -200,9 +165,9 @@ class Calculation(BaseModel):
     has_aims_completed: Status = Field(
         None, description="Whether FHI-aims completed the calculation successfully"
     )
-    input: CalculationInput = Field(
-        None, description="FHI-aims input settings for the calculation"
-    )
+    # input: CalculationInput = Field(
+    #     None, description="FHI-aims input settings for the calculation"
+    # )
     output: CalculationOutput = Field(None, description="The FHI-aims calculation output")
     completed_at: str = Field(
         None, description="Timestamp for when the calculation was completed"
@@ -299,7 +264,8 @@ class Calculation(BaseModel):
         aims_output_file = dir_name / aims_output_file
 
         volumetric_files = [] if volumetric_files is None else volumetric_files
-        aims_output = AimsOutput(aims_output_file, auto_load=True)
+        aims_output = AimsOutput.from_outfile(aims_output_file)
+
         completed_at = str(datetime.fromtimestamp(os.stat(aims_output_file).st_mtime))
 
         output_file_paths = _get_output_file_paths(volumetric_files)
@@ -319,9 +285,9 @@ class Calculation(BaseModel):
             #     bandstructure.projections = {}
             aims_objects[AimsObject.BANDSTRUCTURE] = bandstructure  # type: ignore
 
-        input_doc = CalculationInput.from_aims_output(aims_output)
+        # input_doc = CalculationInput.from_aims_output(aims_output)
         output_doc = CalculationOutput.from_aims_output(
-            aims_output, store_scf=store_scf
+            aims_output
         )
 
         has_aims_completed = Status.SUCCESS if aims_output.completed else Status.FAILED
@@ -337,7 +303,7 @@ class Calculation(BaseModel):
                 aims_version=aims_output.aims_version,
                 has_aims_completed=has_aims_completed,
                 completed_at=completed_at,
-                input=input_doc,
+                # input=input_doc,
                 output=output_doc,
                 output_file_paths={
                     k.name.lower(): v for k, v in output_file_paths.items()

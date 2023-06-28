@@ -31,16 +31,6 @@ def comp_system(atoms, user_params, directory):
     shutil.rmtree(directory)
 
 
-@pytest.fixture
-def Si():
-    return bulk("Si")
-
-
-@pytest.fixture
-def H2O():
-    return molecule("H2O")
-
-
 def test_static_si(Si):
     parameters = {"species_dir": str(base_dir / "species_dir"), "k_grid": [2, 2, 2]}
     comp_system(Si, parameters, "static-si/")

@@ -12,8 +12,9 @@ from pydantic import Field, BaseModel
 from pymatgen.core import Structure, Molecule
 from pymatgen.entries.computed_entries import ComputedEntry
 
-from fhi_aims_workflows.schemas.calculation import Status, AimsObject, Calculation, RunStatistics
-from fhi_aims_workflows.utils import datetime_str, MSONableAtoms
+from fhi_aims_workflows.schemas.calculation import Status, AimsObject, Calculation
+from fhi_aims_workflows.utils import datetime_str
+from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 _T = TypeVar("_T", bound="TaskDocument")
 _VOLUMETRIC_FILES = ("total_density", "spin_density", "eigenstate_density")
@@ -48,19 +49,19 @@ class AnalysisSummary(BaseModel):
 
         errors = []
 
-        if isinstance(calc_docs[0].input.structure, Structure):
-            initial_vol = calc_docs[0].input.structure.get_volume()
-            final_vol = calc_docs[-1].output.structure.get_volume()
-            delta_vol = final_vol - initial_vol
-            percent_delta_vol = 100 * delta_vol / initial_vol
+        # if isinstance(calc_docs[0].input.structure, Structure):
+        #     initial_vol = calc_docs[0].input.structure.get_volume()
+        #     final_vol = calc_docs[-1].output.structure.get_volume()
+        #     delta_vol = final_vol - initial_vol
+        #     percent_delta_vol = 100 * delta_vol / initial_vol
         #
         #     if abs(percent_delta_vol) > SETTINGS.AIMS_VOLUME_CHANGE_WARNING_TOL * 100:
         #         warnings.append(
         #             f"Volume change > {SETTINGS.AIMS_VOLUME_CHANGE_WARNING_TOL * 100}%"
         #         )
-        else:
-            delta_vol = None
-            percent_delta_vol = None
+        # else:
+        delta_vol = None
+        percent_delta_vol = None
 
         final_calc = calc_docs[-1]
         max_force = None
@@ -108,7 +109,7 @@ class SpeciesSummary(BaseModel):
 class InputSummary(BaseModel):
     """Summary of inputs for an FHI-aims calculation."""
 
-    structure: Union[Structure, Molecule] = Field(
+    structure: MSONableAtoms = Field(
         None, description="The input structure object"
     )
 
@@ -148,7 +149,7 @@ class InputSummary(BaseModel):
 class OutputSummary(BaseModel):
     """Summary of the outputs for an FHI-aims calculation."""
 
-    structure: Union[Structure, Molecule] = Field(
+    structure: MSONableAtoms = Field(
         None, description="The output structure object"
     )
     energy: float = Field(
@@ -182,12 +183,12 @@ class OutputSummary(BaseModel):
         OutputSummary
             The calculation output summary.
         """
-        if calc_doc.output.ionic_steps:
-            forces = calc_doc.output.ionic_steps[-1].get("forces", None)
-            stress = calc_doc.output.ionic_steps[-1].get("stress", None)
-        else:
-            forces = None
-            stress = None
+        # if calc_doc.output.ionic_steps:
+        #     forces = calc_doc.output.ionic_steps[-1].get("forces", None)
+        #     stress = calc_doc.output.ionic_steps[-1].get("stress", None)
+        # else:
+        forces = None
+        stress = None
         return cls(
             structure=calc_doc.output.structure,
             energy=calc_doc.output.energy,
@@ -215,7 +216,7 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
     output: OutputSummary = Field(
         None, description="The output of the final calculation"
     )
-    structure: Union[Structure, Molecule] = Field(
+    structure: MSONableAtoms = Field(
         None, description="Final output structure from the task"
     )
     state: Status = Field(None, description="State of this task")
@@ -231,10 +232,10 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
     analysis: AnalysisSummary = Field(
         None, description="Summary of structural relaxation and forces"
     )
-    run_stats: Dict[str, RunStatistics] = Field(
-        None,
-        description="Summary of runtime statistics for each calculation in this task",
-    )
+    # run_stats: Dict[str, RunStatistics] = Field(
+    #     None,
+    #     description="Summary of runtime statistics for each calculation in this task",
+    # )
     # orig_inputs: Dict[str, AimsInput] = Field(
     #     None, description="Summary of the original FHI-aims inputs written by custodian"
     # )
@@ -372,11 +373,10 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
             "tags": tags,
             # "author": author,
             "completed_at": calcs_reversed[-1].completed_at,
-            "input": InputSummary.from_aims_calc_doc(calcs_reversed[0]),
+            # "input": InputSummary.from_aims_calc_doc(calcs_reversed[0]),
             "output": OutputSummary.from_aims_calc_doc(calcs_reversed[-1]),
             "state": _get_state(calcs_reversed, analysis),
             "entry": cls.get_entry(calcs_reversed),
-            "run_stats": _get_run_stats(calcs_reversed),
             "aims_objects": aims_objects,
             "included_objects": included_objects,
         }
@@ -407,11 +407,12 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
         entry_dict = {
             "correction": 0.0,
             "entry_id": job_id,
-            "composition": calc_docs[-1].output.structure.composition,
+            "composition": calc_docs[-1].output.structure.get_chemical_formula(),
             "energy": calc_docs[-1].output.energy,
             "parameters": {
                 # Required to be compatible with MontyEncoder for the ComputedEntry
-                "run_type": str(calc_docs[-1].run_type),
+                # "run_type": str(calc_docs[-1].run_type),
+                "run_type": "AIMS run"
             },
             "data": {
                 "last_updated": datetime_str(),
@@ -535,11 +536,12 @@ def _find_aims_files(
 
 def _get_max_force(calc_doc: Calculation) -> Optional[float]:
     """Get max force acting on atoms from a calculation document."""
-    forces = (
-        calc_doc.output.ionic_steps[-1].get("forces")
-        if calc_doc.output.ionic_steps
-        else None
-    )
+    forces = None
+    # forces = (
+    #     calc_doc.output.ionic_steps[-1].get("forces")
+    #     if calc_doc.output.ionic_steps
+    #     else None
+    # )
     # structure = calc_doc.output.structure
     if forces:
         forces = np.array(forces)
@@ -556,17 +558,3 @@ def _get_state(calc_docs: List[Calculation], analysis: AnalysisSummary) -> Statu
     if len(analysis.errors) == 0 and all_calcs_completed:
         return Status.SUCCESS  # type: ignore
     return Status.FAILED  # type: ignore
-
-
-def _get_run_stats(calc_docs: List[Calculation]) -> Dict[str, RunStatistics]:
-    """Get summary of runtime statistics for each calculation in this task."""
-    run_stats = {}
-    total = {
-        "total_time": 0.0,
-    }
-    for calc_doc in calc_docs:
-        stats = calc_doc.output.run_stats
-        run_stats[calc_doc.task_name] = stats
-        total["total_time"] += stats.total_time
-    run_stats["overall"] = RunStatistics(**total)
-    return run_stats
