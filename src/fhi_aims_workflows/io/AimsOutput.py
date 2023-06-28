@@ -44,7 +44,7 @@ class AimsOutput(MSONable):
             The aims.out file to parse
         """
         metadata, atoms_summary = read_aims_header_info(outfile)
-        results = read_aims_output(outfile, index=slice(-1))
+        results = read_aims_output(outfile, index=slice(0, None))
 
         return cls(results, metadata, atoms_summary)
 
