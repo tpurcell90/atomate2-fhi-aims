@@ -4,25 +4,99 @@ import logging
 from pathlib import Path
 from typing import Union, List, Dict, Any, Type, TypeVar, Tuple, Optional
 
+import numpy as np
 from emmet.core.math import Vector3D, Matrix3D
 from emmet.core.structure import StructureMetadata, MoleculeMetadata
+from emmet.core.tasks import get_uri
 from pydantic import Field, BaseModel
-from pymatgen.core import Structure, Molecule
 from pymatgen.entries.computed_entries import ComputedEntry
 
 from fhi_aims_workflows.schemas.calculation import Status, AimsObject, Calculation
-from fhi_aims_workflows.utils import datetime_str
-
+from fhi_aims_workflows.utils import datetime_str, MSONableAtoms
 
 _T = TypeVar("_T", bound="TaskDocument")
-_VOLUMETRIC_FILES_GLOB = "*.cube"
+_VOLUMETRIC_FILES = ("total_density", "spin_density", "eigenstate_density")
 logger = logging.getLogger(__name__)
+
+
+class AnalysisSummary(BaseModel):
+    """Calculation relaxation summary."""
+
+    delta_volume: float = Field(None, description="Absolute change in volume")
+    delta_volume_as_percent: float = Field(
+        None, description="Percentage change in volume"
+    )
+    max_force: float = Field(None, description="Maximum force on the atoms")
+    errors: List[str] = Field(None, description="Errors from the FHI-aims output")
+
+    @classmethod
+    def from_aims_calc_docs(cls, calc_docs: List[Calculation]) -> "AnalysisSummary":
+        """
+        Create analysis summary from FHI-aims calculation documents.
+
+        Parameters
+        ----------
+        calc_docs
+            FHI-aims calculation documents.
+
+        Returns
+        -------
+        AnalysisSummary
+            Summary object
+        """
+
+        errors = []
+
+        delta_vol = None
+        percent_delta_vol = None
+
+        final_calc = calc_docs[-1]
+        max_force = None
+        if final_calc.has_aims_completed == Status.SUCCESS:
+            # max force and valid structure checks
+            # structure = final_calc.output.structure
+            max_force = _get_max_force(final_calc)
+            # if not structure.is_valid():
+            #     errors.append("Bad structure (atoms are too close!)")
+
+        return cls(
+            delta_volume=delta_vol,
+            delta_volume_as_percent=percent_delta_vol,
+            max_force=max_force,
+            errors=errors,
+        )
+
+
+class Species(BaseModel):
+    """A representation of the most important information about each type of species."""
+
+    element: str = Field(None, description="Element assigned to this atom kind")
+    species_defaults: str = Field(None, description="Basis set for this atom kind")
+
+
+class SpeciesSummary(BaseModel):
+    """A summary of species defaults."""
+
+    species_defaults: Dict[str, Species] = Field(
+        None, description="Dictionary mapping atomic kind labels to their info"
+    )
+
+    @classmethod
+    def from_species_info(cls, species_info: dict):
+        """Initialize from the atomic_kind_info dictionary."""
+        d: Dict[str, Dict[str, Any]] = {"species_defaults": {}}
+        for kind, info in species_info.items():
+            d["species_defaults"][kind] = {
+                "element": info["element"],
+                "species_defaults": info["species_defaults"],
+            }
+        return cls(**d)
 
 
 class InputSummary(BaseModel):
     """Summary of inputs for an FHI-aims calculation."""
 
-    structure: Union[Structure, Molecule] = Field(
+    structure: MSONableAtoms = Field(
         None, description="The input structure object"
     )
 
@@ -62,7 +136,7 @@ class InputSummary(BaseModel):
 class OutputSummary(BaseModel):
     """Summary of the outputs for an FHI-aims calculation."""
 
-    structure: Union[Structure, Molecule] = Field(
+    structure: MSONableAtoms = Field(
         None, description="The output structure object"
     )
     energy: float = Field(
@@ -96,12 +170,12 @@ class OutputSummary(BaseModel):
         OutputSummary
             The calculation output summary.
         """
-        if calc_doc.output.ionic_steps:
-            forces = calc_doc.output.ionic_steps[-1].get("forces", None)
-            stress = calc_doc.output.ionic_steps[-1].get("stress", None)
-        else:
-            forces = None
-            stress = None
+        # if calc_doc.output.ionic_steps:
+        #     forces = calc_doc.output.ionic_steps[-1].get("forces", None)
+        #     stress = calc_doc.output.ionic_steps[-1].get("stress", None)
+        # else:
+        forces = None
+        stress = None
         return cls(
             structure=calc_doc.output.structure,
             energy=calc_doc.output.energy,
@@ -129,7 +203,7 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
     output: OutputSummary = Field(
         None, description="The output of the final calculation"
     )
-    structure: Union[Structure, Molecule] = Field(
+    structure: MSONableAtoms = Field(
         None, description="Final output structure from the task"
     )
     state: Status = Field(None, description="State of this task")
@@ -144,13 +218,6 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
     )
     analysis: AnalysisSummary = Field(
         None, description="Summary of structural relaxation and forces"
-    )
-    run_stats: Dict[str, RunStatistics] = Field(
-        None,
-        description="Summary of runtime statistics for each calculation in this task",
-    )
-    orig_inputs: Dict[str, AimsInput] = Field(
-        None, description="Summary of the original FHI-aims inputs written by custodian"
     )
     task_label: str = Field(None, description="A description of the task")
     tags: List[str] = Field(None, description="Metadata tags for this task document")
@@ -174,18 +241,13 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
     additional_json: Dict[str, Any] = Field(
         None, description="Additional json loaded from the calculation directory"
     )
-    # _schema: str = Field(
-    #     __version__,
-    #     description="Version of atomate2 used to create the document",
-    #     alias="schema",
-    # )
 
     @classmethod
     def from_directory(
         cls: Type[_T],
         dir_name: Union[Path, str],
-        volumetric_files_glob: Tuple[str, ...] = _VOLUMETRIC_FILES_GLOB,
-        store_additional_json: bool = SETTINGS.AIMS_STORE_ADDITIONAL_JSON,
+        volumetric_files: Tuple[str, ...] = _VOLUMETRIC_FILES,
+        # store_additional_json: bool = SETTINGS.AIMS_STORE_ADDITIONAL_JSON,
         additional_fields: Dict[str, Any] = None,
         **aims_calculation_kwargs,
     ) -> _T:
@@ -196,10 +258,10 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
         ----------
         dir_name
             The path to the folder containing the calculation outputs.
-        store_additional_json
-            Whether to store additional json files found in the calculation directory.
-        volumetric_files_glob
-            A volumetric files glob to search for.
+        # store_additional_json
+        #     Whether to store additional json files found in the calculation directory.
+        volumetric_files
+            A volumetric files to search for.
         additional_fields
             Dictionary of additional fields to add to output document.
         **aims_calculation_kwargs
@@ -215,7 +277,7 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
 
         additional_fields = {} if additional_fields is None else additional_fields
         dir_name = Path(dir_name)
-        task_files = _find_aims_files(dir_name, volumetric_files=volumetric_files_glob)
+        task_files = _find_aims_files(dir_name, volumetric_files=volumetric_files)
 
         if len(task_files) == 0:
             raise FileNotFoundError("No FHI-aims files found!")
@@ -237,11 +299,11 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
         tags = additional_fields.get("tags")
 
         # custodian = parse_custodian(dir_name)
-        orig_inputs = _parse_orig_inputs(dir_name)
+        # orig_inputs = _parse_orig_inputs(dir_name)
 
-        additional_json = None
-        if store_additional_json:
-            additional_json = parse_additional_json(dir_name)
+        # additional_json = None
+        # if store_additional_json:
+        #     additional_json = parse_additional_json(dir_name)
 
         dir_name = get_uri(dir_name)  # convert to full uri path
 
@@ -254,24 +316,6 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
 
         # rewrite the original structure save!
 
-        # if isinstance(calcs_reversed[-1].output.structure, Structure):
-        #     attr = "from_structure"
-        #     dat = {
-        #         "structure": calcs_reversed[-1].output.structure,
-        #         "meta_structure": calcs_reversed[-1].output.structure,
-        #         "include_structure": True,
-        #     }
-        # elif isinstance(calcs_reversed[-1].output.structure, Molecule):
-        #     attr = "from_molecule"
-        #     dat = {
-        #         "structure": calcs_reversed[-1].output.structure,
-        #         "meta_structure": calcs_reversed[-1].output.structure,
-        #         "molecule": calcs_reversed[-1].output.structure,
-        #         "include_molecule": True,
-        #     }
-        #
-        # doc = getattr(cls, attr)(**dat)
-        # ddict = doc.dict()
         data = {
             "structure": calcs_reversed[-1].output.structure,
             "meta_structure": calcs_reversed[-1].output.structure,
@@ -280,17 +324,16 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
             "analysis": analysis,
             # "transformations": transformations,
             # "custodian": custodian,
-            "orig_inputs": orig_inputs,
-            "additional_json": additional_json,
+            # "orig_inputs": orig_inputs,
+            # "additional_json": additional_json,
             # "icsd_id": icsd_id,
             "tags": tags,
             # "author": author,
             "completed_at": calcs_reversed[-1].completed_at,
-            "input": InputSummary.from_aims_calc_doc(calcs_reversed[0]),
+            # "input": InputSummary.from_aims_calc_doc(calcs_reversed[0]),
             "output": OutputSummary.from_aims_calc_doc(calcs_reversed[-1]),
             "state": _get_state(calcs_reversed, analysis),
             "entry": cls.get_entry(calcs_reversed),
-            "run_stats": _get_run_stats(calcs_reversed),
             "aims_objects": aims_objects,
             "included_objects": included_objects,
         }
@@ -321,11 +364,12 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
         entry_dict = {
             "correction": 0.0,
             "entry_id": job_id,
-            "composition": calc_docs[-1].output.structure.composition,
+            "composition": calc_docs[-1].output.structure.get_chemical_formula(),
             "energy": calc_docs[-1].output.energy,
             "parameters": {
                 # Required to be compatible with MontyEncoder for the ComputedEntry
-                "run_type": str(calc_docs[-1].run_type),
+                # "run_type": str(calc_docs[-1].run_type),
+                "run_type": "AIMS run"
             },
             "data": {
                 "last_updated": datetime_str(),
@@ -333,3 +377,102 @@ class TaskDocument(StructureMetadata, MoleculeMetadata):
         }
         return ComputedEntry.from_dict(entry_dict)
 
+
+def _find_aims_files(
+    path: Union[str, Path],
+    volumetric_files: Tuple[str, ...] = _VOLUMETRIC_FILES,
+) -> Dict[str, Any]:
+    """
+    Find FHI-aims files in a directory.
+
+    Only files in folders with names matching a task name (or alternatively files
+    with the task name as an extension, e.g., aims.out) will be returned.
+
+    CP2K files in the current directory will be given the task name "standard".
+
+    Parameters
+    ----------
+    path
+        Path to a directory to search.
+    volumetric_files
+        Volumetric files to search for.
+
+    Returns
+    -------
+    dict[str, Any]
+        The filenames of the calculation outputs for each FHI-aims task, given as a ordered
+        dictionary of::
+
+            {
+                task_name: {
+                    "aims_output_file": aims_output_filename,
+                    "volumetric_files": [v_hartree file, e_density file, etc],
+    """
+    task_names = ["precondition"] + [f"relax{i}" for i in range(9)]
+    path = Path(path)
+    task_files = {}
+
+    def _get_task_files(files, suffix=""):
+        aims_files = {}
+        vol_files = []
+        for file in files:
+            # Here we make assumptions about the output file naming
+            if file.match(f"*aims.out{suffix}*"):
+                aims_files["aims_output_file"] = Path(file).name
+        for vol in volumetric_files:
+            _files = [f.name for f in files if f.match(f"*{vol}*cube{suffix}*")]
+            # _files.sort(key=natural_keys, reverse=True)
+            if _files:
+                vol_files.append(_files[0])
+
+        if len(vol_files) > 0:
+            # add volumetric files if some were found or other cp2k files were found
+            aims_files["volumetric_files"] = vol_files
+
+        return aims_files
+
+    for task_name in task_names:
+        subfolder_match = list(path.glob(f"{task_name}/*"))
+        suffix_match = list(path.glob(f"*.{task_name}*"))
+        if len(subfolder_match) > 0:
+            # subfolder match
+            task_files[task_name] = _get_task_files(subfolder_match)
+        elif len(suffix_match) > 0:
+            # try extension schema
+            task_files[task_name] = _get_task_files(
+                suffix_match, suffix=f".{task_name}"
+            )
+
+    if len(task_files) == 0:
+        # get any matching file from the root folder
+        standard_files = _get_task_files(list(path.glob("*")))
+        if len(standard_files) > 0:
+            task_files["standard"] = standard_files
+
+    return task_files
+
+
+def _get_max_force(calc_doc: Calculation) -> Optional[float]:
+    """Get max force acting on atoms from a calculation document."""
+    forces = None
+    # forces = (
+    #     calc_doc.output.ionic_steps[-1].get("forces")
+    #     if calc_doc.output.ionic_steps
+    #     else None
+    # )
+    # structure = calc_doc.output.structure
+    if forces:
+        forces = np.array(forces)
+        # sdyn = structure.site_properties.get("selective_dynamics")
+        # if sdyn:
+        #     forces[np.logical_not(sdyn)] = 0
+        return max(np.linalg.norm(forces, axis=1))
+    return None
+
+
+def _get_state(calc_docs: List[Calculation], analysis: AnalysisSummary) -> Status:
+    """Get state from calculation documents and relaxation analysis."""
+    all_calcs_completed = all(c.has_aims_completed == Status.SUCCESS for c in calc_docs)
+    if len(analysis.errors) == 0 and all_calcs_completed:
+        return Status.SUCCESS  # type: ignore
+    return Status.FAILED  # type: ignore

@@ -1,4 +1,6 @@
 """A representation of FHI-aims output (based on ASE output parser)"""
+from __future__ import annotations
+
 from fhi_aims_workflows.io.parsers import read_aims_output, read_aims_header_info
 from monty.json import MSONable, MontyDecoder
 from pathlib import Path
@@ -86,3 +88,47 @@ class AimsOutput(MSONable):
     def n_images(self):
         """The number of images in results"""
         return len(self._results)
+
+    @property
+    def initial_structure(self):
+        return self._atoms_summary['initial_atoms']
+
+    @property
+    def final_structure(self):
+        return self._results[-1]
+
+    @property
+    def structures(self):
+        return self._results
+
+    @property
+    def fermi_energy(self):
+        return self.get_results_for_image(-1).calc.results['fermi_energy']
+
+    @property
+    def homo(self):
+        return self.get_results_for_image(-1).calc.results['homo']
+
+    @property
+    def lumo(self):
+        return self.get_results_for_image(-1).calc.results['lumo']
+
+    @property
+    def band_gap(self):
+        return self.get_results_for_image(-1).calc.results['gap']
+
+    @property
+    def direct_band_gap(self):
+        return self.get_results_for_image(-1).calc.results['direct_gap']
+
+    @property
+    def final_energy(self):
+        return self.get_results_for_image(-1).calc.results['energy']
+
+    @property
+    def completed(self):
+        return len(self._results) > 0
+
+    @property
+    def aims_version(self):
+        return self._metadata['version_number']
