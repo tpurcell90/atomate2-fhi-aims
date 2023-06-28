@@ -2,16 +2,28 @@
 
 import os
 from datetime import datetime
+from pathlib import Path
+from typing import Union, List, Dict, Any, Tuple, Optional
 
-from pydantic import BaseModel
+
+from ase.spectrum.band_structure import BandStructure
+from pydantic import BaseModel, Field
 from jobflow.utils import ValueEnum
+from pymatgen.core.trajectory import Trajectory
 from pymatgen.electronic_structure.dos import Dos
+from pymatgen.io.common import VolumetricData
+
+from fhi_aims_workflows.io.AimsOutput import AimsOutput
+from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+
+STORE_VOLUMETRIC_DATA = ('total_density',)
 
 
 __all__ = [
     'Status',
     'AimsObject',
-    'Calculation'
+    'Calculation',
+    'RunStatistics'
 ]
 
 
@@ -30,6 +42,152 @@ class AimsObject(ValueEnum):
     ELECTRON_DENSITY = "electron_density"  # e_density
     WFN = "wfn"  # Wavefunction file
 
+
+class RunStatistics(BaseModel):
+    """Summary of the run statistics for a CP2K calculation."""
+
+    total_time: float = Field(0, description="The total CPU time for this calculation")
+
+    @classmethod
+    def from_aims_output(cls, output: AimsOutput) -> "RunStatistics":
+        """
+        Create a run statistics document from an CP2K Output object.
+
+        Parameters
+        ----------
+        output:
+            AimsOutput object
+
+        Returns
+        -------
+        RunStatistics
+            The run statistics.
+        """
+        # rename these statistics
+        run_stats = {}
+        output.parse_timing()
+        run_stats["total_time"] = output.timing["aims"]["total_time"]["maximum"]
+        return cls(**run_stats)
+
+
+class CalculationInput(BaseModel):
+    """Summary of inputs for an FHI-aims calculation."""
+
+    structure: MSONableAtoms = Field(
+        None, description="The input Atoms object"
+    )
+
+    species_info: Dict = Field(
+        None, description="Description of parameters used for each atomic species"
+    )
+
+    aims_input: Dict = Field(None, description="The aims input parameters used for this task")
+
+    @classmethod
+    def from_aims_output(cls, output: AimsOutput):
+        """Initialize from AimsOutput object."""
+        return cls(
+            structure=output.initial_structure,
+            species_info=output.data.get("species_info", None),
+            aims_input=output.input.as_dict()
+        )
+
+
+class CalculationOutput(BaseModel):
+    """Document defining FHI-aims calculation outputs."""
+
+    energy: float = Field(
+        None, description="The final total DFT energy for the calculation"
+    )
+    energy_per_atom: float = Field(
+        None, description="The final DFT energy per atom for the calculation"
+    )
+    structure: MSONableAtoms = Field(
+        None, description="The final structure from the calculation"
+    )
+    efermi: float = Field(
+        None, description="The Fermi level from the calculation in eV"
+    )
+    is_metal: bool = Field(None, description="Whether the system is metallic")
+    bandgap: float = Field(None, description="The band gap from the calculation in eV")
+    cbm: float = Field(
+        None,
+        description="The conduction band minimum in eV (if system is not metallic)",
+    )
+    vbm: float = Field(
+        None, description="The valence band maximum in eV (if system is not metallic)"
+    )
+    ionic_steps: List[Dict[str, Any]] = Field(
+        None, description="Energy, forces, and structure for each ionic step"
+    )
+    run_stats: RunStatistics = Field(
+        None, description="Summary of runtime statistics for this calculation"
+    )
+    scf: List = Field(None, description="SCF optimization steps")
+
+    @classmethod
+    def from_aims_output(
+        cls,
+        output: AimsOutput,  # Must use auto_load kwarg when passed
+        store_trajectory: bool = False,
+        store_scf: bool = False,
+    ) -> "CalculationOutput":
+        """
+        Create an FHI-aims output document from FHI-aims outputs.
+
+        Parameters
+        ----------
+        output
+            An AimsOutput object.
+        store_trajectory
+            A flag setting to store output trajectory
+        store_scf
+            A flag setting to store self-consistent steps
+
+        Returns
+        -------
+            The FHI-aims calculation output document.
+        """
+
+        structure = output.final_structure
+
+        if output.band_structure:
+            bandgap_info = output.band_structure.get_band_gap()
+            electronic_output = {
+                "efermi": output.band_structure.efermi,
+                "vbm": output.band_structure.get_vbm()["energy"],
+                "cbm": output.band_structure.get_cbm()["energy"],
+                "bandgap": bandgap_info["energy"],
+                "is_gap_direct": bandgap_info["direct"],
+                "is_metal": output.band_structure.is_metal(),
+                "direct_gap": output.band_structure.get_direct_band_gap(),
+                "transition": bandgap_info["transition"],
+            }
+        else:
+            electronic_output = {
+                "efermi": output.efermi,
+                "vbm": output.vbm,
+                "cbm": output.cbm,
+                "bandgap": output.band_gap,
+                "is_metal": output.is_metal,
+            }
+
+        if store_scf:
+            output.parse_scf_opt()
+            scf = output.data.get("electronic_steps")
+            scf = [item for sublist in scf for item in sublist]
+        else:
+            scf = None
+
+        return cls(
+            structure=structure,
+            energy=output.final_energy,
+            energy_per_atom=output.final_energy / len(structure),
+            **electronic_output,
+            ionic_steps=None if store_trajectory else output.ionic_steps,
+            run_stats=RunStatistics.from_aims_output(output),
+            scf=scf,
+        )
 
 
 class Calculation(BaseModel):
@@ -76,15 +234,12 @@ class Calculation(BaseModel):
         volumetric_files: List[str] = None,
         parse_dos: Union[str, bool] = False,
         parse_bandstructure: Union[str, bool] = False,
-        average_v_hartree: bool = True,
         # run_bader: bool = (SETTINGS.AIMS_RUN_BADER and _BADER_EXE_EXISTS),
-        strip_bandstructure_projections: bool = False,
-        strip_dos_projections: bool = False,
+        # strip_bandstructure_projections: bool = False,
+        # strip_dos_projections: bool = False,
         store_trajectory: bool = False,
         store_scf: bool = False,
-        store_volumetric_data: Optional[
-            Tuple[str]
-        ] = SETTINGS.AIMS_STORE_VOLUMETRIC_DATA,
+        store_volumetric_data: Optional[Tuple[str]] = STORE_VOLUMETRIC_DATA,
     ) -> Tuple["Calculation", Dict[AimsObject, Dict]]:
         """
         Create an FHI-aims calculation document from a directory and file paths.
@@ -119,13 +274,13 @@ class Calculation(BaseModel):
               vbm, cbm, band_gap, is_metal and efermi rather than the full
               band structure object.
 
-        strip_dos_projections : bool
-            Whether to strip the element and site projections from the density of
-            states. This can help reduce the size of DOS objects in systems with
-            many atoms.
-        strip_bandstructure_projections : bool
-            Whether to strip the element and site projections from the band structure.
-            This can help reduce the size of DOS objects in systems with many atoms.
+        # strip_dos_projections : bool
+        #     Whether to strip the element and site projections from the density of
+        #     states. This can help reduce the size of DOS objects in systems with
+        #     many atoms.
+        # strip_bandstructure_projections : bool
+        #     Whether to strip the element and site projections from the band structure.
+        #     This can help reduce the size of DOS objects in systems with many atoms.
         store_trajectory:
             Whether to store the ionic steps as a pmg trajectory object, which can be
             pushed, to a bson data store, instead of as a list od dicts. Useful for
@@ -154,14 +309,14 @@ class Calculation(BaseModel):
 
         dos = _parse_dos(parse_dos, aims_output)
         if dos is not None:
-            if strip_dos_projections:
-                dos = Dos(dos.efermi, dos.energies, dos.densities)
+            # if strip_dos_projections:
+            #     dos = Dos(dos.efermi, dos.energies, dos.densities)
             aims_objects[AimsObject.DOS] = dos  # type: ignore
 
         bandstructure = _parse_bandstructure(parse_bandstructure, aims_output)
         if bandstructure is not None:
-            if strip_bandstructure_projections:
-                bandstructure.projections = {}
+            # if strip_bandstructure_projections:
+            #     bandstructure.projections = {}
             aims_objects[AimsObject.BANDSTRUCTURE] = bandstructure  # type: ignore
 
         input_doc = CalculationInput.from_aims_output(aims_output)
@@ -193,3 +348,123 @@ class Calculation(BaseModel):
             ),
             aims_objects,
         )
+
+
+def _get_output_file_paths(volumetric_files: List[str]) -> Dict[AimsObject, str]:
+    """
+    Get the output file paths for FHI-aims output files from the list of volumetric files.
+
+    Parameters
+    ----------
+    volumetric_files
+        A list of volumetric files associated with the calculation.
+
+    Returns
+    -------
+    Dict[AimsObject, str]
+        A mapping between the Aims object type and the file path.
+    """
+    output_file_paths = {}
+    for aims_object in AimsObject:  # type: ignore
+        for volumetric_file in volumetric_files:
+            if aims_object.name in str(volumetric_file):
+                output_file_paths[aims_object] = str(volumetric_file)
+    return output_file_paths
+
+
+def _get_volumetric_data(
+    dir_name: Path,
+    output_file_paths: Dict[AimsObject, str],
+    store_volumetric_data: Optional[Tuple[str]],
+) -> Dict[AimsObject, VolumetricData]:
+    """
+    Load volumetric data files from a directory.
+
+    Parameters
+    ----------
+    dir_name
+        The directory containing the files.
+    output_file_paths
+        A dictionary mapping the data type to file path relative to dir_name.
+    store_volumetric_data
+        The volumetric data files to load.
+
+    Returns
+    -------
+    Dict[AimsObject, VolumetricData]
+        A dictionary mapping the FHI-aims object data type (`AimsObject.total_density`,
+        `AimsObject.electron_density`, etc) to the volumetric data object.
+    """
+    if store_volumetric_data is None or len(store_volumetric_data) == 0:
+        return {}
+
+    volumetric_data = {}
+    for file_type, file in output_file_paths.items():
+        if file_type.name not in store_volumetric_data:
+            continue
+        try:
+            volumetric_data[file_type] = VolumetricData.from_cube((dir_name / file).as_posix())
+        except Exception as err:
+            raise ValueError(f"Failed to parse {file_type} at {file}.") from err
+
+    return volumetric_data
+
+
+def _parse_dos(parse_dos: Union[str, bool], aims_output: AimsOutput) -> Optional[Dos]:
+    """
+    Parse DOS outputs from FHI-aims calculation.
+
+    Parameters
+    ----------
+    parse_dos: Whether to parse the DOS. Can be:
+        - "auto": Only parse DOS if there are no ionic steps.
+        - True: Always parse DOS.
+        - False: Never parse DOS.
+    aims_output: AimsOutput object for the calculation being parsed.
+
+    Returns
+    -------
+    A Dos object if parse_dos is set accordingly.
+    """
+    if parse_dos == "auto":
+        if len(aims_output.ionic_steps) == 0:
+            return aims_output.complete_dos
+        return None
+    if parse_dos:
+        return aims_output.complete_dos
+    return None
+
+
+def _parse_bandstructure(
+    parse_bandstructure: Union[str, bool], aims_output: AimsOutput
+) -> Optional[BandStructure]:
+    """
+    Get the band structure.
+
+    Parameters
+    ----------
+         parse_bandstructure (bool): Whether to parse. Does not support the
+            auto/line distinction currently.
+    """
+    if parse_bandstructure:
+        return aims_output.band_structure
+    return None
+
+
+def _parse_trajectory(aims_output: AimsOutput) -> Optional[Trajectory]:
+    """
+    Grab a Trajectory object given an FHI-aims output object.
+    """
+    # ener = (
+    #     aims_output.filenames.get("ener")[-1]
+    #     if cp2k_output.filenames.get("ener")
+    #     else None
+    # )
+    # data = parse_energy_file(ener) if ener else None
+    constant_lattice = all(
+        s.lattice == aims_output.initial_structure.lattice
+        for s in aims_output.structures
+    )
+    return Trajectory.from_structures(
+        aims_output.structures, constant_lattice=constant_lattice,  # frame_properties=data
+    )

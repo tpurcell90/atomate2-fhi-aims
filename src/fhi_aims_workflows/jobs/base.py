@@ -4,14 +4,16 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Tuple
 
 from jobflow import job, Maker, Response
 from monty.serialization import dumpfn
 from monty.shutil import gzip_dir
 from pymatgen.core import Structure
 
+from fhi_aims_workflows.files import copy_aims_outputs, write_aims_input_set, cleanup_aims_outputs
+from fhi_aims_workflows.run import run_aims, should_stop_children
 from fhi_aims_workflows.schemas.task import TaskDocument
+from fhi_aims_workflows.sets.core import AimsInputGenerator
 
 
 @dataclass
@@ -85,10 +87,10 @@ class BaseAimsMaker(Maker):
         for filename, data in self.write_additional_data.items():
             dumpfn(data, filename.replace(":", "."))
 
-        # run cp2k
+        # run FHI-aims
         run_aims(**self.run_aims_kwargs)
 
-        # parse cp2k outputs
+        # parse FHI-aims outputs
         task_doc = TaskDocument.from_directory(Path.cwd(), **self.task_document_kwargs)
         task_doc.task_label = self.name
 
@@ -103,6 +105,6 @@ class BaseAimsMaker(Maker):
 
         return Response(
             stop_children=stop_children,
-            stored_data={"custodian": task_doc.custodian},
+            # stored_data={"custodian": task_doc.custodian},
             output=task_doc if self.store_output_data else None,
         )
