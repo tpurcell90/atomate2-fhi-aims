@@ -164,7 +164,7 @@ class AimsOutHeaderChunk(AimsOutChunk):
         if line_start == LINE_NOT_FOUND:
             raise AimsParseError("This file does not appear to be an aims-output file")
 
-        return int(self.lines[line_start].split(":")[1])
+        return self.lines[line_start].split(":")[1].strip()
 
     @property
     def fortran_compiler(self):
@@ -449,6 +449,21 @@ class AimsOutHeaderChunk(AimsOutChunk):
             "n_k_points": self.n_k_points,
             "k_points": self.k_points,
             "k_point_weights": self.k_point_weights,
+        }
+
+    @property
+    def metadata_summary(self) -> Dict[str, str]:
+        """Dictionary containing all metadata for FHI-aims build"""
+        return {
+            "commit_hash": commit_hash,
+            "aims_uuid": aims_uuid,
+            "version_number": version_number,
+            "fortran_compiler": fortran_compiler,
+            "c_compiler": c_compiler,
+            "fortran_compiler_flags": fortran_compiler_flags,
+            "c_compiler_flags": c_compiler_flags,
+            "build_type": build_type,
+            "linked_against": linked_against,
         }
 
 
@@ -792,8 +807,8 @@ class AimsOutCalcChunk(AimsOutChunk):
             "hirshfeld_dipole": self.hirshfeld_dipole,
             "hirshfeld_volumes": self.hirshfeld_volumes,
             "hirshfeld_atomic_dipoles": self.hirshfeld_atomic_dipoles,
-            "eigenvalues": self.eigenvalues,
-            "occupancies": self.occupancies,
+            # "eigenvalues": self.eigenvalues,
+            # "occupancies": self.occupancies,
             "dielectric_tensor": self.dielectric_tensor,
             "polarization": self.polarization,
         }
