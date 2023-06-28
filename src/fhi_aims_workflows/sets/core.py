@@ -1,10 +1,10 @@
 """Module defining core FHI-aims input set generators."""
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Callable
+from dataclasses import dataclass
+from typing import Dict, Any
 
-import numpy as np
+from ase import Atoms
 
 from fhi_aims_workflows.sets.base import AimsInputGenerator
 

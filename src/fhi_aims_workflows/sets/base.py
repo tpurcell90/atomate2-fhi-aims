@@ -4,15 +4,12 @@ from __future__ import annotations
 import copy
 import json
 import logging
-import os
-from collections import namedtuple
 from dataclasses import dataclass, field
-from pathlib import Path
-from typing import Any, Callable, Iterable, Dict
+from typing import Any, Iterable, Dict, List
 
 import numpy as np
 
-from monty.json import MontyEncoder, jsanitize
+from monty.json import MontyEncoder, MontyDecoder
 from fhi_aims_workflows.utils.pymatgen_core_io import (
     InputGenerator,
     InputSet,
@@ -26,7 +23,6 @@ from pathlib import Path
 
 from fhi_aims_workflows.utils.common import (
     TMPDIR_NAME,
-    OUTPUT_FILE_NAME,
     CONTROL_FILE_NAME,
     GEOMETRY_FILE_NAME,
     PARAMS_JSON_FILE_NAME,
@@ -71,7 +67,7 @@ class AimsInputSet(InputSet):
         self,
         parameters: Dict[str, Any],
         atoms: Atoms,
-        properties: Iterable[str] = ["energy", "free_energy"],
+        properties: Iterable[str] = ("energy", "free_energy"),
     ):
         self._parameters = parameters
         self._atoms = MSONableAtoms(atoms)
@@ -165,7 +161,7 @@ class AimsInputSet(InputSet):
             dictionary with the variables that have been removed.
         """
         if isinstance(keys, str):
-            keys = [key]
+            keys = [keys]
         for key in keys:
             if strict and key not in self._parameters:
                 raise ValueError(f"The key ({key}) is not in self._parameters")
@@ -181,7 +177,7 @@ class AimsInputSet(InputSet):
         self.inputs[GEOMETRY_FILE_NAME] = aims_geometry_in
         self.__dict__.update(self.inputs)
 
-        return self.aims_input.set_structure(structure)
+        return self.aims_input.set_structure(atoms)
 
     def deepcopy(self):
         """Deep copy of the input set."""
@@ -215,7 +211,7 @@ class AimsInputGenerator(InputGenerator):
         ----------
         atoms : Atoms
             ASE Atoms object.
-        pref_dir: str or Path
+        prev_dir: str or Path
             Path to the previous working directory
         """
         prev_atoms, prev_parameters, prev_results = self._read_previous(prev_dir)
@@ -283,9 +279,9 @@ class AimsInputGenerator(InputGenerator):
             if key not in properties and key in DEFAULT_AIMS_PROPERTIES:
                 properties.append(key)
 
-        if "compute_forces" in parameters and not "forces" in properties:
+        if "compute_forces" in parameters and "forces" not in properties:
             properties.append("forces")
-        if "compute_heat_flux" in parameters and not "stresses" in properties:
+        if "compute_heat_flux" in parameters and "stresses" not in properties:
             properties.append("stress")
             properties.append("stresses")
         if "stress" not in properties and (
@@ -365,7 +361,7 @@ class AimsInputGenerator(InputGenerator):
 
     def d2k(
         self, atoms: Atoms, kptdensity: float | Iterable[float] = 5.0, even: bool = True
-    ) -> Interable[float]:
+    ) -> Iterable[float]:
         """Convert k-point density to Monkhorst-Pack grid size.
 
         inspired by [ase.calculators.calculator.kptdensity2monkhorstpack]
@@ -390,10 +386,10 @@ class AimsInputGenerator(InputGenerator):
     def d2k_recipcell(
         self,
         recipcell,
-        pbc: Iterable[bool],
+        pbc: List[bool],
         kptdensity: float | Iterable[float] = 5.0,
         even: bool = True,
-    ) -> Interable[float]:
+    ) -> Iterable[float]:
         """Convert k-point density to Monkhorst-Pack grid size.
 
         Parameters
