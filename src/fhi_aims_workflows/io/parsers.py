@@ -521,8 +521,16 @@ class AimsOutCalcChunk(AimsOutChunk):
             elif "velocity   " in line:
                 velocities.append([float(inp) for inp in line.split()[1:]])
 
-        assert len(atoms) == self.n_atoms
-        assert (len(velocities) == self.n_atoms) or (len(velocities) == 0)
+        if len(atoms) != self.n_atoms:
+            raise AimsParseError(
+                "The number of atoms is inconsistent with the initial structure"
+            )
+
+        if (len(velocities) != self.n_atoms) and (len(velocities) != 0):
+            raise AimsParseError(
+                "The number of velocities is inconsistent with the number of atoms"
+            )
+
         if len(cell) == 3:
             atoms.set_cell(np.array(cell))
             atoms.set_pbc([True, True, True])
@@ -779,12 +787,18 @@ class AimsOutCalcChunk(AimsOutChunk):
         else:
             raise ParseError("Cannot find k-point definitions")
 
-        assert len(kpt_inds) == len(occupation_block_start)
+        if len(kpt_inds) != len(occupation_block_start):
+            raise AimsParseError(
+                "Number of k-points is not the same of the number of occupation blocks that exist."
+            )
         spins = [0] * len(occupation_block_start)
 
         if self.n_spins == 2:
             spin_def = self.search_for_all("Spin-", line_start, line_end)
-            assert len(spin_def) == len(occupation_block_start)
+            if len(spin_def) != len(occupation_block_start):
+                raise AimsParseError(
+                    "The number of spin definitions is not the same of the number of occupations"
+                )
 
             spins = [int("Spin-down eigenvalues:" in self.lines[ll]) for ll in spin_def]
 
