@@ -14,7 +14,6 @@ from fhi_aims_workflows.files import copy_aims_outputs, write_aims_input_set, cl
 from fhi_aims_workflows.run import run_aims, should_stop_children
 from fhi_aims_workflows.schemas.task import TaskDocument
 from fhi_aims_workflows.sets.core import AimsInputGenerator
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 
 @dataclass

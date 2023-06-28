@@ -4,7 +4,6 @@ import logging
 from pathlib import Path
 from typing import Union, List, Dict, Any, Type, TypeVar, Tuple, Optional
 
-import numpy as np
 from emmet.core.math import Vector3D, Matrix3D
 from emmet.core.structure import StructureMetadata, MoleculeMetadata
 from emmet.core.tasks import get_uri
@@ -12,9 +11,8 @@ from pydantic import Field, BaseModel
 from pymatgen.core import Structure, Molecule
 from pymatgen.entries.computed_entries import ComputedEntry
 
-from fhi_aims_workflows.schemas.calculation import Status, AimsObject, Calculation
-from fhi_aims_workflows.utils import datetime_str
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from fhi_aims_workflows.schemas.calculation import Status, AimsObject, Calculation, RunStatistics
+from fhi_aims_workflows.utils import datetime_str, MSONableAtoms
 
 _T = TypeVar("_T", bound="TaskDocument")
 _VOLUMETRIC_FILES = ("total_density", "spin_density", "eigenstate_density")
