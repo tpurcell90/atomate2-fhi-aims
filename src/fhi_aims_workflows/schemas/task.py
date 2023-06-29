@@ -140,6 +140,9 @@ class OutputSummary(BaseModel):
     structure: MSONableAtoms = Field(
         None, description="The output structure object"
     )
+    trajectory: List[MSONableAtoms] = Field(
+        None, description='The trajectory of output structures'
+    )
     energy: float = Field(
         None, description="The final total DFT energy for the last calculation"
     )
@@ -186,6 +189,7 @@ class OutputSummary(BaseModel):
             vbm=calc_doc.output.vbm,
             forces=forces,
             stress=stress,
+            trajectory=calc_doc.output.atomic_steps
         )
 
 

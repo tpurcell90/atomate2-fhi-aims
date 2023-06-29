@@ -31,12 +31,12 @@
 
 
 
-  Date     :  20230628, Time     :  143623.881
-  Time zero on CPU 1             :   0.172462000000000E+01  s.
-  Internal wall clock time zero  :           457194983.881  s.
+  Date     :  20230629, Time     :  142550.081
+  Time zero on CPU 1             :   0.161288500000000E+01  s.
+  Internal wall clock time zero  :           457280750.081  s.
 
   FHI-aims created a unique identifier for this run for later identification
-  aims_uuid : 23B49487-7056-4A7D-ABF0-A446F19999E4
+  aims_uuid : F5029216-6713-433A-AD05-6B8BA2F9EED8
 
   Build configuration of the current instance of FHI-aims
   -------------------------------------------------------
@@ -82,12 +82,12 @@
   #===============================================================================
   # Created using the Atomic Simulation Environment (ASE)
   
-  # Tue Jun 27 18:06:33 2023
+  # Thu Jun 29 14:25:10 2023
   
   #===============================================================================
   xc                                 pbe
   relativistic                       atomic_zora scalar
-  relax_geometry                     trm 1e-3
+  relax_geometry                     trm 1.000000e-03
   relax_unit_cell                    full
   k_grid                             2 2 2
   #===============================================================================
@@ -195,7 +195,7 @@
   #===============================================================================
   # Created using the Atomic Simulation Environment (ASE)
   
-  # Tue Jun 27 18:06:33 2023
+  # Thu Jun 29 14:25:10 2023
   
   #=======================================================
   lattice_vector 0.0000000000000000 2.7149999999999999 2.7149999999999999
@@ -543,14 +543,14 @@
   Preparing densities etc. for the partition functions (integrals / Hartree potential).
 
   Preparations completed.
-  max(cpu_time)          :      0.129 s.
-  Wall clock time (cpu1) :      0.129 s.
+  max(cpu_time)          :      0.110 s.
+  Wall clock time (cpu1) :      0.111 s.
 ------------------------------------------------------------
 
 ------------------------------------------------------------
           Begin self-consistency loop: Initialization.
 
-          Date     :  20230628, Time     :  143624.029
+          Date     :  20230629, Time     :  142550.207
 ------------------------------------------------------------
 
   Initializing index lists of integration centers etc. from given atomic structure:
@@ -617,9 +617,9 @@
   | Maximal number of non-zero basis functions:      717 in task     0
   Allocating        0.061 MB for KS_eigenvector
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.552 s, elapsed        0.552 s
+  Time summed over all CPUs for integration: real work        0.457 s, elapsed        0.457 s
   Integrating overlap matrix.
-  Time summed over all CPUs for integration: real work        0.357 s, elapsed        0.357 s
+  Time summed over all CPUs for integration: real work        0.303 s, elapsed        0.303 s
   Decreasing sparse matrix size:
   | Tolerance:  0.1000E-12
   Hamiltonian matrix
@@ -635,7 +635,7 @@
   Overlap matrix is not singular
   | Lowest and highest eigenvalues :  0.7918E-03,  0.6562E+01
   Finished singularity check of overlap matrix
-  | Time :     0.001 s
+  | Time :     0.000 s
   Starting LAPACK eigensolver
   Finished Cholesky decomposition
   | Time :     0.000 s
@@ -716,14 +716,14 @@
   Max. number of atoms included in rho_multipole:            2
 
   End scf initialization - timings             :  max(cpu_time)    wall_clock(cpu1)
-  | Time for scf. initialization                :        1.284 s           1.284 s
-  | Boundary condition initialization           :        0.063 s           0.062 s
-  | Relaxation initialization                   :        0.000 s           0.001 s
-  | Integration                                 :        0.911 s           0.911 s
-  | Solution of K.-S. eqns.                     :        0.007 s           0.007 s
-  | Grid partitioning                           :        0.038 s           0.038 s
-  | Preloading free-atom quantities on grid     :        0.228 s           0.229 s
-  | Free-atom superposition energy              :        0.035 s           0.035 s
+  | Time for scf. initialization                :        1.104 s           1.104 s
+  | Boundary condition initialization           :        0.060 s           0.060 s
+  | Relaxation initialization                   :        0.000 s           0.000 s
+  | Integration                                 :        0.762 s           0.761 s
+  | Solution of K.-S. eqns.                     :        0.006 s           0.006 s
+  | Grid partitioning                           :        0.036 s           0.036 s
+  | Preloading free-atom quantities on grid     :        0.209 s           0.208 s
+  | Free-atom superposition energy              :        0.030 s           0.030 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -744,16 +744,16 @@
 ------------------------------------------------------------
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        1.174 s, elapsed        1.174 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.951 s, elapsed        0.951 s
   Integration grid: deviation in total charge (<rho> - N_e) =   1.421085E-14
 
   Time for density update prior                :  max(cpu_time)    wall_clock(cpu1)
-  | self-consistency iterative process          :        1.175 s           1.175 s
+  | self-consistency iterative process          :        0.951 s           0.953 s
 
 ------------------------------------------------------------
           Begin self-consistency iteration #    1
 
-  Date     :  20230628, Time     :  143626.488
+  Date     :  20230629, Time     :  142552.264
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -768,12 +768,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.355 s, elapsed        0.355 s
+  Time summed over all CPUs for potential: real work        0.334 s, elapsed        0.334 s
   | RMS charge density error from multipole expansion :   0.740364E-03
   | Average real-space part of the electrostatic potential :      0.02939699 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.556 s, elapsed        0.556 s
+  Time summed over all CPUs for integration: real work        0.466 s, elapsed        0.466 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -853,7 +853,7 @@
   | Electronic free energy per atom                       :       -7900.18271879 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.986 s, elapsed        0.986 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.947 s, elapsed        0.947 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -5.684342E-14
 
   Self-consistency convergence accuracy:
@@ -864,13 +864,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     1       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.108 s           2.109 s
-  | Charge density update                       :        0.988 s           0.988 s
-  | Density mixing & preconditioning            :        0.199 s           0.199 s
-  | Hartree multipole update                    :        0.001 s           0.002 s
-  | Hartree multipole summation                 :        0.357 s           0.357 s
-  | Integration                                 :        0.558 s           0.558 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
+  | Time for this iteration                     :        1.945 s           1.948 s
+  | Charge density update                       :        0.948 s           0.948 s
+  | Density mixing & preconditioning            :        0.189 s           0.190 s
+  | Hartree multipole update                    :        0.001 s           0.001 s
+  | Hartree multipole summation                 :        0.335 s           0.336 s
+  | Integration                                 :        0.467 s           0.468 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -893,7 +893,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    2
 
-  Date     :  20230628, Time     :  143628.597
+  Date     :  20230629, Time     :  142554.212
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -908,12 +908,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.392 s, elapsed        0.392 s
+  Time summed over all CPUs for potential: real work        0.394 s, elapsed        0.394 s
   | RMS charge density error from multipole expansion :   0.140228E-01
   | Average real-space part of the electrostatic potential :      0.55210831 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.455 s, elapsed        0.455 s
+  Time summed over all CPUs for integration: real work        0.465 s, elapsed        0.465 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -922,7 +922,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.000 s
+  | Time :     0.001 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -972,7 +972,7 @@
   | Electronic free energy per atom                       :       -7900.05450222 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.933 s, elapsed        0.933 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.951 s, elapsed        0.951 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -4.973799E-14
 
   Self-consistency convergence accuracy:
@@ -983,12 +983,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     2       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.991 s           1.991 s
-  | Charge density update                       :        0.934 s           0.934 s
-  | Density mixing & preconditioning            :        0.201 s           0.201 s
+  | Time for this iteration                     :        2.006 s           2.007 s
+  | Charge density update                       :        0.953 s           0.953 s
+  | Density mixing & preconditioning            :        0.185 s           0.185 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.395 s           0.395 s
-  | Integration                                 :        0.455 s           0.455 s
+  | Hartree multipole summation                 :        0.397 s           0.397 s
+  | Integration                                 :        0.465 s           0.466 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -1012,7 +1012,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    3
 
-  Date     :  20230628, Time     :  143630.588
+  Date     :  20230629, Time     :  142556.219
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -1027,12 +1027,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.390 s, elapsed        0.390 s
+  Time summed over all CPUs for potential: real work        0.395 s, elapsed        0.395 s
   | RMS charge density error from multipole expansion :   0.148457E-01
   | Average real-space part of the electrostatic potential :      0.54403057 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.453 s, elapsed        0.453 s
+  Time summed over all CPUs for integration: real work        0.465 s, elapsed        0.465 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -1041,7 +1041,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.001 s
+  | Time :     0.000 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -1087,7 +1087,7 @@
   | Electronic free energy per atom                       :       -7900.05299894 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.924 s, elapsed        0.924 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.948 s, elapsed        0.948 s
   Integration grid: deviation in total charge (<rho> - N_e) =   2.131628E-14
 
   Self-consistency convergence accuracy:
@@ -1098,12 +1098,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     3       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.978 s           1.978 s
-  | Charge density update                       :        0.925 s           0.925 s
-  | Density mixing & preconditioning            :        0.201 s           0.202 s
-  | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.393 s           0.392 s
-  | Integration                                 :        0.453 s           0.453 s
+  | Time for this iteration                     :        2.004 s           2.008 s
+  | Charge density update                       :        0.945 s           0.950 s
+  | Density mixing & preconditioning            :        0.188 s           0.188 s
+  | Hartree multipole update                    :        0.001 s           0.002 s
+  | Hartree multipole summation                 :        0.398 s           0.398 s
+  | Integration                                 :        0.466 s           0.465 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -1127,7 +1127,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    4
 
-  Date     :  20230628, Time     :  143632.566
+  Date     :  20230629, Time     :  142558.227
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -1142,21 +1142,21 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.390 s, elapsed        0.390 s
+  Time summed over all CPUs for potential: real work        0.396 s, elapsed        0.396 s
   | RMS charge density error from multipole expansion :   0.162033E-01
   | Average real-space part of the electrostatic potential :      0.55509931 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.453 s, elapsed        0.453 s
+  Time summed over all CPUs for integration: real work        0.463 s, elapsed        0.463 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
   Finished Cholesky decomposition
-  | Time :     0.001 s
+  | Time :     0.000 s
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.000 s
+  | Time :     0.001 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -1202,7 +1202,7 @@
   | Electronic free energy per atom                       :       -7900.05072002 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.922 s, elapsed        0.922 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.955 s, elapsed        0.955 s
   Integration grid: deviation in total charge (<rho> - N_e) =   8.881784E-14
 
   Self-consistency convergence accuracy:
@@ -1213,12 +1213,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     4       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.959 s           1.959 s
-  | Charge density update                       :        0.924 s           0.924 s
-  | Density mixing & preconditioning            :        0.183 s           0.183 s
+  | Time for this iteration                     :        1.998 s           2.010 s
+  | Charge density update                       :        0.950 s           0.956 s
+  | Density mixing & preconditioning            :        0.184 s           0.185 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.393 s           0.393 s
-  | Integration                                 :        0.453 s           0.453 s
+  | Hartree multipole summation                 :        0.397 s           0.399 s
+  | Integration                                 :        0.461 s           0.464 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -1242,7 +1242,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    5
 
-  Date     :  20230628, Time     :  143634.525
+  Date     :  20230629, Time     :  142600.237
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -1257,12 +1257,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.391 s, elapsed        0.391 s
+  Time summed over all CPUs for potential: real work        0.398 s, elapsed        0.398 s
   | RMS charge density error from multipole expansion :   0.161264E-01
   | Average real-space part of the electrostatic potential :      0.53755552 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.453 s, elapsed        0.453 s
+  Time summed over all CPUs for integration: real work        0.467 s, elapsed        0.467 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -1271,7 +1271,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.001 s
+  | Time :     0.000 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -1317,7 +1317,7 @@
   | Electronic free energy per atom                       :       -7900.05018366 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.938 s, elapsed        0.938 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.951 s, elapsed        0.951 s
   Integration grid: deviation in total charge (<rho> - N_e) =   4.263256E-14
 
   Self-consistency convergence accuracy:
@@ -1328,12 +1328,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     5       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.974 s           1.974 s
-  | Charge density update                       :        0.939 s           0.939 s
-  | Density mixing & preconditioning            :        0.183 s           0.183 s
+  | Time for this iteration                     :        2.000 s           2.013 s
+  | Charge density update                       :        0.946 s           0.953 s
+  | Density mixing & preconditioning            :        0.185 s           0.186 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.393 s           0.393 s
-  | Integration                                 :        0.453 s           0.453 s
+  | Hartree multipole summation                 :        0.398 s           0.401 s
+  | Integration                                 :        0.465 s           0.467 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -1357,7 +1357,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    6
 
-  Date     :  20230628, Time     :  143636.499
+  Date     :  20230629, Time     :  142602.250
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -1372,12 +1372,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.390 s, elapsed        0.390 s
+  Time summed over all CPUs for potential: real work        0.397 s, elapsed        0.397 s
   | RMS charge density error from multipole expansion :   0.160306E-01
   | Average real-space part of the electrostatic potential :      0.52864778 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.454 s, elapsed        0.454 s
+  Time summed over all CPUs for integration: real work        0.467 s, elapsed        0.467 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -1432,7 +1432,7 @@
   | Electronic free energy per atom                       :       -7900.04987845 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.971 s, elapsed        0.971 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.954 s, elapsed        0.954 s
   Integration grid: deviation in total charge (<rho> - N_e) =   4.263256E-14
 
   Self-consistency convergence accuracy:
@@ -1443,13 +1443,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     6       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.009 s           2.009 s
-  | Charge density update                       :        0.973 s           0.973 s
-  | Density mixing & preconditioning            :        0.184 s           0.184 s
+  | Time for this iteration                     :        2.002 s           2.014 s
+  | Charge density update                       :        0.948 s           0.955 s
+  | Density mixing & preconditioning            :        0.185 s           0.186 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.393 s           0.392 s
-  | Integration                                 :        0.454 s           0.455 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
+  | Hartree multipole summation                 :        0.398 s           0.400 s
+  | Integration                                 :        0.464 s           0.467 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -1472,7 +1472,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    7
 
-  Date     :  20230628, Time     :  143638.508
+  Date     :  20230629, Time     :  142604.264
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -1487,12 +1487,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.394 s, elapsed        0.394 s
+  Time summed over all CPUs for potential: real work        0.397 s, elapsed        0.397 s
   | RMS charge density error from multipole expansion :   0.161457E-01
   | Average real-space part of the electrostatic potential :      0.53283467 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.462 s, elapsed        0.462 s
+  Time summed over all CPUs for integration: real work        0.467 s, elapsed        0.467 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -1547,7 +1547,7 @@
   | Electronic free energy per atom                       :       -7900.04986255 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        1.018 s, elapsed        1.018 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.958 s, elapsed        0.958 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -2.842171E-14
 
   Self-consistency convergence accuracy:
@@ -1558,12 +1558,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     7       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.068 s           2.069 s
-  | Charge density update                       :        1.019 s           1.019 s
-  | Density mixing & preconditioning            :        0.184 s           0.185 s
-  | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.397 s           0.397 s
-  | Integration                                 :        0.463 s           0.462 s
+  | Time for this iteration                     :        2.006 s           2.019 s
+  | Charge density update                       :        0.953 s           0.959 s
+  | Density mixing & preconditioning            :        0.185 s           0.185 s
+  | Hartree multipole update                    :        0.001 s           0.002 s
+  | Hartree multipole summation                 :        0.398 s           0.399 s
+  | Integration                                 :        0.465 s           0.468 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -1587,7 +1587,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    8
 
-  Date     :  20230628, Time     :  143640.577
+  Date     :  20230629, Time     :  142606.283
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -1602,12 +1602,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.394 s, elapsed        0.394 s
+  Time summed over all CPUs for potential: real work        0.396 s, elapsed        0.396 s
   | RMS charge density error from multipole expansion :   0.161554E-01
   | Average real-space part of the electrostatic potential :      0.53335559 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.458 s, elapsed        0.458 s
+  Time summed over all CPUs for integration: real work        0.466 s, elapsed        0.466 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -1616,7 +1616,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.001 s
+  | Time :     0.000 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -1662,7 +1662,7 @@
   | Electronic free energy per atom                       :       -7900.04986362 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.977 s, elapsed        0.977 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.959 s, elapsed        0.959 s
   Integration grid: deviation in total charge (<rho> - N_e) =   2.131628E-14
 
   Self-consistency convergence accuracy:
@@ -1673,12 +1673,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     8       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.030 s           2.029 s
-  | Charge density update                       :        0.979 s           0.978 s
-  | Density mixing & preconditioning            :        0.190 s           0.190 s
+  | Time for this iteration                     :        2.011 s           2.017 s
+  | Charge density update                       :        0.956 s           0.960 s
+  | Density mixing & preconditioning            :        0.185 s           0.185 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.396 s           0.396 s
-  | Integration                                 :        0.459 s           0.459 s
+  | Hartree multipole summation                 :        0.397 s           0.399 s
+  | Integration                                 :        0.467 s           0.467 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -1702,7 +1702,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    9
 
-  Date     :  20230628, Time     :  143642.607
+  Date     :  20230629, Time     :  142608.301
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -1717,12 +1717,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.395 s, elapsed        0.395 s
+  Time summed over all CPUs for potential: real work        0.397 s, elapsed        0.397 s
   | RMS charge density error from multipole expansion :   0.161523E-01
   | Average real-space part of the electrostatic potential :      0.53333844 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.455 s, elapsed        0.455 s
+  Time summed over all CPUs for integration: real work        0.465 s, elapsed        0.465 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -1731,7 +1731,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.000 s
+  | Time :     0.001 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -1777,7 +1777,7 @@
   | Electronic free energy per atom                       :       -7900.04986868 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.929 s, elapsed        0.929 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.944 s, elapsed        0.944 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -1.421085E-14
 
   Self-consistency convergence accuracy:
@@ -1788,12 +1788,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     9       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.979 s           1.978 s
-  | Charge density update                       :        0.930 s           0.930 s
-  | Density mixing & preconditioning            :        0.190 s           0.190 s
+  | Time for this iteration                     :        1.999 s           2.002 s
+  | Charge density update                       :        0.945 s           0.946 s
+  | Density mixing & preconditioning            :        0.184 s           0.185 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.397 s           0.397 s
-  | Integration                                 :        0.455 s           0.455 s
+  | Hartree multipole summation                 :        0.398 s           0.400 s
+  | Integration                                 :        0.465 s           0.465 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -1817,7 +1817,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #   10
 
-  Date     :  20230628, Time     :  143644.585
+  Date     :  20230629, Time     :  142610.303
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -1832,12 +1832,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.392 s, elapsed        0.392 s
+  Time summed over all CPUs for potential: real work        0.398 s, elapsed        0.398 s
   | RMS charge density error from multipole expansion :   0.161520E-01
   | Average real-space part of the electrostatic potential :      0.53338546 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.453 s, elapsed        0.453 s
+  Time summed over all CPUs for integration: real work        0.496 s, elapsed        0.496 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -1892,7 +1892,7 @@
   | Electronic free energy per atom                       :       -7900.04987046 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.924 s, elapsed        0.924 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.969 s, elapsed        0.969 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -4.973799E-14
 
   Self-consistency convergence accuracy:
@@ -1903,13 +1903,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #    10       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.962 s           1.962 s
-  | Charge density update                       :        0.926 s           0.926 s
-  | Density mixing & preconditioning            :        0.183 s           0.183 s
-  | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.394 s           0.394 s
-  | Integration                                 :        0.454 s           0.454 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
+  | Time for this iteration                     :        2.045 s           2.058 s
+  | Charge density update                       :        0.964 s           0.970 s
+  | Density mixing & preconditioning            :        0.184 s           0.185 s
+  | Hartree multipole update                    :        0.001 s           0.002 s
+  | Hartree multipole summation                 :        0.398 s           0.400 s
+  | Integration                                 :        0.492 s           0.496 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -1932,7 +1932,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #   11
 
-  Date     :  20230628, Time     :  143646.547
+  Date     :  20230629, Time     :  142612.362
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -1947,12 +1947,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.391 s, elapsed        0.391 s
+  Time summed over all CPUs for potential: real work        0.402 s, elapsed        0.402 s
   | RMS charge density error from multipole expansion :   0.161521E-01
   | Average real-space part of the electrostatic potential :      0.53339182 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.453 s, elapsed        0.453 s
+  Time summed over all CPUs for integration: real work        0.467 s, elapsed        0.467 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -1961,7 +1961,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.000 s
+  | Time :     0.001 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -2007,7 +2007,7 @@
   | Electronic free energy per atom                       :       -7900.04987050 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.922 s, elapsed        0.922 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.961 s, elapsed        0.961 s
   Integration grid: deviation in total charge (<rho> - N_e) =   6.394885E-14
 
   Self-consistency convergence accuracy:
@@ -2018,12 +2018,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #    11       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.958 s           1.958 s
-  | Charge density update                       :        0.923 s           0.923 s
-  | Density mixing & preconditioning            :        0.183 s           0.183 s
-  | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.393 s           0.393 s
-  | Integration                                 :        0.453 s           0.453 s
+  | Time for this iteration                     :        2.011 s           2.024 s
+  | Charge density update                       :        0.956 s           0.962 s
+  | Density mixing & preconditioning            :        0.184 s           0.184 s
+  | Hartree multipole update                    :        0.001 s           0.002 s
+  | Hartree multipole summation                 :        0.402 s           0.404 s
+  | Integration                                 :        0.464 s           0.467 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -2047,7 +2047,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #   12
 
-  Date     :  20230628, Time     :  143648.505
+  Date     :  20230629, Time     :  142614.386
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -2062,12 +2062,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.391 s, elapsed        0.391 s
+  Time summed over all CPUs for potential: real work        0.398 s, elapsed        0.398 s
   | RMS charge density error from multipole expansion :   0.161521E-01
   | Average real-space part of the electrostatic potential :      0.53339130 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.452 s, elapsed        0.452 s
+  Time summed over all CPUs for integration: real work        0.469 s, elapsed        0.469 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -2124,7 +2124,7 @@
 
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.922 s, elapsed        0.922 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.956 s, elapsed        0.956 s
   Integration grid: deviation in total charge (<rho> - N_e) =   3.197442E-14
 
   Self-consistency convergence accuracy:
@@ -2139,15 +2139,15 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #    12       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.958 s           1.958 s
-  | Charge density & force component update     :        0.924 s           0.924 s
-  | Density mixing                              :        0.183 s           0.183 s
-  | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.393 s           0.393 s
+  | Time for this iteration                     :        2.006 s           2.019 s
+  | Charge density & force component update     :        0.950 s           0.957 s
+  | Density mixing                              :        0.184 s           0.185 s
+  | Hartree multipole update                    :        0.001 s           0.002 s
+  | Hartree multipole summation                 :        0.398 s           0.400 s
   | Hartree pot. SCF incomplete forces          :        0.000 s           0.000 s
-  | Integration                                 :        0.452 s           0.452 s
+  | Integration                                 :        0.467 s           0.469 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
-  | Total energy evaluation                     :        0.000 s           0.000 s
+  | Total energy evaluation                     :        0.000 s           0.001 s
 
   Partial memory accounting:
   | Current value for overall tracked memory usage:
@@ -2169,7 +2169,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #   13
 
-  Date     :  20230628, Time     :  143650.463
+  Date     :  20230629, Time     :  142616.405
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -2184,12 +2184,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        1.667 s, elapsed        1.667 s
+  Time summed over all CPUs for potential: real work        1.682 s, elapsed        1.682 s
   | RMS charge density error from multipole expansion :   0.161521E-01
   | Average real-space part of the electrostatic potential :      0.53339169 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.467 s, elapsed        0.467 s
+  Time summed over all CPUs for integration: real work        0.469 s, elapsed        0.469 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -2198,7 +2198,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.000 s
+  | Time :     0.001 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -2244,7 +2244,7 @@
   | Electronic free energy per atom                       :       -7900.04987052 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.922 s, elapsed        0.922 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.953 s, elapsed        0.953 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -3.197442E-14
 
   atomic forces [eV/Ang]:
@@ -2276,13 +2276,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #    13       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        4.009 s           4.009 s
-  | Charge density & force component update     :        0.923 s           0.924 s
+  | Time for this iteration                     :        4.052 s           4.075 s
+  | Charge density & force component update     :        0.948 s           0.955 s
   | Density mixing                              :        0.002 s           0.002 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        1.670 s           1.670 s
-  | Hartree pot. SCF incomplete forces          :        0.940 s           0.940 s
-  | Integration                                 :        0.467 s           0.467 s
+  | Hartree multipole summation                 :        1.677 s           1.686 s
+  | Hartree pot. SCF incomplete forces          :        0.953 s           0.957 s
+  | Integration                                 :        0.466 s           0.469 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -2306,7 +2306,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #   14
 
-  Date     :  20230628, Time     :  143654.472
+  Date     :  20230629, Time     :  142620.480
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -2321,12 +2321,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        1.664 s, elapsed        1.664 s
+  Time summed over all CPUs for potential: real work        1.674 s, elapsed        1.674 s
   | RMS charge density error from multipole expansion :   0.161521E-01
   | Average real-space part of the electrostatic potential :      0.53339169 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.452 s, elapsed        0.452 s
+  Time summed over all CPUs for integration: real work        0.465 s, elapsed        0.465 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -2335,7 +2335,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.001 s
+  | Time :     0.000 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -2381,7 +2381,7 @@
   | Electronic free energy per atom                       :       -7900.04987052 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.920 s, elapsed        0.920 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.951 s, elapsed        0.951 s
   
   Evaluating density-matrix-based force terms: batch-based integration
   Evaluating density matrix
@@ -2487,13 +2487,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #    14       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :       25.723 s          25.723 s
-  | Charge density & force component update     :       22.607 s          22.607 s
+  | Time for this iteration                     :       22.505 s          22.638 s
+  | Charge density & force component update     :       19.413 s          19.533 s
   | Density mixing                              :        0.002 s           0.002 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        1.667 s           1.667 s
-  | Hartree pot. SCF incomplete forces          :        0.989 s           0.989 s
-  | Integration                                 :        0.452 s           0.452 s
+  | Hartree multipole summation                 :        1.669 s           1.678 s
+  | Hartree pot. SCF incomplete forces          :        0.952 s           0.953 s
+  | Integration                                 :        0.462 s           0.466 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -2546,7 +2546,7 @@
 
 ------------------------------------------------------------
   Relaxation / MD: End force evaluation.       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this force evaluation              :       56.172 s          56.173 s
+  | Time for this force evaluation              :       52.651 s          52.917 s
 
 ------------------------------------------------------------
   Geometry optimization: Attempting to predict improved coordinates.
@@ -2612,7 +2612,7 @@
 ------------------------------------------------------------
           Begin self-consistency loop: Re-initialization.
 
-  Date     :  20230628, Time     :  143720.204
+  Date     :  20230629, Time     :  142643.126
 ------------------------------------------------------------
 
   Initializing index lists of integration centers etc. from given atomic structure:
@@ -2666,30 +2666,30 @@
   Calculating total energy contributions from superposition of free atom densities.
   Initialize hartree_potential_storage
   Integrating overlap matrix.
-  Time summed over all CPUs for integration: real work        0.323 s, elapsed        0.323 s
+  Time summed over all CPUs for integration: real work        0.317 s, elapsed        0.317 s
   Orthonormalizing eigenvectors
 
   End scf reinitialization - timings           :  max(cpu_time)    wall_clock(cpu1)
-  | Time for scf. reinitialization              :        0.671 s           0.671 s
-  | Boundary condition initialization           :        0.061 s           0.062 s
-  | Integration                                 :        0.323 s           0.323 s
-  | Grid partitioning                           :        0.038 s           0.038 s
-  | Preloading free-atom quantities on grid     :        0.206 s           0.206 s
-  | Free-atom superposition energy              :        0.029 s           0.029 s
+  | Time for scf. reinitialization              :        0.658 s           0.659 s
+  | Boundary condition initialization           :        0.061 s           0.061 s
+  | Integration                                 :        0.316 s           0.317 s
+  | Grid partitioning                           :        0.036 s           0.036 s
+  | Preloading free-atom quantities on grid     :        0.201 s           0.203 s
+  | Free-atom superposition energy              :        0.028 s           0.028 s
   | K.-S. eigenvector reorthonormalization      :        0.001 s           0.001 s
 ------------------------------------------------------------
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        1.060 s, elapsed        1.060 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.941 s, elapsed        0.941 s
   Integration grid: deviation in total charge (<rho> - N_e) =   2.486900E-14
 
   Time for density update prior                :  max(cpu_time)    wall_clock(cpu1)
-  | self-consistency iterative process          :        1.061 s           1.061 s
+  | self-consistency iterative process          :        0.941 s           0.943 s
 
 ------------------------------------------------------------
           Begin self-consistency iteration #    1
 
-  Date     :  20230628, Time     :  143721.937
+  Date     :  20230629, Time     :  142644.728
 ------------------------------------------------------------
   Renormalizing the density to the exact electron count on the 3D integration grid.
   | Formal number of electrons (from input files) :      28.0000000000
@@ -2705,12 +2705,12 @@
   Summing up the Hartree potential.
   | Estimated reciprocal-space cutoff momentum G_max:         2.36906915 bohr^-1 .
   | Reciprocal lattice points for long-range Hartree potential:      58
-  Time summed over all CPUs for potential: real work        0.413 s, elapsed        0.413 s
+  Time summed over all CPUs for potential: real work        0.398 s, elapsed        0.398 s
   | RMS charge density error from multipole expansion :   0.153829E-01
   | Average real-space part of the electrostatic potential :      0.50078838 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.505 s, elapsed        0.505 s
+  Time summed over all CPUs for integration: real work        0.484 s, elapsed        0.484 s
   Decreasing sparse matrix size:
   | Tolerance:  0.1000E-12
   Hamiltonian matrix
@@ -2727,7 +2727,7 @@
   Finished Cholesky decomposition
   | Time :     0.000 s
   Finished transformation to standard eigenproblem
-  | Time :     0.001 s
+  | Time :     0.000 s
   Finished solving standard eigenproblem
   | Time :     0.000 s
   Finished back-transformation of eigenvectors
@@ -2800,7 +2800,7 @@
   | Electronic free energy per atom                       :       -7900.08533419 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        1.057 s, elapsed        1.057 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.936 s, elapsed        0.936 s
   Integration grid: deviation in total charge (<rho> - N_e) =   3.197442E-14
 
   Self-consistency convergence accuracy:
@@ -2811,13 +2811,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     1       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.987 s           1.986 s
-  | Charge density update                       :        1.058 s           1.058 s
+  | Time for this iteration                     :        1.829 s           1.830 s
+  | Charge density update                       :        0.937 s           0.937 s
   | Density mixing & preconditioning            :        0.000 s           0.000 s
-  | Hartree multipole update                    :        0.002 s           0.002 s
-  | Hartree multipole summation                 :        0.415 s           0.414 s
-  | Integration                                 :        0.506 s           0.505 s
-  | Solution of K.-S. eqns.                     :        0.006 s           0.006 s
+  | Hartree multipole update                    :        0.001 s           0.001 s
+  | Hartree multipole summation                 :        0.400 s           0.401 s
+  | Integration                                 :        0.485 s           0.485 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -2840,7 +2840,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    2
 
-  Date     :  20230628, Time     :  143723.923
+  Date     :  20230629, Time     :  142646.558
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -2855,12 +2855,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.416 s, elapsed        0.416 s
+  Time summed over all CPUs for potential: real work        0.391 s, elapsed        0.391 s
   | RMS charge density error from multipole expansion :   0.153695E-01
   | Average real-space part of the electrostatic potential :      0.50092725 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.499 s, elapsed        0.499 s
+  Time summed over all CPUs for integration: real work        0.476 s, elapsed        0.476 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -2915,7 +2915,7 @@
   | Electronic free energy per atom                       :       -7900.08534306 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        1.040 s, elapsed        1.040 s
+  Time summed over all CPUs for getting density from density matrix: real work        1.024 s, elapsed        1.024 s
   Integration grid: deviation in total charge (<rho> - N_e) =   7.105427E-15
 
   Self-consistency convergence accuracy:
@@ -2926,14 +2926,14 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     2       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.150 s           2.150 s
-  | Charge density update                       :        1.041 s           1.041 s
-  | Density mixing & preconditioning            :        0.185 s           0.186 s
+  | Time for this iteration                     :        2.081 s           2.081 s
+  | Charge density update                       :        1.025 s           1.025 s
+  | Density mixing & preconditioning            :        0.180 s           0.180 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.418 s           0.418 s
-  | Integration                                 :        0.499 s           0.499 s
-  | Solution of K.-S. eqns.                     :        0.006 s           0.005 s
-  | Total energy evaluation                     :        0.000 s           0.000 s
+  | Hartree multipole summation                 :        0.393 s           0.394 s
+  | Integration                                 :        0.476 s           0.476 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
+  | Total energy evaluation                     :        0.000 s           0.001 s
 
   Partial memory accounting:
   | Current value for overall tracked memory usage:
@@ -2955,7 +2955,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    3
 
-  Date     :  20230628, Time     :  143726.074
+  Date     :  20230629, Time     :  142648.639
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -2970,12 +2970,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.414 s, elapsed        0.414 s
+  Time summed over all CPUs for potential: real work        0.404 s, elapsed        0.404 s
   | RMS charge density error from multipole expansion :   0.153219E-01
   | Average real-space part of the electrostatic potential :      0.50151933 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.509 s, elapsed        0.509 s
+  Time summed over all CPUs for integration: real work        0.452 s, elapsed        0.452 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -3030,7 +3030,7 @@
   | Electronic free energy per atom                       :       -7900.08539320 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        1.068 s, elapsed        1.068 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.942 s, elapsed        0.942 s
   Integration grid: deviation in total charge (<rho> - N_e) =   3.552714E-14
 
   Self-consistency convergence accuracy:
@@ -3041,12 +3041,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     3       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.204 s           2.204 s
-  | Charge density update                       :        1.069 s           1.069 s
-  | Density mixing & preconditioning            :        0.203 s           0.202 s
-  | Hartree multipole update                    :        0.001 s           0.002 s
-  | Hartree multipole summation                 :        0.417 s           0.416 s
-  | Integration                                 :        0.509 s           0.510 s
+  | Time for this iteration                     :        2.000 s           2.000 s
+  | Charge density update                       :        0.944 s           0.944 s
+  | Density mixing & preconditioning            :        0.191 s           0.191 s
+  | Hartree multipole update                    :        0.001 s           0.001 s
+  | Hartree multipole summation                 :        0.407 s           0.407 s
+  | Integration                                 :        0.452 s           0.452 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -3070,7 +3070,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    4
 
-  Date     :  20230628, Time     :  143728.278
+  Date     :  20230629, Time     :  142650.639
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -3085,12 +3085,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.441 s, elapsed        0.441 s
+  Time summed over all CPUs for potential: real work        0.392 s, elapsed        0.392 s
   | RMS charge density error from multipole expansion :   0.153207E-01
   | Average real-space part of the electrostatic potential :      0.50174573 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.505 s, elapsed        0.505 s
+  Time summed over all CPUs for integration: real work        0.435 s, elapsed        0.435 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -3099,7 +3099,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.000 s
+  | Time :     0.001 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -3145,7 +3145,7 @@
   | Electronic free energy per atom                       :       -7900.08541191 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        1.059 s, elapsed        1.059 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.879 s, elapsed        0.879 s
   Integration grid: deviation in total charge (<rho> - N_e) =   2.486900E-14
 
   Self-consistency convergence accuracy:
@@ -3156,12 +3156,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     4       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.220 s           2.220 s
-  | Charge density update                       :        1.061 s           1.061 s
-  | Density mixing & preconditioning            :        0.204 s           0.204 s
-  | Hartree multipole update                    :        0.001 s           0.002 s
-  | Hartree multipole summation                 :        0.443 s           0.443 s
-  | Integration                                 :        0.506 s           0.505 s
+  | Time for this iteration                     :        1.900 s           1.901 s
+  | Charge density update                       :        0.881 s           0.881 s
+  | Density mixing & preconditioning            :        0.184 s           0.184 s
+  | Hartree multipole update                    :        0.001 s           0.001 s
+  | Hartree multipole summation                 :        0.394 s           0.395 s
+  | Integration                                 :        0.435 s           0.435 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -3185,7 +3185,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    5
 
-  Date     :  20230628, Time     :  143730.499
+  Date     :  20230629, Time     :  142652.540
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -3200,12 +3200,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.421 s, elapsed        0.421 s
+  Time summed over all CPUs for potential: real work        0.416 s, elapsed        0.416 s
   | RMS charge density error from multipole expansion :   0.153148E-01
   | Average real-space part of the electrostatic potential :      0.50181613 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.569 s, elapsed        0.569 s
+  Time summed over all CPUs for integration: real work        0.431 s, elapsed        0.431 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -3260,7 +3260,7 @@
   | Electronic free energy per atom                       :       -7900.08542448 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.966 s, elapsed        0.966 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.898 s, elapsed        0.898 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -7.105427E-15
 
   Self-consistency convergence accuracy:
@@ -3271,14 +3271,14 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     5       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.161 s           2.161 s
-  | Charge density update                       :        0.967 s           0.967 s
-  | Density mixing & preconditioning            :        0.195 s           0.194 s
+  | Time for this iteration                     :        1.935 s           1.935 s
+  | Charge density update                       :        0.900 s           0.900 s
+  | Density mixing & preconditioning            :        0.178 s           0.178 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.423 s           0.423 s
-  | Integration                                 :        0.569 s           0.570 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
-  | Total energy evaluation                     :        0.000 s           0.001 s
+  | Hartree multipole summation                 :        0.419 s           0.419 s
+  | Integration                                 :        0.432 s           0.432 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
+  | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
   | Current value for overall tracked memory usage:
@@ -3300,7 +3300,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    6
 
-  Date     :  20230628, Time     :  143732.660
+  Date     :  20230629, Time     :  142654.475
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -3315,12 +3315,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.395 s, elapsed        0.395 s
+  Time summed over all CPUs for potential: real work        0.389 s, elapsed        0.389 s
   | RMS charge density error from multipole expansion :   0.153151E-01
   | Average real-space part of the electrostatic potential :      0.50184391 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.456 s, elapsed        0.456 s
+  Time summed over all CPUs for integration: real work        0.545 s, elapsed        0.545 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -3329,7 +3329,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.001 s
+  | Time :     0.000 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -3375,7 +3375,7 @@
   | Electronic free energy per atom                       :       -7900.08542537 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.951 s, elapsed        0.951 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.987 s, elapsed        0.987 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -3.552714E-15
 
   Self-consistency convergence accuracy:
@@ -3386,13 +3386,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     6       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.991 s           1.991 s
-  | Charge density update                       :        0.952 s           0.952 s
-  | Density mixing & preconditioning            :        0.179 s           0.179 s
-  | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.397 s           0.398 s
-  | Integration                                 :        0.456 s           0.456 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
+  | Time for this iteration                     :        2.111 s           2.113 s
+  | Charge density update                       :        0.987 s           0.989 s
+  | Density mixing & preconditioning            :        0.179 s           0.178 s
+  | Hartree multipole update                    :        0.001 s           0.002 s
+  | Hartree multipole summation                 :        0.391 s           0.391 s
+  | Integration                                 :        0.546 s           0.545 s
+  | Solution of K.-S. eqns.                     :        0.006 s           0.007 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -3415,7 +3415,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    7
 
-  Date     :  20230628, Time     :  143734.651
+  Date     :  20230629, Time     :  142656.588
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -3430,12 +3430,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.399 s, elapsed        0.399 s
+  Time summed over all CPUs for potential: real work        0.390 s, elapsed        0.390 s
   | RMS charge density error from multipole expansion :   0.153150E-01
   | Average real-space part of the electrostatic potential :      0.50184494 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.473 s, elapsed        0.473 s
+  Time summed over all CPUs for integration: real work        0.434 s, elapsed        0.434 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -3490,7 +3490,7 @@
   | Electronic free energy per atom                       :       -7900.08542545 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        1.007 s, elapsed        1.007 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.890 s, elapsed        0.890 s
   Integration grid: deviation in total charge (<rho> - N_e) =   2.842171E-14
 
   Self-consistency convergence accuracy:
@@ -3501,13 +3501,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     7       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.072 s           2.072 s
-  | Charge density update                       :        1.008 s           1.008 s
-  | Density mixing & preconditioning            :        0.183 s           0.183 s
+  | Time for this iteration                     :        1.892 s           1.903 s
+  | Charge density update                       :        0.886 s           0.892 s
+  | Density mixing & preconditioning            :        0.178 s           0.179 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.401 s           0.401 s
-  | Integration                                 :        0.474 s           0.473 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
+  | Hartree multipole summation                 :        0.391 s           0.393 s
+  | Integration                                 :        0.431 s           0.434 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -3530,7 +3530,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    8
 
-  Date     :  20230628, Time     :  143736.723
+  Date     :  20230629, Time     :  142658.491
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -3545,12 +3545,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.432 s, elapsed        0.433 s
+  Time summed over all CPUs for potential: real work        0.391 s, elapsed        0.391 s
   | RMS charge density error from multipole expansion :   0.153150E-01
   | Average real-space part of the electrostatic potential :      0.50184227 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.583 s, elapsed        0.583 s
+  Time summed over all CPUs for integration: real work        0.433 s, elapsed        0.433 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -3559,7 +3559,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.000 s
+  | Time :     0.001 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -3605,7 +3605,7 @@
   | Electronic free energy per atom                       :       -7900.08542536 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        1.136 s, elapsed        1.136 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.917 s, elapsed        0.917 s
   Integration grid: deviation in total charge (<rho> - N_e) =   4.973799E-14
 
   Self-consistency convergence accuracy:
@@ -3616,12 +3616,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     8       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.362 s           2.362 s
-  | Charge density update                       :        1.138 s           1.138 s
-  | Density mixing & preconditioning            :        0.199 s           0.199 s
+  | Time for this iteration                     :        1.918 s           1.930 s
+  | Charge density update                       :        0.912 s           0.918 s
+  | Density mixing & preconditioning            :        0.178 s           0.179 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.435 s           0.435 s
-  | Integration                                 :        0.583 s           0.583 s
+  | Hartree multipole summation                 :        0.392 s           0.394 s
+  | Integration                                 :        0.430 s           0.433 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -3645,7 +3645,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    9
 
-  Date     :  20230628, Time     :  143739.086
+  Date     :  20230629, Time     :  142700.422
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -3660,12 +3660,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.454 s, elapsed        0.454 s
+  Time summed over all CPUs for potential: real work        0.392 s, elapsed        0.392 s
   | RMS charge density error from multipole expansion :   0.153150E-01
   | Average real-space part of the electrostatic potential :      0.50184232 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.595 s, elapsed        0.595 s
+  Time summed over all CPUs for integration: real work        0.433 s, elapsed        0.433 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -3722,7 +3722,7 @@
 
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        1.261 s, elapsed        1.261 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.890 s, elapsed        0.890 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -2.131628E-14
 
   Self-consistency convergence accuracy:
@@ -3737,14 +3737,14 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     9       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.520 s           2.519 s
-  | Charge density & force component update     :        1.262 s           1.262 s
-  | Density mixing                              :        0.198 s           0.198 s
+  | Time for this iteration                     :        1.894 s           1.905 s
+  | Charge density & force component update     :        0.886 s           0.891 s
+  | Density mixing                              :        0.178 s           0.179 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.457 s           0.457 s
-  | Hartree pot. SCF incomplete forces          :        0.989 s           0.989 s
-  | Integration                                 :        0.595 s           0.595 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.006 s
+  | Hartree multipole summation                 :        0.393 s           0.395 s
+  | Hartree pot. SCF incomplete forces          :        0.952 s           0.953 s
+  | Integration                                 :        0.431 s           0.434 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -3767,7 +3767,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #   10
 
-  Date     :  20230628, Time     :  143741.605
+  Date     :  20230629, Time     :  142702.328
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -3782,17 +3782,17 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        1.895 s, elapsed        1.895 s
+  Time summed over all CPUs for potential: real work        1.656 s, elapsed        1.656 s
   | RMS charge density error from multipole expansion :   0.153150E-01
   | Average real-space part of the electrostatic potential :      0.50184232 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.525 s, elapsed        0.525 s
+  Time summed over all CPUs for integration: real work        0.434 s, elapsed        0.434 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
   Finished Cholesky decomposition
-  | Time :     0.000 s
+  | Time :     0.001 s
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
@@ -3842,7 +3842,7 @@
   | Electronic free energy per atom                       :       -7900.08542536 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        1.086 s, elapsed        1.086 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.908 s, elapsed        0.908 s
   Integration grid: deviation in total charge (<rho> - N_e) =   2.842171E-14
 
   atomic forces [eV/Ang]:
@@ -3874,13 +3874,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #    10       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        4.506 s           4.507 s
-  | Charge density & force component update     :        1.087 s           1.087 s
+  | Time for this iteration                     :        3.943 s           3.965 s
+  | Charge density & force component update     :        0.903 s           0.910 s
   | Density mixing                              :        0.002 s           0.002 s
-  | Hartree multipole update                    :        0.001 s           0.002 s
-  | Hartree multipole summation                 :        1.899 s           1.899 s
-  | Hartree pot. SCF incomplete forces          :        0.986 s           0.987 s
-  | Integration                                 :        0.525 s           0.525 s
+  | Hartree multipole update                    :        0.001 s           0.001 s
+  | Hartree multipole summation                 :        1.652 s           1.660 s
+  | Hartree pot. SCF incomplete forces          :        0.948 s           0.953 s
+  | Integration                                 :        0.432 s           0.434 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -3904,7 +3904,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #   11
 
-  Date     :  20230628, Time     :  143746.112
+  Date     :  20230629, Time     :  142706.293
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -3919,12 +3919,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        1.797 s, elapsed        1.797 s
+  Time summed over all CPUs for potential: real work        1.660 s, elapsed        1.660 s
   | RMS charge density error from multipole expansion :   0.153150E-01
   | Average real-space part of the electrostatic potential :      0.50184232 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.522 s, elapsed        0.522 s
+  Time summed over all CPUs for integration: real work        0.439 s, elapsed        0.439 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -3979,7 +3979,7 @@
   | Electronic free energy per atom                       :       -7900.08542536 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        1.074 s, elapsed        1.074 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.915 s, elapsed        0.915 s
   
   Evaluating density-matrix-based force terms: batch-based integration
   Evaluating density matrix
@@ -4085,13 +4085,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #    11       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :       26.762 s          26.764 s
-  | Charge density & force component update     :       23.464 s          23.467 s
-  | Density mixing                              :        0.005 s           0.005 s
+  | Time for this iteration                     :       22.469 s          22.573 s
+  | Charge density & force component update     :       19.405 s          19.496 s
+  | Density mixing                              :        0.002 s           0.002 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        1.801 s           1.801 s
-  | Hartree pot. SCF incomplete forces          :        0.963 s           0.963 s
-  | Integration                                 :        0.522 s           0.522 s
+  | Hartree multipole summation                 :        1.655 s           1.665 s
+  | Hartree pot. SCF incomplete forces          :        0.964 s           0.964 s
+  | Integration                                 :        0.436 s           0.439 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -4144,7 +4144,7 @@
 
 ------------------------------------------------------------
   Relaxation / MD: End force evaluation.       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this force evaluation              :       52.674 s          52.679 s
+  | Time for this force evaluation              :       45.577 s          45.746 s
 
 ------------------------------------------------------------
   Geometry optimization: Attempting to predict improved coordinates.
@@ -4182,7 +4182,7 @@
   | Positive eigenvalues (eV/A^2): 4.35E+00 ... 3.02E+01
   | Use Quasi-Newton step of length |H^-1 F| = 1.37E-01 A.
   Finished advancing geometry
-  | Time :      0.001 s
+  | Time :      0.000 s
   Updated atomic structure:
                          x [A]             y [A]             z [A]
   lattice_vector         0.00000007        2.80247456        2.80247456
@@ -4211,7 +4211,7 @@
 ------------------------------------------------------------
           Begin self-consistency loop: Re-initialization.
 
-  Date     :  20230628, Time     :  143812.884
+  Date     :  20230629, Time     :  142728.873
 ------------------------------------------------------------
 
   Initializing index lists of integration centers etc. from given atomic structure:
@@ -4265,30 +4265,30 @@
   Calculating total energy contributions from superposition of free atom densities.
   Initialize hartree_potential_storage
   Integrating overlap matrix.
-  Time summed over all CPUs for integration: real work        0.280 s, elapsed        0.280 s
+  Time summed over all CPUs for integration: real work        0.257 s, elapsed        0.258 s
   Orthonormalizing eigenvectors
 
   End scf reinitialization - timings           :  max(cpu_time)    wall_clock(cpu1)
-  | Time for scf. reinitialization              :        0.607 s           0.607 s
-  | Boundary condition initialization           :        0.068 s           0.068 s
-  | Integration                                 :        0.280 s           0.280 s
-  | Grid partitioning                           :        0.034 s           0.034 s
-  | Preloading free-atom quantities on grid     :        0.186 s           0.186 s
-  | Free-atom superposition energy              :        0.028 s           0.028 s
+  | Time for scf. reinitialization              :        0.577 s           0.576 s
+  | Boundary condition initialization           :        0.065 s           0.065 s
+  | Integration                                 :        0.258 s           0.257 s
+  | Grid partitioning                           :        0.034 s           0.033 s
+  | Preloading free-atom quantities on grid     :        0.182 s           0.182 s
+  | Free-atom superposition energy              :        0.027 s           0.027 s
   | K.-S. eigenvector reorthonormalization      :        0.001 s           0.001 s
 ------------------------------------------------------------
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.881 s, elapsed        0.881 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.965 s, elapsed        0.965 s
   Integration grid: deviation in total charge (<rho> - N_e) =   2.842171E-14
 
   Time for density update prior                :  max(cpu_time)    wall_clock(cpu1)
-  | self-consistency iterative process          :        0.882 s           0.883 s
+  | self-consistency iterative process          :        0.966 s           0.966 s
 
 ------------------------------------------------------------
           Begin self-consistency iteration #    1
 
-  Date     :  20230628, Time     :  143814.374
+  Date     :  20230629, Time     :  142730.415
 ------------------------------------------------------------
   Renormalizing the density to the exact electron count on the 3D integration grid.
   | Formal number of electrons (from input files) :      28.0000000000
@@ -4304,12 +4304,12 @@
   Summing up the Hartree potential.
   | Estimated reciprocal-space cutoff momentum G_max:         2.31496314 bohr^-1 .
   | Reciprocal lattice points for long-range Hartree potential:      58
-  Time summed over all CPUs for potential: real work        0.397 s, elapsed        0.397 s
+  Time summed over all CPUs for potential: real work        0.386 s, elapsed        0.386 s
   | RMS charge density error from multipole expansion :   0.140826E-01
   | Average real-space part of the electrostatic potential :      0.44664067 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.428 s, elapsed        0.428 s
+  Time summed over all CPUs for integration: real work        0.411 s, elapsed        0.411 s
   Decreasing sparse matrix size:
   | Tolerance:  0.1000E-12
   Hamiltonian matrix
@@ -4328,7 +4328,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.000 s
+  | Time :     0.001 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -4399,7 +4399,7 @@
   | Electronic free energy per atom                       :       -7900.11218284 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.893 s, elapsed        0.893 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.896 s, elapsed        0.896 s
   Integration grid: deviation in total charge (<rho> - N_e) =   1.776357E-14
 
   Self-consistency convergence accuracy:
@@ -4410,13 +4410,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     1       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.728 s           1.729 s
-  | Charge density update                       :        0.894 s           0.894 s
-  | Density mixing & preconditioning            :        0.000 s           0.000 s
+  | Time for this iteration                     :        1.706 s           1.707 s
+  | Charge density update                       :        0.897 s           0.897 s
+  | Density mixing & preconditioning            :        0.000 s           0.001 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.400 s           0.400 s
-  | Integration                                 :        0.429 s           0.429 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
+  | Hartree multipole summation                 :        0.389 s           0.389 s
+  | Integration                                 :        0.413 s           0.413 s
+  | Solution of K.-S. eqns.                     :        0.006 s           0.006 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -4439,7 +4439,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    2
 
-  Date     :  20230628, Time     :  143816.103
+  Date     :  20230629, Time     :  142732.122
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -4454,12 +4454,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.253760E-12
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.395 s, elapsed        0.395 s
+  Time summed over all CPUs for potential: real work        0.385 s, elapsed        0.385 s
   | RMS charge density error from multipole expansion :   0.140633E-01
   | Average real-space part of the electrostatic potential :      0.44677205 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.447 s, elapsed        0.447 s
+  Time summed over all CPUs for integration: real work        0.409 s, elapsed        0.409 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -4468,7 +4468,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.000 s
+  | Time :     0.001 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -4514,7 +4514,7 @@
   | Electronic free energy per atom                       :       -7900.11217965 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.908 s, elapsed        0.908 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.879 s, elapsed        0.879 s
   Integration grid: deviation in total charge (<rho> - N_e) =   9.237056E-14
 
   Self-consistency convergence accuracy:
@@ -4525,13 +4525,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     2       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.946 s           1.945 s
-  | Charge density update                       :        0.910 s           0.909 s
-  | Density mixing & preconditioning            :        0.185 s           0.184 s
+  | Time for this iteration                     :        1.863 s           1.863 s
+  | Charge density update                       :        0.881 s           0.881 s
+  | Density mixing & preconditioning            :        0.178 s           0.179 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.397 s           0.398 s
-  | Integration                                 :        0.447 s           0.447 s
-  | Solution of K.-S. eqns.                     :        0.006 s           0.005 s
+  | Hartree multipole summation                 :        0.388 s           0.388 s
+  | Integration                                 :        0.409 s           0.409 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -4554,7 +4554,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    3
 
-  Date     :  20230628, Time     :  143818.049
+  Date     :  20230629, Time     :  142733.985
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -4569,12 +4569,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.306599E-12
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.401 s, elapsed        0.401 s
+  Time summed over all CPUs for potential: real work        0.386 s, elapsed        0.386 s
   | RMS charge density error from multipole expansion :   0.139922E-01
   | Average real-space part of the electrostatic potential :      0.44747175 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.430 s, elapsed        0.430 s
+  Time summed over all CPUs for integration: real work        0.402 s, elapsed        0.402 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -4629,7 +4629,7 @@
   | Electronic free energy per atom                       :       -7900.11220314 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.889 s, elapsed        0.889 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.941 s, elapsed        0.941 s
   Integration grid: deviation in total charge (<rho> - N_e) =   7.105427E-15
 
   Self-consistency convergence accuracy:
@@ -4640,12 +4640,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     3       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.929 s           1.929 s
-  | Charge density update                       :        0.890 s           0.890 s
-  | Density mixing & preconditioning            :        0.200 s           0.199 s
-  | Hartree multipole update                    :        0.001 s           0.002 s
-  | Hartree multipole summation                 :        0.404 s           0.403 s
-  | Integration                                 :        0.430 s           0.430 s
+  | Time for this iteration                     :        1.917 s           1.918 s
+  | Charge density update                       :        0.942 s           0.942 s
+  | Density mixing & preconditioning            :        0.178 s           0.178 s
+  | Hartree multipole update                    :        0.001 s           0.001 s
+  | Hartree multipole summation                 :        0.389 s           0.389 s
+  | Integration                                 :        0.403 s           0.403 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -4669,7 +4669,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    4
 
-  Date     :  20230628, Time     :  143819.978
+  Date     :  20230629, Time     :  142735.903
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -4684,19 +4684,19 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.409 s, elapsed        0.409 s
+  Time summed over all CPUs for potential: real work        0.389 s, elapsed        0.389 s
   | RMS charge density error from multipole expansion :   0.139926E-01
   | Average real-space part of the electrostatic potential :      0.44780697 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.478 s, elapsed        0.478 s
+  Time summed over all CPUs for integration: real work        0.405 s, elapsed        0.405 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
   Finished Cholesky decomposition
   | Time :     0.000 s
   Finished transformation to standard eigenproblem
-  | Time :     0.001 s
+  | Time :     0.000 s
   Finished solving standard eigenproblem
   | Time :     0.000 s
   Finished back-transformation of eigenvectors
@@ -4744,7 +4744,7 @@
   | Electronic free energy per atom                       :       -7900.11222316 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.970 s, elapsed        0.970 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.845 s, elapsed        0.845 s
   Integration grid: deviation in total charge (<rho> - N_e) =   3.552714E-14
 
   Self-consistency convergence accuracy:
@@ -4755,13 +4755,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     4       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.093 s           2.094 s
-  | Charge density update                       :        0.971 s           0.972 s
-  | Density mixing & preconditioning            :        0.225 s           0.226 s
+  | Time for this iteration                     :        1.828 s           1.828 s
+  | Charge density update                       :        0.846 s           0.846 s
+  | Density mixing & preconditioning            :        0.179 s           0.179 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.411 s           0.411 s
-  | Integration                                 :        0.478 s           0.478 s
-  | Solution of K.-S. eqns.                     :        0.006 s           0.006 s
+  | Hartree multipole summation                 :        0.391 s           0.392 s
+  | Integration                                 :        0.406 s           0.405 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -4784,7 +4784,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    5
 
-  Date     :  20230628, Time     :  143822.072
+  Date     :  20230629, Time     :  142737.731
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -4799,12 +4799,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.192944E-12
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.400 s, elapsed        0.400 s
+  Time summed over all CPUs for potential: real work        0.404 s, elapsed        0.404 s
   | RMS charge density error from multipole expansion :   0.139859E-01
   | Average real-space part of the electrostatic potential :      0.44806795 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.496 s, elapsed        0.496 s
+  Time summed over all CPUs for integration: real work        0.454 s, elapsed        0.454 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -4859,7 +4859,7 @@
   | Electronic free energy per atom                       :       -7900.11224724 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.990 s, elapsed        0.990 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.916 s, elapsed        0.916 s
   Integration grid: deviation in total charge (<rho> - N_e) =   8.526513E-14
 
   Self-consistency convergence accuracy:
@@ -4870,13 +4870,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     5       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.086 s           2.086 s
-  | Charge density update                       :        0.992 s           0.992 s
-  | Density mixing & preconditioning            :        0.188 s           0.188 s
-  | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.402 s           0.402 s
-  | Integration                                 :        0.496 s           0.497 s
-  | Solution of K.-S. eqns.                     :        0.006 s           0.006 s
+  | Time for this iteration                     :        1.966 s           1.966 s
+  | Charge density update                       :        0.917 s           0.917 s
+  | Density mixing & preconditioning            :        0.181 s           0.181 s
+  | Hartree multipole update                    :        0.001 s           0.002 s
+  | Hartree multipole summation                 :        0.407 s           0.406 s
+  | Integration                                 :        0.454 s           0.455 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -4899,7 +4899,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    6
 
-  Date     :  20230628, Time     :  143824.158
+  Date     :  20230629, Time     :  142739.697
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -4914,12 +4914,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.265368E-12
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.403 s, elapsed        0.403 s
+  Time summed over all CPUs for potential: real work        0.415 s, elapsed        0.415 s
   | RMS charge density error from multipole expansion :   0.139865E-01
   | Average real-space part of the electrostatic potential :      0.44813458 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.475 s, elapsed        0.475 s
+  Time summed over all CPUs for integration: real work        0.401 s, elapsed        0.401 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -4974,7 +4974,7 @@
   | Electronic free energy per atom                       :       -7900.11224802 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.978 s, elapsed        0.978 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.901 s, elapsed        0.901 s
   Integration grid: deviation in total charge (<rho> - N_e) =   1.421085E-14
 
   Self-consistency convergence accuracy:
@@ -4985,12 +4985,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     6       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.048 s           2.048 s
-  | Charge density update                       :        0.979 s           0.980 s
-  | Density mixing & preconditioning            :        0.182 s           0.182 s
+  | Time for this iteration                     :        1.929 s           1.930 s
+  | Charge density update                       :        0.901 s           0.902 s
+  | Density mixing & preconditioning            :        0.202 s           0.202 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.405 s           0.405 s
-  | Integration                                 :        0.475 s           0.475 s
+  | Hartree multipole summation                 :        0.417 s           0.418 s
+  | Integration                                 :        0.402 s           0.401 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -5014,7 +5014,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    7
 
-  Date     :  20230628, Time     :  143826.206
+  Date     :  20230629, Time     :  142741.628
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -5029,12 +5029,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.401 s, elapsed        0.401 s
+  Time summed over all CPUs for potential: real work        0.386 s, elapsed        0.386 s
   | RMS charge density error from multipole expansion :   0.139862E-01
   | Average real-space part of the electrostatic potential :      0.44813993 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.471 s, elapsed        0.471 s
+  Time summed over all CPUs for integration: real work        0.408 s, elapsed        0.408 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -5089,7 +5089,7 @@
   | Electronic free energy per atom                       :       -7900.11224812 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.967 s, elapsed        0.967 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.836 s, elapsed        0.836 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -4.263256E-14
 
   Self-consistency convergence accuracy:
@@ -5100,13 +5100,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     7       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.038 s           2.038 s
-  | Charge density update                       :        0.968 s           0.968 s
-  | Density mixing & preconditioning            :        0.187 s           0.187 s
+  | Time for this iteration                     :        1.819 s           1.820 s
+  | Charge density update                       :        0.837 s           0.838 s
+  | Density mixing & preconditioning            :        0.180 s           0.179 s
   | Hartree multipole update                    :        0.001 s           0.002 s
-  | Hartree multipole summation                 :        0.404 s           0.404 s
-  | Integration                                 :        0.472 s           0.472 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
+  | Hartree multipole summation                 :        0.388 s           0.388 s
+  | Integration                                 :        0.408 s           0.408 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -5129,7 +5129,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    8
 
-  Date     :  20230628, Time     :  143828.244
+  Date     :  20230629, Time     :  142743.448
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -5144,12 +5144,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.137944E-12
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.398 s, elapsed        0.398 s
+  Time summed over all CPUs for potential: real work        0.387 s, elapsed        0.387 s
   | RMS charge density error from multipole expansion :   0.139862E-01
   | Average real-space part of the electrostatic potential :      0.44813638 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.467 s, elapsed        0.467 s
+  Time summed over all CPUs for integration: real work        0.433 s, elapsed        0.433 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -5204,7 +5204,7 @@
   | Electronic free energy per atom                       :       -7900.11224789 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.971 s, elapsed        0.971 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.897 s, elapsed        0.897 s
   Integration grid: deviation in total charge (<rho> - N_e) =   3.552714E-15
 
   Self-consistency convergence accuracy:
@@ -5215,13 +5215,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     8       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.037 s           2.037 s
-  | Charge density update                       :        0.973 s           0.973 s
-  | Density mixing & preconditioning            :        0.190 s           0.191 s
+  | Time for this iteration                     :        1.907 s           1.907 s
+  | Charge density update                       :        0.899 s           0.899 s
+  | Density mixing & preconditioning            :        0.179 s           0.179 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.401 s           0.400 s
-  | Integration                                 :        0.467 s           0.468 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
+  | Hartree multipole summation                 :        0.390 s           0.390 s
+  | Integration                                 :        0.434 s           0.433 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -5244,7 +5244,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    9
 
-  Date     :  20230628, Time     :  143830.282
+  Date     :  20230629, Time     :  142745.355
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -5259,12 +5259,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.324569E-12
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.399 s, elapsed        0.399 s
+  Time summed over all CPUs for potential: real work        0.398 s, elapsed        0.398 s
   | RMS charge density error from multipole expansion :   0.139862E-01
   | Average real-space part of the electrostatic potential :      0.44813641 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.471 s, elapsed        0.471 s
+  Time summed over all CPUs for integration: real work        0.405 s, elapsed        0.405 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -5321,7 +5321,7 @@
 
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.970 s, elapsed        0.970 s
+  Time summed over all CPUs for getting density from density matrix: real work        1.003 s, elapsed        1.003 s
   Integration grid: deviation in total charge (<rho> - N_e) =   7.105427E-15
 
   Self-consistency convergence accuracy:
@@ -5336,14 +5336,14 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     9       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        2.037 s           2.037 s
-  | Charge density & force component update     :        0.971 s           0.972 s
-  | Density mixing                              :        0.185 s           0.185 s
+  | Time for this iteration                     :        1.997 s           1.997 s
+  | Charge density & force component update     :        1.005 s           1.004 s
+  | Density mixing                              :        0.181 s           0.181 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.401 s           0.402 s
-  | Hartree pot. SCF incomplete forces          :        0.963 s           0.963 s
-  | Integration                                 :        0.472 s           0.471 s
-  | Solution of K.-S. eqns.                     :        0.006 s           0.006 s
+  | Hartree multipole summation                 :        0.400 s           0.400 s
+  | Hartree pot. SCF incomplete forces          :        0.964 s           0.964 s
+  | Integration                                 :        0.405 s           0.405 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -5366,7 +5366,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #   10
 
-  Date     :  20230628, Time     :  143832.319
+  Date     :  20230629, Time     :  142747.352
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -5381,12 +5381,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        1.779 s, elapsed        1.779 s
+  Time summed over all CPUs for potential: real work        1.692 s, elapsed        1.692 s
   | RMS charge density error from multipole expansion :   0.139862E-01
   | Average real-space part of the electrostatic potential :      0.44813641 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.498 s, elapsed        0.498 s
+  Time summed over all CPUs for integration: real work        0.477 s, elapsed        0.477 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -5395,7 +5395,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.001 s
+  | Time :     0.000 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -5441,7 +5441,7 @@
   | Electronic free energy per atom                       :       -7900.11224789 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.832 s, elapsed        0.832 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.938 s, elapsed        0.938 s
   Integration grid: deviation in total charge (<rho> - N_e) =   4.263256E-14
 
   atomic forces [eV/Ang]:
@@ -5473,13 +5473,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #    10       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        4.061 s           4.061 s
-  | Charge density & force component update     :        0.834 s           0.834 s
-  | Density mixing                              :        0.002 s           0.002 s
+  | Time for this iteration                     :        4.065 s           4.066 s
+  | Charge density & force component update     :        0.939 s           0.939 s
+  | Density mixing                              :        0.002 s           0.003 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        1.782 s           1.782 s
-  | Hartree pot. SCF incomplete forces          :        0.938 s           0.937 s
-  | Integration                                 :        0.499 s           0.499 s
+  | Hartree multipole summation                 :        1.695 s           1.695 s
+  | Hartree pot. SCF incomplete forces          :        0.945 s           0.945 s
+  | Integration                                 :        0.477 s           0.477 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -5503,7 +5503,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #   11
 
-  Date     :  20230628, Time     :  143836.380
+  Date     :  20230629, Time     :  142751.418
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -5518,12 +5518,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.172109E-12
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        1.739 s, elapsed        1.739 s
+  Time summed over all CPUs for potential: real work        1.642 s, elapsed        1.642 s
   | RMS charge density error from multipole expansion :   0.139862E-01
   | Average real-space part of the electrostatic potential :      0.44813641 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.404 s, elapsed        0.404 s
+  Time summed over all CPUs for integration: real work        0.406 s, elapsed        0.406 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -5578,7 +5578,7 @@
   | Electronic free energy per atom                       :       -7900.11224789 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.820 s, elapsed        0.820 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.880 s, elapsed        0.880 s
   
   Evaluating density-matrix-based force terms: batch-based integration
   Evaluating density matrix
@@ -5684,14 +5684,14 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #    11       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :       22.781 s          22.783 s
-  | Charge density & force component update     :       19.671 s          19.673 s
+  | Time for this iteration                     :       20.688 s          20.690 s
+  | Charge density & force component update     :       17.693 s          17.695 s
   | Density mixing                              :        0.002 s           0.002 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        1.742 s           1.742 s
-  | Hartree pot. SCF incomplete forces          :        0.957 s           0.957 s
-  | Integration                                 :        0.404 s           0.404 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
+  | Hartree multipole summation                 :        1.646 s           1.646 s
+  | Hartree pot. SCF incomplete forces          :        0.935 s           0.935 s
+  | Integration                                 :        0.406 s           0.406 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -5743,7 +5743,7 @@
 
 ------------------------------------------------------------
   Relaxation / MD: End force evaluation.       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this force evaluation              :       46.281 s          46.285 s
+  | Time for this force evaluation              :       43.234 s          43.242 s
 
 ------------------------------------------------------------
   Geometry optimization: Attempting to predict improved coordinates.
@@ -5810,7 +5810,7 @@
 ------------------------------------------------------------
           Begin self-consistency loop: Re-initialization.
 
-  Date     :  20230628, Time     :  143859.170
+  Date     :  20230629, Time     :  142812.115
 ------------------------------------------------------------
 
   Initializing index lists of integration centers etc. from given atomic structure:
@@ -5864,30 +5864,30 @@
   Calculating total energy contributions from superposition of free atom densities.
   Initialize hartree_potential_storage
   Integrating overlap matrix.
-  Time summed over all CPUs for integration: real work        0.278 s, elapsed        0.278 s
+  Time summed over all CPUs for integration: real work        0.257 s, elapsed        0.257 s
   Orthonormalizing eigenvectors
 
   End scf reinitialization - timings           :  max(cpu_time)    wall_clock(cpu1)
-  | Time for scf. reinitialization              :        0.596 s           0.596 s
-  | Boundary condition initialization           :        0.065 s           0.065 s
-  | Integration                                 :        0.278 s           0.278 s
-  | Grid partitioning                           :        0.033 s           0.033 s
-  | Preloading free-atom quantities on grid     :        0.181 s           0.181 s
+  | Time for scf. reinitialization              :        0.562 s           0.563 s
+  | Boundary condition initialization           :        0.064 s           0.064 s
+  | Integration                                 :        0.257 s           0.257 s
+  | Grid partitioning                           :        0.032 s           0.032 s
+  | Preloading free-atom quantities on grid     :        0.171 s           0.172 s
   | Free-atom superposition energy              :        0.027 s           0.027 s
   | K.-S. eigenvector reorthonormalization      :        0.001 s           0.001 s
 ------------------------------------------------------------
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.880 s, elapsed        0.880 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.800 s, elapsed        0.800 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -2.842171E-14
 
   Time for density update prior                :  max(cpu_time)    wall_clock(cpu1)
-  | self-consistency iterative process          :        0.881 s           0.882 s
+  | self-consistency iterative process          :        0.801 s           0.801 s
 
 ------------------------------------------------------------
           Begin self-consistency iteration #    1
 
-  Date     :  20230628, Time     :  143900.648
+  Date     :  20230629, Time     :  142813.479
 ------------------------------------------------------------
   Renormalizing the density to the exact electron count on the 3D integration grid.
   | Formal number of electrons (from input files) :      28.0000000000
@@ -5903,12 +5903,12 @@
   Summing up the Hartree potential.
   | Estimated reciprocal-space cutoff momentum G_max:         2.30452216 bohr^-1 .
   | Reciprocal lattice points for long-range Hartree potential:      58
-  Time summed over all CPUs for potential: real work        0.395 s, elapsed        0.395 s
+  Time summed over all CPUs for potential: real work        0.389 s, elapsed        0.389 s
   | RMS charge density error from multipole expansion :   0.137565E-01
   | Average real-space part of the electrostatic potential :      0.43740443 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.444 s, elapsed        0.444 s
+  Time summed over all CPUs for integration: real work        0.395 s, elapsed        0.395 s
   Decreasing sparse matrix size:
   | Tolerance:  0.1000E-12
   Hamiltonian matrix
@@ -5998,7 +5998,7 @@
   | Electronic free energy per atom                       :       -7900.11280172 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.887 s, elapsed        0.887 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.806 s, elapsed        0.806 s
   Integration grid: deviation in total charge (<rho> - N_e) =   0.000000E+00
 
   Self-consistency convergence accuracy:
@@ -6009,13 +6009,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     1       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.738 s           1.738 s
-  | Charge density update                       :        0.888 s           0.888 s
+  | Time for this iteration                     :        1.601 s           1.601 s
+  | Charge density update                       :        0.807 s           0.807 s
   | Density mixing & preconditioning            :        0.000 s           0.000 s
-  | Hartree multipole update                    :        0.001 s           0.002 s
-  | Hartree multipole summation                 :        0.397 s           0.397 s
-  | Integration                                 :        0.444 s           0.444 s
-  | Solution of K.-S. eqns.                     :        0.006 s           0.006 s
+  | Hartree multipole update                    :        0.001 s           0.001 s
+  | Hartree multipole summation                 :        0.392 s           0.392 s
+  | Integration                                 :        0.396 s           0.396 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -6038,7 +6038,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    2
 
-  Date     :  20230628, Time     :  143902.386
+  Date     :  20230629, Time     :  142815.080
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -6053,12 +6053,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.000000E+00
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.395 s, elapsed        0.395 s
+  Time summed over all CPUs for potential: real work        0.389 s, elapsed        0.389 s
   | RMS charge density error from multipole expansion :   0.137532E-01
   | Average real-space part of the electrostatic potential :      0.43745542 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.431 s, elapsed        0.431 s
+  Time summed over all CPUs for integration: real work        0.400 s, elapsed        0.400 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -6113,7 +6113,7 @@
   | Electronic free energy per atom                       :       -7900.11280311 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.876 s, elapsed        0.876 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.806 s, elapsed        0.806 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -2.131628E-14
 
   Self-consistency convergence accuracy:
@@ -6124,12 +6124,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     2       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.893 s           1.893 s
-  | Charge density update                       :        0.877 s           0.877 s
-  | Density mixing & preconditioning            :        0.181 s           0.181 s
+  | Time for this iteration                     :        1.782 s           1.782 s
+  | Charge density update                       :        0.807 s           0.807 s
+  | Density mixing & preconditioning            :        0.177 s           0.177 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.397 s           0.397 s
-  | Integration                                 :        0.431 s           0.432 s
+  | Hartree multipole summation                 :        0.391 s           0.391 s
+  | Integration                                 :        0.401 s           0.400 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -6153,7 +6153,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    3
 
-  Date     :  20230628, Time     :  143904.280
+  Date     :  20230629, Time     :  142816.862
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -6168,12 +6168,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.105241E-12
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.398 s, elapsed        0.398 s
+  Time summed over all CPUs for potential: real work        0.388 s, elapsed        0.388 s
   | RMS charge density error from multipole expansion :   0.137433E-01
   | Average real-space part of the electrostatic potential :      0.43762304 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.427 s, elapsed        0.427 s
+  Time summed over all CPUs for integration: real work        0.399 s, elapsed        0.399 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -6182,7 +6182,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.001 s
+  | Time :     0.000 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -6228,7 +6228,7 @@
   | Electronic free energy per atom                       :       -7900.11280829 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.875 s, elapsed        0.875 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.808 s, elapsed        0.808 s
   Integration grid: deviation in total charge (<rho> - N_e) =   4.263256E-14
 
   Self-consistency convergence accuracy:
@@ -6239,13 +6239,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     3       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.905 s           1.905 s
-  | Charge density update                       :        0.876 s           0.876 s
-  | Density mixing & preconditioning            :        0.195 s           0.195 s
+  | Time for this iteration                     :        1.783 s           1.783 s
+  | Charge density update                       :        0.810 s           0.810 s
+  | Density mixing & preconditioning            :        0.177 s           0.177 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.401 s           0.401 s
-  | Integration                                 :        0.427 s           0.427 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
+  | Hartree multipole summation                 :        0.391 s           0.391 s
+  | Integration                                 :        0.399 s           0.400 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -6268,7 +6268,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    4
 
-  Date     :  20230628, Time     :  143906.185
+  Date     :  20230629, Time     :  142818.645
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -6283,12 +6283,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.263782E-13
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.395 s, elapsed        0.395 s
+  Time summed over all CPUs for potential: real work        0.388 s, elapsed        0.388 s
   | RMS charge density error from multipole expansion :   0.137409E-01
   | Average real-space part of the electrostatic potential :      0.43771631 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.422 s, elapsed        0.422 s
+  Time summed over all CPUs for integration: real work        0.397 s, elapsed        0.397 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -6343,7 +6343,7 @@
   | Electronic free energy per atom                       :       -7900.11281090 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.881 s, elapsed        0.881 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.805 s, elapsed        0.805 s
   Integration grid: deviation in total charge (<rho> - N_e) =   5.684342E-14
 
   Self-consistency convergence accuracy:
@@ -6354,13 +6354,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     4       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.905 s           1.905 s
-  | Charge density update                       :        0.882 s           0.882 s
-  | Density mixing & preconditioning            :        0.197 s           0.197 s
+  | Time for this iteration                     :        1.778 s           1.779 s
+  | Charge density update                       :        0.806 s           0.807 s
+  | Density mixing & preconditioning            :        0.178 s           0.178 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.398 s           0.398 s
-  | Integration                                 :        0.422 s           0.422 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
+  | Hartree multipole summation                 :        0.391 s           0.391 s
+  | Integration                                 :        0.397 s           0.398 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -6383,7 +6383,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    5
 
-  Date     :  20230628, Time     :  143908.090
+  Date     :  20230629, Time     :  142820.424
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -6398,12 +6398,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.245805E-13
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.393 s, elapsed        0.393 s
+  Time summed over all CPUs for potential: real work        0.389 s, elapsed        0.389 s
   | RMS charge density error from multipole expansion :   0.137410E-01
   | Average real-space part of the electrostatic potential :      0.43773194 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.436 s, elapsed        0.436 s
+  Time summed over all CPUs for integration: real work        0.397 s, elapsed        0.398 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -6412,7 +6412,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.001 s
+  | Time :     0.000 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -6458,7 +6458,7 @@
   | Electronic free energy per atom                       :       -7900.11281137 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.878 s, elapsed        0.878 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.807 s, elapsed        0.807 s
   Integration grid: deviation in total charge (<rho> - N_e) =   4.263256E-14
 
   Self-consistency convergence accuracy:
@@ -6469,13 +6469,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     5       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.898 s           1.899 s
-  | Charge density update                       :        0.879 s           0.879 s
-  | Density mixing & preconditioning            :        0.182 s           0.182 s
+  | Time for this iteration                     :        1.780 s           1.780 s
+  | Charge density update                       :        0.808 s           0.808 s
+  | Density mixing & preconditioning            :        0.177 s           0.177 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.395 s           0.396 s
-  | Integration                                 :        0.436 s           0.436 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
+  | Hartree multipole summation                 :        0.392 s           0.392 s
+  | Integration                                 :        0.398 s           0.398 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -6498,7 +6498,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    6
 
-  Date     :  20230628, Time     :  143909.989
+  Date     :  20230629, Time     :  142822.205
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -6513,12 +6513,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.755972E-13
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.391 s, elapsed        0.391 s
+  Time summed over all CPUs for potential: real work        0.389 s, elapsed        0.389 s
   | RMS charge density error from multipole expansion :   0.137410E-01
   | Average real-space part of the electrostatic potential :      0.43773127 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.421 s, elapsed        0.421 s
+  Time summed over all CPUs for integration: real work        0.398 s, elapsed        0.398 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -6527,7 +6527,7 @@
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
-  | Time :     0.001 s
+  | Time :     0.000 s
   Finished back-transformation of eigenvectors
   | Time :     0.000 s
 
@@ -6575,7 +6575,7 @@
 
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.878 s, elapsed        0.878 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.805 s, elapsed        0.805 s
   Integration grid: deviation in total charge (<rho> - N_e) =   0.000000E+00
 
   Self-consistency convergence accuracy:
@@ -6590,14 +6590,14 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     6       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.881 s           1.881 s
-  | Charge density & force component update     :        0.879 s           0.879 s
-  | Density mixing                              :        0.181 s           0.181 s
+  | Time for this iteration                     :        1.779 s           1.778 s
+  | Charge density & force component update     :        0.806 s           0.806 s
+  | Density mixing                              :        0.177 s           0.177 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.393 s           0.394 s
-  | Hartree pot. SCF incomplete forces          :        0.957 s           0.957 s
-  | Integration                                 :        0.421 s           0.421 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
+  | Hartree multipole summation                 :        0.392 s           0.392 s
+  | Hartree pot. SCF incomplete forces          :        0.935 s           0.935 s
+  | Integration                                 :        0.398 s           0.398 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -6620,7 +6620,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    7
 
-  Date     :  20230628, Time     :  143911.870
+  Date     :  20230629, Time     :  142823.983
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -6635,12 +6635,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.146307E-12
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        1.683 s, elapsed        1.683 s
+  Time summed over all CPUs for potential: real work        1.642 s, elapsed        1.642 s
   | RMS charge density error from multipole expansion :   0.137410E-01
   | Average real-space part of the electrostatic potential :      0.43773143 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.423 s, elapsed        0.423 s
+  Time summed over all CPUs for integration: real work        0.400 s, elapsed        0.400 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -6695,7 +6695,7 @@
   | Electronic free energy per atom                       :       -7900.11281133 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.903 s, elapsed        0.903 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.805 s, elapsed        0.805 s
   Integration grid: deviation in total charge (<rho> - N_e) =   8.881784E-14
 
   atomic forces [eV/Ang]:
@@ -6727,14 +6727,14 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     7       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        3.971 s           3.972 s
-  | Charge density & force component update     :        0.904 s           0.905 s
+  | Time for this iteration                     :        3.798 s           3.798 s
+  | Charge density & force component update     :        0.806 s           0.806 s
   | Density mixing                              :        0.002 s           0.002 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        1.686 s           1.686 s
-  | Hartree pot. SCF incomplete forces          :        0.951 s           0.951 s
-  | Integration                                 :        0.423 s           0.423 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
+  | Hartree multipole summation                 :        1.646 s           1.646 s
+  | Hartree pot. SCF incomplete forces          :        0.938 s           0.938 s
+  | Integration                                 :        0.400 s           0.400 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -6757,7 +6757,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    8
 
-  Date     :  20230628, Time     :  143915.842
+  Date     :  20230629, Time     :  142827.781
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -6772,12 +6772,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.210638E-13
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        1.682 s, elapsed        1.682 s
+  Time summed over all CPUs for potential: real work        1.643 s, elapsed        1.643 s
   | RMS charge density error from multipole expansion :   0.137410E-01
   | Average real-space part of the electrostatic potential :      0.43773148 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.426 s, elapsed        0.426 s
+  Time summed over all CPUs for integration: real work        0.399 s, elapsed        0.400 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -6832,7 +6832,7 @@
   | Electronic free energy per atom                       :       -7900.11281134 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.878 s, elapsed        0.878 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.803 s, elapsed        0.803 s
   
   Evaluating density-matrix-based force terms: batch-based integration
   Evaluating density matrix
@@ -6940,13 +6940,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     8       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :       21.378 s          21.380 s
-  | Charge density & force component update     :       18.292 s          18.294 s
+  | Time for this iteration                     :       19.159 s          19.160 s
+  | Charge density & force component update     :       16.165 s          16.166 s
   | Density mixing                              :        0.002 s           0.002 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        1.686 s           1.686 s
-  | Hartree pot. SCF incomplete forces          :        0.964 s           0.965 s
-  | Integration                                 :        0.427 s           0.427 s
+  | Hartree multipole summation                 :        1.647 s           1.647 s
+  | Hartree pot. SCF incomplete forces          :        0.940 s           0.940 s
+  | Integration                                 :        0.400 s           0.399 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -6999,7 +6999,7 @@
 
 ------------------------------------------------------------
   Relaxation / MD: End force evaluation.       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this force evaluation              :       38.054 s          38.058 s
+  | Time for this force evaluation              :       34.830 s          34.833 s
 
 ------------------------------------------------------------
   Geometry optimization: Attempting to predict improved coordinates.
@@ -7066,7 +7066,7 @@
 ------------------------------------------------------------
           Begin self-consistency loop: Re-initialization.
 
-  Date     :  20230628, Time     :  143937.229
+  Date     :  20230629, Time     :  142846.948
 ------------------------------------------------------------
 
   Initializing index lists of integration centers etc. from given atomic structure:
@@ -7120,30 +7120,30 @@
   Calculating total energy contributions from superposition of free atom densities.
   Initialize hartree_potential_storage
   Integrating overlap matrix.
-  Time summed over all CPUs for integration: real work        0.276 s, elapsed        0.276 s
+  Time summed over all CPUs for integration: real work        0.251 s, elapsed        0.251 s
   Orthonormalizing eigenvectors
 
   End scf reinitialization - timings           :  max(cpu_time)    wall_clock(cpu1)
-  | Time for scf. reinitialization              :        0.590 s           0.590 s
-  | Boundary condition initialization           :        0.066 s           0.065 s
-  | Integration                                 :        0.276 s           0.277 s
-  | Grid partitioning                           :        0.033 s           0.033 s
-  | Preloading free-atom quantities on grid     :        0.176 s           0.177 s
-  | Free-atom superposition energy              :        0.028 s           0.027 s
-  | K.-S. eigenvector reorthonormalization      :        0.001 s           0.000 s
+  | Time for scf. reinitialization              :        0.557 s           0.557 s
+  | Boundary condition initialization           :        0.064 s           0.065 s
+  | Integration                                 :        0.251 s           0.251 s
+  | Grid partitioning                           :        0.032 s           0.032 s
+  | Preloading free-atom quantities on grid     :        0.172 s           0.171 s
+  | Free-atom superposition energy              :        0.027 s           0.027 s
+  | K.-S. eigenvector reorthonormalization      :        0.001 s           0.001 s
 ------------------------------------------------------------
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.877 s, elapsed        0.877 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.799 s, elapsed        0.799 s
   Integration grid: deviation in total charge (<rho> - N_e) =   2.131628E-14
 
   Time for density update prior                :  max(cpu_time)    wall_clock(cpu1)
-  | self-consistency iterative process          :        0.879 s           0.879 s
+  | self-consistency iterative process          :        0.800 s           0.800 s
 
 ------------------------------------------------------------
           Begin self-consistency iteration #    1
 
-  Date     :  20230628, Time     :  143938.698
+  Date     :  20230629, Time     :  142848.305
 ------------------------------------------------------------
   Renormalizing the density to the exact electron count on the 3D integration grid.
   | Formal number of electrons (from input files) :      28.0000000000
@@ -7159,12 +7159,12 @@
   Summing up the Hartree potential.
   | Estimated reciprocal-space cutoff momentum G_max:         2.30301545 bohr^-1 .
   | Reciprocal lattice points for long-range Hartree potential:      58
-  Time summed over all CPUs for potential: real work        0.395 s, elapsed        0.395 s
+  Time summed over all CPUs for potential: real work        0.387 s, elapsed        0.387 s
   | RMS charge density error from multipole expansion :   0.137080E-01
   | Average real-space part of the electrostatic potential :      0.43618052 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.421 s, elapsed        0.421 s
+  Time summed over all CPUs for integration: real work        0.392 s, elapsed        0.392 s
   Decreasing sparse matrix size:
   | Tolerance:  0.1000E-12
   Hamiltonian matrix
@@ -7254,7 +7254,7 @@
   | Electronic free energy per atom                       :       -7900.11277113 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.872 s, elapsed        0.872 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.801 s, elapsed        0.801 s
   Integration grid: deviation in total charge (<rho> - N_e) =   4.973799E-14
 
   Self-consistency convergence accuracy:
@@ -7265,12 +7265,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     1       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.700 s           1.700 s
-  | Charge density update                       :        0.874 s           0.874 s
-  | Density mixing & preconditioning            :        0.000 s           0.000 s
-  | Hartree multipole update                    :        0.001 s           0.002 s
-  | Hartree multipole summation                 :        0.398 s           0.397 s
-  | Integration                                 :        0.422 s           0.422 s
+  | Time for this iteration                     :        1.591 s           1.591 s
+  | Charge density update                       :        0.802 s           0.802 s
+  | Density mixing & preconditioning            :        0.000 s           0.001 s
+  | Hartree multipole update                    :        0.001 s           0.001 s
+  | Hartree multipole summation                 :        0.389 s           0.389 s
+  | Integration                                 :        0.393 s           0.393 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -7294,7 +7294,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    2
 
-  Date     :  20230628, Time     :  143940.398
+  Date     :  20230629, Time     :  142849.896
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -7309,17 +7309,17 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.906145E-13
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.397 s, elapsed        0.397 s
+  Time summed over all CPUs for potential: real work        0.386 s, elapsed        0.386 s
   | RMS charge density error from multipole expansion :   0.137076E-01
   | Average real-space part of the electrostatic potential :      0.43618811 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.420 s, elapsed        0.420 s
+  Time summed over all CPUs for integration: real work        0.396 s, elapsed        0.396 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
   Finished Cholesky decomposition
-  | Time :     0.001 s
+  | Time :     0.000 s
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
@@ -7369,7 +7369,7 @@
   | Electronic free energy per atom                       :       -7900.11277136 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.894 s, elapsed        0.894 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.800 s, elapsed        0.800 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -2.131628E-14
 
   Self-consistency convergence accuracy:
@@ -7380,12 +7380,12 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     2       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.906 s           1.907 s
-  | Charge density update                       :        0.895 s           0.896 s
-  | Density mixing & preconditioning            :        0.185 s           0.186 s
+  | Time for this iteration                     :        1.769 s           1.770 s
+  | Charge density update                       :        0.802 s           0.802 s
+  | Density mixing & preconditioning            :        0.177 s           0.178 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.399 s           0.399 s
-  | Integration                                 :        0.420 s           0.420 s
+  | Hartree multipole summation                 :        0.388 s           0.388 s
+  | Integration                                 :        0.396 s           0.396 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -7409,7 +7409,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    3
 
-  Date     :  20230628, Time     :  143942.305
+  Date     :  20230629, Time     :  142851.666
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -7424,17 +7424,17 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.543032E-13
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.395 s, elapsed        0.395 s
+  Time summed over all CPUs for potential: real work        0.386 s, elapsed        0.386 s
   | RMS charge density error from multipole expansion :   0.137060E-01
   | Average real-space part of the electrostatic potential :      0.43621577 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.418 s, elapsed        0.418 s
+  Time summed over all CPUs for integration: real work        0.394 s, elapsed        0.394 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
   Finished Cholesky decomposition
-  | Time :     0.000 s
+  | Time :     0.001 s
   Finished transformation to standard eigenproblem
   | Time :     0.000 s
   Finished solving standard eigenproblem
@@ -7484,7 +7484,7 @@
   | Electronic free energy per atom                       :       -7900.11277216 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.878 s, elapsed        0.878 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.800 s, elapsed        0.800 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -6.394885E-14
 
   Self-consistency convergence accuracy:
@@ -7495,13 +7495,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     3       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.898 s           1.898 s
-  | Charge density update                       :        0.879 s           0.879 s
-  | Density mixing & preconditioning            :        0.198 s           0.198 s
-  | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.397 s           0.398 s
-  | Integration                                 :        0.418 s           0.418 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
+  | Time for this iteration                     :        1.767 s           1.767 s
+  | Charge density update                       :        0.801 s           0.801 s
+  | Density mixing & preconditioning            :        0.177 s           0.177 s
+  | Hartree multipole update                    :        0.001 s           0.002 s
+  | Hartree multipole summation                 :        0.388 s           0.388 s
+  | Integration                                 :        0.394 s           0.394 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -7524,7 +7524,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    4
 
-  Date     :  20230628, Time     :  143944.203
+  Date     :  20230629, Time     :  142853.433
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -7539,12 +7539,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =   0.391576E-13
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.393 s, elapsed        0.393 s
+  Time summed over all CPUs for potential: real work        0.386 s, elapsed        0.386 s
   | RMS charge density error from multipole expansion :   0.137058E-01
   | Average real-space part of the electrostatic potential :      0.43622742 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.425 s, elapsed        0.425 s
+  Time summed over all CPUs for integration: real work        0.394 s, elapsed        0.394 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -7599,7 +7599,7 @@
   | Electronic free energy per atom                       :       -7900.11277241 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.886 s, elapsed        0.886 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.803 s, elapsed        0.803 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -5.684342E-14
 
   Self-consistency convergence accuracy:
@@ -7610,13 +7610,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     4       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.911 s           1.912 s
-  | Charge density update                       :        0.888 s           0.888 s
-  | Density mixing & preconditioning            :        0.196 s           0.197 s
+  | Time for this iteration                     :        1.770 s           1.771 s
+  | Charge density update                       :        0.804 s           0.804 s
+  | Density mixing & preconditioning            :        0.177 s           0.178 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.395 s           0.395 s
-  | Integration                                 :        0.426 s           0.426 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
+  | Hartree multipole summation                 :        0.388 s           0.388 s
+  | Integration                                 :        0.395 s           0.395 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -7639,7 +7639,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    5
 
-  Date     :  20230628, Time     :  143946.115
+  Date     :  20230629, Time     :  142855.204
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -7654,12 +7654,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.649249E-13
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        0.392 s, elapsed        0.392 s
+  Time summed over all CPUs for potential: real work        0.386 s, elapsed        0.386 s
   | RMS charge density error from multipole expansion :   0.137058E-01
   | Average real-space part of the electrostatic potential :      0.43622873 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.419 s, elapsed        0.419 s
+  Time summed over all CPUs for integration: real work        0.394 s, elapsed        0.394 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -7716,7 +7716,7 @@
 
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.876 s, elapsed        0.876 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.799 s, elapsed        0.799 s
   Integration grid: deviation in total charge (<rho> - N_e) =  -5.329071E-14
 
   Self-consistency convergence accuracy:
@@ -7731,13 +7731,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     5       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        1.883 s           1.883 s
-  | Charge density & force component update     :        0.877 s           0.877 s
-  | Density mixing                              :        0.186 s           0.186 s
+  | Time for this iteration                     :        1.766 s           1.766 s
+  | Charge density & force component update     :        0.800 s           0.800 s
+  | Density mixing                              :        0.177 s           0.177 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        0.395 s           0.395 s
-  | Hartree pot. SCF incomplete forces          :        0.964 s           0.965 s
-  | Integration                                 :        0.419 s           0.419 s
+  | Hartree multipole summation                 :        0.388 s           0.389 s
+  | Hartree pot. SCF incomplete forces          :        0.940 s           0.940 s
+  | Integration                                 :        0.395 s           0.394 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -7761,7 +7761,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    6
 
-  Date     :  20230628, Time     :  143947.998
+  Date     :  20230629, Time     :  142856.970
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -7776,12 +7776,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.889566E-14
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        1.690 s, elapsed        1.690 s
+  Time summed over all CPUs for potential: real work        1.635 s, elapsed        1.635 s
   | RMS charge density error from multipole expansion :   0.137059E-01
   | Average real-space part of the electrostatic potential :      0.43622875 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.463 s, elapsed        0.463 s
+  Time summed over all CPUs for integration: real work        0.396 s, elapsed        0.396 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -7836,7 +7836,7 @@
   | Electronic free energy per atom                       :       -7900.11277244 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.882 s, elapsed        0.882 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.799 s, elapsed        0.799 s
   Integration grid: deviation in total charge (<rho> - N_e) =   9.237056E-14
 
   atomic forces [eV/Ang]:
@@ -7868,14 +7868,14 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     6       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :        4.008 s           4.009 s
-  | Charge density & force component update     :        0.884 s           0.884 s
-  | Density mixing                              :        0.001 s           0.002 s
-  | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        1.694 s           1.694 s
-  | Hartree pot. SCF incomplete forces          :        0.959 s           0.959 s
-  | Integration                                 :        0.463 s           0.463 s
-  | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
+  | Time for this iteration                     :        3.781 s           3.782 s
+  | Charge density & force component update     :        0.800 s           0.801 s
+  | Density mixing                              :        0.001 s           0.001 s
+  | Hartree multipole update                    :        0.001 s           0.002 s
+  | Hartree multipole summation                 :        1.639 s           1.639 s
+  | Hartree pot. SCF incomplete forces          :        0.939 s           0.939 s
+  | Integration                                 :        0.396 s           0.396 s
+  | Solution of K.-S. eqns.                     :        0.005 s           0.004 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
   Partial memory accounting:
@@ -7898,7 +7898,7 @@
 ------------------------------------------------------------
           Begin self-consistency iteration #    7
 
-  Date     :  20230628, Time     :  143952.007
+  Date     :  20230629, Time     :  142900.752
 ------------------------------------------------------------
   Pulay mixing of updated and previous charge densities.
   Renormalizing the density to the exact electron count on the 3D integration grid.
@@ -7913,12 +7913,12 @@
   | Analytical far-field extrapolation by fixed multipoles:
   | Hartree multipole sum: apparent total charge =  -0.177950E-12
   Summing up the Hartree potential.
-  Time summed over all CPUs for potential: real work        1.685 s, elapsed        1.685 s
+  Time summed over all CPUs for potential: real work        1.634 s, elapsed        1.634 s
   | RMS charge density error from multipole expansion :   0.137059E-01
   | Average real-space part of the electrostatic potential :      0.43622876 eV
 
   Integrating Hamiltonian matrix: batch-based integration.
-  Time summed over all CPUs for integration: real work        0.449 s, elapsed        0.449 s
+  Time summed over all CPUs for integration: real work        0.396 s, elapsed        0.396 s
 
   Updating Kohn-Sham eigenvalues and eigenvectors using ELSI and the (modified) LAPACK eigensolver.
   Starting LAPACK eigensolver
@@ -7973,7 +7973,7 @@
   | Electronic free energy per atom                       :       -7900.11277244 eV
   Evaluating new KS density using the density matrix
   Evaluating density matrix
-  Time summed over all CPUs for getting density from density matrix: real work        0.878 s, elapsed        0.878 s
+  Time summed over all CPUs for getting density from density matrix: real work        0.799 s, elapsed        0.799 s
   
   Evaluating density-matrix-based force terms: batch-based integration
   Evaluating density matrix
@@ -8081,13 +8081,13 @@
 
 ------------------------------------------------------------
   End self-consistency iteration #     7       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this iteration                     :       21.130 s          21.131 s
-  | Charge density & force component update     :       18.032 s          18.033 s
-  | Density mixing                              :        0.002 s           0.002 s
+  | Time for this iteration                     :       18.954 s          18.955 s
+  | Charge density & force component update     :       15.974 s          15.975 s
+  | Density mixing                              :        0.001 s           0.001 s
   | Hartree multipole update                    :        0.001 s           0.001 s
-  | Hartree multipole summation                 :        1.688 s           1.688 s
-  | Hartree pot. SCF incomplete forces          :        0.951 s           0.952 s
-  | Integration                                 :        0.450 s           0.450 s
+  | Hartree multipole summation                 :        1.638 s           1.638 s
+  | Hartree pot. SCF incomplete forces          :        0.939 s           0.939 s
+  | Integration                                 :        0.396 s           0.396 s
   | Solution of K.-S. eqns.                     :        0.005 s           0.005 s
   | Total energy evaluation                     :        0.000 s           0.000 s
 
@@ -8140,7 +8140,7 @@
 
 ------------------------------------------------------------
   Relaxation / MD: End force evaluation.       :  max(cpu_time)    wall_clock(cpu1)
-  | Time for this force evaluation              :       35.913 s          35.916 s
+  | Time for this force evaluation              :       32.763 s          32.765 s
 
 ------------------------------------------------------------
   Geometry optimization: Attempting to predict improved coordinates.
@@ -8270,7 +8270,7 @@
 
 ------------------------------------------------------------
           Leaving FHI-aims.
-          Date     :  20230628, Time     :  144013.145
+          Date     :  20230629, Time     :  142919.714
 
           Computational steps:
           | Number of self-consistency cycles          :           51
@@ -8278,21 +8278,21 @@
           | Number of relaxation steps                 :            4
 
           Detailed time accounting                     :  max(cpu_time)    wall_clock(cpu1)
-          | Total time                                  :      229.246 s         229.264 s
-          | Preparation time                            :        0.129 s           0.129 s
-          | Boundary condition initalization            :        0.323 s           0.322 s
-          | Grid partitioning                           :        0.176 s           0.176 s
-          | Preloading free-atom quantities on grid     :        0.977 s           0.979 s
-          | Free-atom superposition energy              :        0.147 s           0.146 s
-          | Total time for integrations                 :       25.812 s          25.813 s
-          | Total time for solution of K.-S. equations  :        0.260 s           0.259 s
-          | Total time for EV reorthonormalization      :        0.004 s           0.003 s
-          | Total time for density & force components   :      150.760 s         150.772 s
-          | Total time for mixing & preconditioning     :        7.078 s           7.079 s
-          | Total time for Hartree multipole update     :        0.062 s           0.060 s
-          | Total time for Hartree multipole sum        :       33.801 s          33.804 s
-          | Total time for total energy evaluation      :        0.003 s           0.001 s
-          | Total time NSC force correction             :        9.599 s           9.600 s
+          | Total time                                  :      209.186 s         209.633 s
+          | Preparation time                            :        0.110 s           0.111 s
+          | Boundary condition initalization            :        0.315 s           0.315 s
+          | Grid partitioning                           :        0.170 s           0.169 s
+          | Preloading free-atom quantities on grid     :        0.934 s           0.936 s
+          | Free-atom superposition energy              :        0.139 s           0.139 s
+          | Total time for integrations                 :       23.933 s          23.974 s
+          | Total time for solution of K.-S. equations  :        0.255 s           0.253 s
+          | Total time for EV reorthonormalization      :        0.003 s           0.004 s
+          | Total time for density & force components   :      134.254 s         134.565 s
+          | Total time for mixing & preconditioning     :        6.741 s           6.752 s
+          | Total time for Hartree multipole update     :        0.061 s           0.061 s
+          | Total time for Hartree multipole sum        :       32.707 s          32.773 s
+          | Total time for total energy evaluation      :        0.003 s           0.002 s
+          | Total time NSC force correction             :        9.452 s           9.463 s
           | Total time for scaled ZORA corrections      :        0.000 s           0.000 s
 
           Partial memory accounting:

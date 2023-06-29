@@ -72,7 +72,7 @@ class RelaxSetGenerator(AimsInputGenerator):
         dict
             A dictionary of updates to apply.
         """
-        updates = {"relax_geometry": f"{self.method} {self.max_force}"}
+        updates = {"relax_geometry": f"{self.method} {self.max_force:e}"}
         if any(atoms.pbc) and self.relax_cell:
             updates["relax_unit_cell"] = "full"
         elif any(atoms.pbc):

@@ -1,6 +1,5 @@
 {
   "xc": "pbe",
   "relativistic": "atomic_zora scalar",
-  "relax_geometry": "trm 1e-3",
-  "species_dir": "/home/tpurcell/git/fhi-aims-workflows/tests/test_input_generators/species_dir"
+  "species_dir": "/home/tpurcell/git/fhi-aims-workflows/tests/species_dir"
 }
