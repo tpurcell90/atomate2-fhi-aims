@@ -6,13 +6,8 @@ from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 from ase.build import bulk
 
 
-@pytest.fixture
-def Si():
-    return bulk("Si")
-
-
 # def test_base_maker(tmp_path, mock_aims, Si):
-def test_static_maker(tmp_path, Si):
+def test_static_maker(Si):
     import os
 
     from jobflow import run_locally

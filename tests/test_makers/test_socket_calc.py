@@ -12,7 +12,7 @@ def Si():
 
 
 # def test_base_maker(tmp_path, mock_aims, Si):
-def test_static_maker(temp_path, Si):
+def test_static_maker(Si):
     import os
 
     from jobflow import run_locally
