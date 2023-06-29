@@ -11,7 +11,6 @@ from tests import compare_files
 
 
 def comp_system(atoms, prev_dir, test_name, work_path, ref_path, species_dir):
-    work_path = Path.cwd()
     generator = StaticSetGenerator(user_parameters={})
     # adjust species dir in the prev_dir
     params_file = Path(prev_dir) / "parameters.json"
