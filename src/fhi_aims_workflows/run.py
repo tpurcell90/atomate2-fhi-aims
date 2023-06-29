@@ -8,6 +8,12 @@ import subprocess
 
 from fhi_aims_workflows.schemas.task import TaskDocument
 
+import json
+from monty.json import MontyDecoder
+
+from ase.calculators.socketio import Calculator, SocketIOCalculator
+from ase.calculators.aims import Aims
+
 # from typing import Dict, Any
 
 logger = logging.getLogger(__name__)
@@ -27,9 +33,9 @@ def run_aims(
     # aims_job_kwargs : dict
     #     Keyword arguments that are passed to :obj:`.AimsJob`.
     """
-    aims_cmd = aims_cmd or os.getenv('ASE_AIMS_COMMAND')
+    aims_cmd = aims_cmd or os.getenv("ASE_AIMS_COMMAND")
     if not aims_cmd:
-        raise RuntimeError('No aims.x command found')
+        raise RuntimeError("No aims.x command found")
     # aims_job_kwargs = aims_job_kwargs or {}
 
     aims_cmd = expandvars(aims_cmd)
@@ -70,8 +76,40 @@ def should_stop_children(
         return handle_unsuccessful
 
     if handle_unsuccessful == "error":
-        raise RuntimeError(
-            "Job was not successful (not converged)!"
-        )
+        raise RuntimeError("Job was not successful (not converged)!")
 
     raise RuntimeError(f"Unknown option for handle_unsuccessful: {handle_unsuccessful}")
+
+
+def run_aims_socket(atoms_to_calculate: Iterable[MSONableAtoms], aims_cmd: str = None):
+    """Uses the ASE interface to run FHI-aims from the socket
+
+    Parameters
+    ----------
+    atoms_to_calculate
+        The list of structures to run scf calculations on
+    aims_cmd:
+        The aims command to use
+    """
+
+    parameters = json.load(open("parameters.json", "rt"), cls=MontyDecoder)
+    parameters["run_command"] = aims_cmd
+    calculator = Aims(**parameters)
+
+    host = parameters["use_pimd_wrapper"][0]
+    port = parameters["use_pimd_wrapper"][1]
+
+    socket_calc = SocketIOCalculator(calculator, host=host, port=port)
+    atoms = atoms_to_calculate[0].copy()
+    atoms.calc = socket_calc
+
+    for cc, atom_calc in enumerate(atoms_to_calculate):
+        # Delete prior calculation results
+        atoms.calc.results.clear()
+
+        # Reset atoms information to the new cell
+        atoms.info = atoms_calc.info
+        atoms.cell = atoms_calc.cell
+        atoms.positions = atoms_calc.positions
+
+        atoms.calc.calculate(atoms, system_changes=["positions", "cell"])

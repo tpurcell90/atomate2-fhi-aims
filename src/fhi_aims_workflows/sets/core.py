@@ -44,13 +44,15 @@ class StaticSetGenerator(AimsInputGenerator):
 @dataclass
 class RelaxSetGenerator(AimsInputGenerator):
     """
-    Class to generate CP2K relax sets.
+    Class to generate FHI-aims relax sets.
 
-    I.e., sets for optimization of internal coordinates without cell parameter
-    optimization.
+    I.e., sets for optimization of internal and lattice coordinates.
     """
 
     calc_type: str = "relaxation"
+    relax_cell: bool = True
+    max_force: float = 1e-3
+    method: str = "trm"
 
     def get_parameter_updates(
         self, atoms: Atoms, prev_parameters: Dict[str, Any]
@@ -70,9 +72,41 @@ class RelaxSetGenerator(AimsInputGenerator):
         dict
             A dictionary of updates to apply.
         """
-        updates = {
-            "relax_geometry": "trm 1e-3",
-        }
-        if any(atoms.pbc):
+        updates = {"relax_geometry": f"{method} {max_force}"}
+        if any(atoms.pbc) and relax_cell:
             updates["relax_unit_cell"] = "full"
+        elif any(atoms.pbc):
+            updates["relax_unit_cell"] = "none"
+
+        return updates
+
+
+@dataclass
+class SocketIOStaticMaker(AimsInputGenerator):
+    """Class to generate FHI-aims input sets for running with the socket"""
+
+    calc_type: str = "multi_scf"
+    host: str = "localhost"
+    port: int = 12345
+
+    def get_parameter_updates(
+        self, atoms: Atoms, prev_parameters: Dict[str, Any]
+    ) -> dict:
+        """
+        Updates the parameters for a given calculation type
+
+        Parameters
+        ----------
+        atoms : Atoms
+            ASE Atoms object.
+        prev_parameters
+            Previous calculation parameters.
+
+        Returns
+        -------
+        dict
+            A dictionary of updates to apply.
+        """
+        updates = {"use_pimd_wrapper": (host, port)}
+
         return updates
