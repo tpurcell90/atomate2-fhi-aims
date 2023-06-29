@@ -316,6 +316,9 @@ class AimsInputGenerator(InputGenerator):
 
         # Override default parameters with previous parameters
         prev_parameters = {} if prev_parameters is None else prev_parameters
+        prev_parameters.pop("relax_geometry", None)
+        prev_parameters.pop("relax_unit_cell", None)
+
         parameters = recursive_update(parameters, prev_parameters)
 
         # Override default parameters with job-specific updates
