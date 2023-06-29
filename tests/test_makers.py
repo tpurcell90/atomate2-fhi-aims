@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import pytest
 
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
