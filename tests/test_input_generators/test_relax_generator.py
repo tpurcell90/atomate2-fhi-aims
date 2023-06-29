@@ -1,61 +1,32 @@
 from fhi_aims_workflows.sets.core import RelaxSetGenerator
-from ase.build import bulk, molecule
 
-from pathlib import Path
 import os
-import shutil
-from glob import glob
-import pytest
-import json
-
-base_dir = Path(__file__).parent
+from tests import compare_files
 
 
-def comp_system(atoms, user_params, directory):
+def comp_system(atoms, user_params, test_name, work_path, ref_path):
     generator = RelaxSetGenerator(user_parameters=user_params)
     input_set = generator.get_input_set(atoms)
-    input_set.write_input(directory)
-
-    for file in glob(f"{directory}/*in"):
-        assert (
-            open(file, "rt").readlines()[4:]
-            == open(f"ref/{file}", "rt").readlines()[4:]
-        )
-    ref = json.load(open(f"ref/{directory}/parameters.json"))
-    ref.pop("species_dir", None)
-    check = json.load(open(f"{directory}/parameters.json"))
-    check.pop("species_dir", None)
-
-    assert ref == check
-    shutil.rmtree(directory)
+    input_set.write_input(work_path / test_name)
+    compare_files(test_name, work_path, ref_path)
 
 
-@pytest.fixture
-def Si():
-    return bulk("Si")
+def test_relax_si(Si, species_dir, tmp_path, ref_path):
+    parameters = {"species_dir": str(species_dir), "k_grid": [2, 2, 2]}
+    comp_system(Si, parameters, "relax-si", tmp_path, ref_path)
 
 
-@pytest.fixture
-def O2():
-    return molecule("O2")
+def test_relax_si_no_kgrid(Si, species_dir, tmp_path, ref_path):
+    parameters = {"species_dir": str(species_dir)}
+    comp_system(Si, parameters, "relax-no-kgrid-si", tmp_path, ref_path)
 
 
-def test_relax_si(Si):
-    parameters = {"species_dir": str(base_dir / "species_dir"), "k_grid": [2, 2, 2]}
-    comp_system(Si, parameters, "relax-si/")
-
-
-def test_relax_si_no_kgrid(Si):
-    parameters = {"species_dir": str(base_dir / "species_dir")}
-    comp_system(Si, parameters, "relax-no-kgrid-si/")
-
-
-def test_relax_default_species_dir(Si):
+def test_relax_default_species_dir(Si, species_dir, tmp_path, ref_path):
     sd_def = os.getenv("AIMS_SPECIES_DIR", None)
-    os.environ["AIMS_SPECIES_DIR"] = str(base_dir / "species_dir")
+    os.environ["AIMS_SPECIES_DIR"] = str(species_dir)
     parameters = {"k_grid": [2, 2, 2]}
 
-    comp_system(Si, parameters, "relax-default-sd-si/")
+    comp_system(Si, parameters, "relax-default-sd-si", tmp_path, ref_path)
 
     if sd_def:
         os.environ["AIMS_SPECIES_DIR"] = sd_def
@@ -63,17 +34,17 @@ def test_relax_default_species_dir(Si):
         os.unsetenv("AIMS_SPECIES_DIR")
 
 
-def test_relax_o2(O2):
-    parameters = {"species_dir": str(base_dir / "species_dir")}
-    comp_system(O2, parameters, "relax-o2/")
+def test_relax_o2(O2, species_dir, tmp_path, ref_path):
+    parameters = {"species_dir": str(species_dir)}
+    comp_system(O2, parameters, "relax-o2", tmp_path, ref_path)
 
 
-def test_relax_default_species_dir_o2(O2):
+def test_relax_default_species_dir_o2(O2, species_dir, tmp_path, ref_path):
     sd_def = os.getenv("AIMS_SPECIES_DIR", None)
-    os.environ["AIMS_SPECIES_DIR"] = str(base_dir / "species_dir")
+    os.environ["AIMS_SPECIES_DIR"] = str(species_dir)
     parameters = {"k_grid": [2, 2, 2]}
 
-    comp_system(O2, parameters, "relax-default-sd-o2/")
+    comp_system(O2, parameters, "relax-default-sd-o2", tmp_path, ref_path)
 
     if sd_def:
         os.environ["AIMS_SPECIES_DIR"] = sd_def

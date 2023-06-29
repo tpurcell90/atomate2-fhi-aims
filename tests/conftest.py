@@ -20,12 +20,17 @@ def Si():
 
 
 @pytest.fixture
-def H2O():
-    return molecule("H2O")
+def O2():
+    return molecule("O2")
 
 
 @pytest.fixture(scope="session")
-def test_dir():
+def species_dir():
+    return Path(__file__).resolve().parent / "species_dir"
+
+
+@pytest.fixture(scope="session")
+def ref_path():
     from pathlib import Path
 
     module_dir = Path(__file__).resolve().parent
@@ -34,7 +39,7 @@ def test_dir():
 
 
 @pytest.fixture()
-def mock_aims(monkeypatch, test_dir):
+def mock_aims(monkeypatch, ref_path):
     """
     This fixture allows one to mock (fake) running FHI-aims.
 
@@ -71,8 +76,8 @@ def mock_aims(monkeypatch, test_dir):
         from jobflow import CURRENT_JOB
 
         name = CURRENT_JOB.job.name
-        ref_path = test_dir / _REF_PATHS[name]
-        fake_run_aims(ref_path, **_FAKE_RUN_AIMS_KWARGS.get(name, {}))
+        ref_dir = ref_path / _REF_PATHS[name]
+        fake_run_aims(ref_dir, **_FAKE_RUN_AIMS_KWARGS.get(name, {}))
 
     get_input_set_orig = AimsInputGenerator.get_input_set
 
@@ -155,8 +160,9 @@ def fake_run_aims(
 
 def clear_aims_inputs():
     for aims_file in (
-        "aims.inp",
-        "aims.out",
+        "control.in",
+        "geometry.in",
+        "parameters.json"
     ):
         if Path(aims_file).exists():
             Path(aims_file).unlink()

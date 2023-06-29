@@ -5,7 +5,7 @@ import pytest
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 
-def test_base_maker(tmp_path, mock_aims, Si):
+def test_base_maker(tmp_path, mock_aims, species_dir, Si):
     import os
 
     from jobflow import run_locally
@@ -15,7 +15,7 @@ def test_base_maker(tmp_path, mock_aims, Si):
     from fhi_aims_workflows.sets.core import StaticSetGenerator
 
     # mapping from job name to directory containing test files
-    ref_paths = {"base": "static_Si"}
+    ref_paths = {"base": "static-si"}
 
     # settings passed to fake_run_aims; adjust these to check for certain input settings
     fake_run_aims_kwargs = {}
@@ -24,7 +24,7 @@ def test_base_maker(tmp_path, mock_aims, Si):
     mock_aims(ref_paths, fake_run_aims_kwargs)
 
     parameters = {
-        "species_dir": (Path(__file__).parent / "species_dir").as_posix()
+        "species_dir": species_dir.as_posix()
     }
     # generate job
     maker = BaseAimsMaker(
