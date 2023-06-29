@@ -44,13 +44,15 @@ class StaticSetGenerator(AimsInputGenerator):
 @dataclass
 class RelaxSetGenerator(AimsInputGenerator):
     """
-    Class to generate CP2K relax sets.
+    Class to generate FHI-aims relax sets.
 
-    I.e., sets for optimization of internal coordinates without cell parameter
-    optimization.
+    I.e., sets for optimization of internal and lattice coordinates.
     """
 
     calc_type: str = "relaxation"
+    relax_cell: bool = True
+    max_force: float = 1e-3
+    method: str = "trm"
 
     def get_parameter_updates(
         self, atoms: Atoms, prev_parameters: Dict[str, Any]
@@ -70,9 +72,10 @@ class RelaxSetGenerator(AimsInputGenerator):
         dict
             A dictionary of updates to apply.
         """
-        updates = {
-            "relax_geometry": "trm 1e-3",
-        }
-        if any(atoms.pbc):
+        updates = {"relax_geometry": f"{self.method} {self.max_force:e}"}
+        if any(atoms.pbc) and self.relax_cell:
             updates["relax_unit_cell"] = "full"
+        elif any(atoms.pbc):
+            updates["relax_unit_cell"] = "none"
+
         return updates
