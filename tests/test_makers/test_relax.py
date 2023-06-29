@@ -12,6 +12,9 @@ from fhi_aims_workflows.jobs.core import RelaxMaker
 from fhi_aims_workflows.schemas.task import TaskDocument
 
 
+cwd = os.getcwd()
+
+
 def test_base_maker(tmp_path, species_dir, mock_aims, Si):
     # mapping from job name to directory containing test files
     ref_paths = {"relax_si": "relax_si"}
@@ -31,6 +34,7 @@ def test_base_maker(tmp_path, species_dir, mock_aims, Si):
     # run the flow or job and ensure that it finished running successfully
     os.chdir(tmp_path)
     responses = run_locally(job, create_folders=True, ensure_success=True)
+    os.chdir(cwd)
 
     # validation the outputs of the job
     output1 = responses[job.uuid][1].output
@@ -59,6 +63,7 @@ def test_relax_fixed_cell_maker(tmp_path, species_dir, mock_aims, Si):
     # run the flow or job and ensure that it finished running successfully
     os.chdir(tmp_path)
     responses = run_locally(job, create_folders=True, ensure_success=True)
+    os.chdir(cwd)
 
     # validation the outputs of the job
     output1 = responses[job.uuid][1].output

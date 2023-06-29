@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from jobflow import job, Response
 from dataclasses import dataclass, field
 
@@ -33,7 +32,10 @@ from dataclasses import dataclass, field
 from fhi_aims_workflows.jobs.base import BaseAimsMaker
 from fhi_aims_workflows.sets.base import AimsInputGenerator
 from fhi_aims_workflows.sets.core import StaticSetGenerator, RelaxSetGenerator
-from fhi_aims_workflows.sets.bs import BandStructureSetGenerator, GWSetGenerator
+
+from ase.atoms import Atoms
+
+# from fhi_aims_workflows.sets.bs import BandStructureSetGenerator, GWSetGenerator
 
 
 @dataclass
@@ -97,6 +99,7 @@ class SocketIOStaticMaker(BaseAimsMaker):
         # copy previous inputs
         if isinstance(atoms, MSONableAtoms) or isinstance(atoms, Atoms):
             atoms = [MSONableAtoms(atoms)]
+
         from_prev = prev_dir is not None
         if from_prev:
             copy_aims_outputs(prev_dir, **self.copy_aims_kwargs)
@@ -145,15 +148,20 @@ class SocketIOStaticMaker(BaseAimsMaker):
             output=task_doc if self.store_output_data else None,
         )
 
-@dataclass
-class BandStructureMaker(BaseAimsMaker):
-    """A job Maker for a band structure calculation"""
-    name: str = "bands"
-    input_set_generator: AimsInputGenerator = field(default_factory=BandStructureSetGenerator)
+
+# @dataclass
+# class BandStructureMaker(BaseAimsMaker):
+#     """A job Maker for a band structure calculation"""
+
+#     name: str = "bands"
+#     input_set_generator: AimsInputGenerator = field(
+#         default_factory=BandStructureSetGenerator
+#     )
 
 
-@dataclass
-class GWMaker(BaseAimsMaker):
-    """A job Maker for a GW band structure calculation"""
-    name: str = "GW"
-    input_set_generator: AimsInputGenerator = field(default_factory=GWSetGenerator)
+# @dataclass
+# class GWMaker(BaseAimsMaker):
+#     """A job Maker for a GW band structure calculation"""
+
+#     name: str = "GW"
+#     input_set_generator: AimsInputGenerator = field(default_factory=GWSetGenerator)

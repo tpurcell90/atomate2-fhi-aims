@@ -100,9 +100,8 @@ def run_aims_socket(atoms_to_calculate: Iterable[MSONableAtoms], aims_cmd: str =
     host = parameters["use_pimd_wrapper"][0]
     port = parameters["use_pimd_wrapper"][1]
 
-    socket_calc = SocketIOCalculator(calculator, port=port)
     atoms = atoms_to_calculate[0].copy()
-    atoms.calc = socket_calc
+    atoms.calc = SocketIOCalculator(calculator, port=port)
 
     for cc, atoms_calc in enumerate(atoms_to_calculate):
         # Delete prior calculation results
@@ -114,3 +113,5 @@ def run_aims_socket(atoms_to_calculate: Iterable[MSONableAtoms], aims_cmd: str =
         atoms.positions = atoms_calc.positions
 
         atoms.calc.calculate(atoms, system_changes=["positions", "cell"])
+
+    atoms.calc.close()

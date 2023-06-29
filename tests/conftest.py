@@ -76,6 +76,7 @@ def mock_aims(monkeypatch, ref_path):
         from jobflow import CURRENT_JOB
 
         name = CURRENT_JOB.job.name
+        print(name, ref_path, _REF_PATHS)
         ref_dir = ref_path / _REF_PATHS[name]
         fake_run_aims(ref_dir, **_FAKE_RUN_AIMS_KWARGS.get(name, {}))
 
