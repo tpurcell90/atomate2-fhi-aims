@@ -1,0 +1,31 @@
+"""Input sets for band structure calculations"""
+
+from dataclasses import dataclass
+from typing import Dict, Any
+
+from fhi_aims_workflows.sets.base import AimsInputGenerator
+from fhi_aims_workflows.utils.bands import prepare_band_input
+from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+
+
+@dataclass
+class BandStructureSetGenerator(AimsInputGenerator):
+    """A generator for the band structure calculation input set"""
+    calc_type: str = "bands"
+    k_point_density: int = 20
+
+    def get_parameter_updates(
+        self, atoms: MSONableAtoms, prev_parameters: Dict[str, Any]
+    ) -> dict:
+        return {'output': prepare_band_input(atoms.cell, self.k_point_density)}
+
+
+@dataclass
+class GWSetGenerator(AimsInputGenerator):
+    """A generator for the input set for calculations employing GW self-energy correction"""
+    calc_type: str = 'GW'
+
+    def get_parameter_updates(
+        self, atoms: MSONableAtoms, prev_parameters: Dict[str, Any]
+    ) -> dict:
+        return {}
