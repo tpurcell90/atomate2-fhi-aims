@@ -5,7 +5,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import Union, List, Dict, Any, Tuple, Optional
 
-
+import numpy as np
 from ase.spectrum.band_structure import BandStructure
 from pydantic import BaseModel, Field
 from jobflow.utils import ValueEnum
@@ -40,6 +40,7 @@ class AimsObject(ValueEnum):
     BAND_STRUCTURE = "band_structure"
     ELECTRON_DENSITY = "electron_density"  # e_density
     WFN = "wfn"  # Wavefunction file
+    TRAJECTORY = 'trajectory'
 
 
 class CalculationInput(BaseModel):
@@ -89,9 +90,9 @@ class CalculationOutput(BaseModel):
     vbm: float = Field(
         None, description="The valence band maximum in eV (if system is not metallic)"
     )
-    # ionic_steps: List[Dict[str, Any]] = Field(
-    #     None, description="Energy, forces, and structure for each ionic step"
-    # )
+    atomic_steps: List[MSONableAtoms] = Field(
+        None, description="Structures for each ionic step"
+    )
     # scf: List = Field(None, description="SCF optimization steps")
 
     @classmethod
@@ -151,7 +152,7 @@ class CalculationOutput(BaseModel):
             energy=output.final_energy,
             energy_per_atom=output.final_energy / len(structure),
             **electronic_output,
-            # ionic_steps=output.structures,
+            atomic_steps=output.structures,
         )
 
 
@@ -421,16 +422,9 @@ def _parse_trajectory(aims_output: AimsOutput) -> Optional[Trajectory]:
     """
     Grab a Trajectory object given an FHI-aims output object.
     """
-    # ener = (
-    #     aims_output.filenames.get("ener")[-1]
-    #     if cp2k_output.filenames.get("ener")
-    #     else None
-    # )
-    # data = parse_energy_file(ener) if ener else None
-    constant_lattice = all(
-        s.lattice == aims_output.initial_structure.lattice
-        for s in aims_output.structures
-    )
-    return Trajectory.from_structures(
-        aims_output.structures, constant_lattice=constant_lattice,  # frame_properties=data
-    )
+
+    # constant_lattice = all([
+    #     np.all(s.cell == aims_output.initial_structure.cell)
+    #     for s in aims_output.structures
+    # ])
+    return aims_output.structures

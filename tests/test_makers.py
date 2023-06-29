@@ -79,4 +79,4 @@ def test_relax_maker(tmp_path, mock_aims, species_dir, Si):
     output1 = responses[job.uuid][1].output
     assert isinstance(output1, TaskDocument)
     assert output1.output.energy == pytest.approx(-15800.2255448846)
-    assert output1.aims_objects[AimsObject.TRAJECTORY] and len(output1.aims_objects[AimsObject.TRAJECTORY]) == 5
+    assert output1.output.trajectory and len(output1.output.trajectory) == 5
