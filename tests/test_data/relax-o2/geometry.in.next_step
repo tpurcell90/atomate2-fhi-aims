@@ -1,7 +1,7 @@
 # 
 # This is the geometry file that corresponds to the current relaxation step.
 # If you do not want this file to be written, set the "write_restart_geometry" flag to .false.
-#  aims_uuid : BA44D349-A113-4C1A-AA55-14392401A2E6                                
+#  aims_uuid : 36296BCE-7319-44A3-AA16-A0A9185BFCA5                                
 # 
 atom      -0.00000000     -0.00000000      0.61383570 O
 atom      -0.00000000     -0.00000000     -0.61383570 O

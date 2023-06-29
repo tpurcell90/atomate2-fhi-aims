@@ -1,7 +1,7 @@
 # 
 # This is the geometry file that corresponds to the current relaxation step.
 # If you do not want this file to be written, set the "write_restart_geometry" flag to .false.
-#  aims_uuid : D8E503C1-1281-4889-A746-8544ED4F7FF2                                
+#  aims_uuid : D7D72952-5D72-4CD9-A074-59F2A1D0A871                                
 # 
 lattice_vector     -0.00000003      2.73899405      2.73899405
 lattice_vector      2.73899410      0.00000002      2.73899408

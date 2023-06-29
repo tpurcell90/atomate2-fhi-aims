@@ -2,9 +2,11 @@ from fhi_aims_workflows.sets.core import RelaxSetGenerator
 
 import os
 from tests import compare_files
+from pathlib import Path
 
 
 def comp_system(atoms, user_params, test_name, work_path, ref_path):
+    work_path = Path.cwd()
     generator = RelaxSetGenerator(user_parameters=user_params)
     input_set = generator.get_input_set(atoms)
     input_set.write_input(work_path / test_name)
