@@ -1,14 +1,28 @@
-from jobflow import job
+from jobflow import job, Response
 from dataclasses import dataclass, field
 
-from pathlib impor Path
+from pathlib import Path
 
 from fhi_aims_workflows.io.parsers import read_aims_output
 from fhi_aims_workflows.jobs.base import BaseAimsMaker
 from fhi_aims_workflows.sets.base import AimsInputGenerator
-from fhi_aims_workflows.sets.core import StaticSetGenerator, RelaxSetGenerator
+from fhi_aims_workflows.sets.core import (
+    StaticSetGenerator,
+    RelaxSetGenerator,
+    ScoketIOSetGenerator,
+)
+from fhi_aims_workflows.files import (
+    copy_aims_outputs,
+    write_aims_input_set,
+    cleanup_aims_outputs,
+)
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 import logging
+from fhi_aims_workflows.schemas.task import TaskDocument
+from fhi_aims_workflows.run import run_aims_socket, should_stop_children
+from monty.shutil import gzip_dir
+
+from typing import Iterable
 
 logger = logging.getLogger(__name__)
 
@@ -72,6 +86,8 @@ class SocketIOStaticMaker(BaseAimsMaker):
             A previous FHI-aims calculation directory to copy output files from.
         """
         # copy previous inputs
+        if isinstance(atoms, MSONableAtoms) or isinstance(atoms, Atoms):
+            atoms = [MSONableAtoms(atoms)]
         from_prev = prev_dir is not None
         if from_prev:
             copy_aims_outputs(prev_dir, **self.copy_aims_kwargs)
@@ -84,10 +100,9 @@ class SocketIOStaticMaker(BaseAimsMaker):
             for img in images:
                 img.calc = None
 
-            for ii in range(-1*len(atoms), 0, -1):
+            for ii in range(-1 * len(atoms), 0, -1):
                 if atoms[ii] in images:
                     del atoms[ii]
-
 
         # write aims input files
         self.write_input_set_kwargs["from_prev"] = from_prev

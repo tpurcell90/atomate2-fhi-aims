@@ -29,10 +29,11 @@ dependencies = [
     "custodian>=2023.3.10",
     "emmet-core>=0.51.11",
     "jobflow>=0.1.11",
+    "atomate2",
     "monty",
     "numpy",
     "pydantic",
-    "ase @ git+https://gitlab.com/ase/ase.git@master",
+    "ase>=3.22.1",
 ]
 
 [project.optional-dependencies]

@@ -10,7 +10,11 @@ from monty.serialization import dumpfn
 from monty.shutil import gzip_dir
 from pymatgen.core import Structure
 
-from fhi_aims_workflows.files import copy_aims_outputs, write_aims_input_set, cleanup_aims_outputs
+from fhi_aims_workflows.files import (
+    copy_aims_outputs,
+    write_aims_input_set,
+    cleanup_aims_outputs,
+)
 from fhi_aims_workflows.run import run_aims, should_stop_children
 from fhi_aims_workflows.schemas.task import TaskDocument
 from fhi_aims_workflows.sets.core import AimsInputGenerator
@@ -89,9 +93,11 @@ class BaseAimsMaker(Maker):
             dumpfn(data, filename.replace(":", "."))
 
         # run FHI-aims
+        print(Path.cwd())
         run_aims(**self.run_aims_kwargs)
 
         # parse FHI-aims outputs
+        print(Path.cwd())
         task_doc = TaskDocument.from_directory(Path.cwd(), **self.task_document_kwargs)
         task_doc.task_label = self.name
 

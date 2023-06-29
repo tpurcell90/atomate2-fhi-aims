@@ -72,8 +72,8 @@ class RelaxSetGenerator(AimsInputGenerator):
         dict
             A dictionary of updates to apply.
         """
-        updates = {"relax_geometry": f"{method} {max_force}"}
-        if any(atoms.pbc) and relax_cell:
+        updates = {"relax_geometry": f"{self.method} {self.max_force}"}
+        if any(atoms.pbc) and self.relax_cell:
             updates["relax_unit_cell"] = "full"
         elif any(atoms.pbc):
             updates["relax_unit_cell"] = "none"
@@ -82,7 +82,7 @@ class RelaxSetGenerator(AimsInputGenerator):
 
 
 @dataclass
-class SocketIOStaticMaker(AimsInputGenerator):
+class ScoketIOSetGenerator(AimsInputGenerator):
     """Class to generate FHI-aims input sets for running with the socket"""
 
     calc_type: str = "multi_scf"
@@ -107,6 +107,6 @@ class SocketIOStaticMaker(AimsInputGenerator):
         dict
             A dictionary of updates to apply.
         """
-        updates = {"use_pimd_wrapper": (host, port)}
+        updates = {"use_pimd_wrapper": (self.host, self.port)}
 
         return updates

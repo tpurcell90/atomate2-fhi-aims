@@ -93,17 +93,18 @@ def run_aims_socket(atoms_to_calculate: Iterable[MSONableAtoms], aims_cmd: str =
     """
 
     parameters = json.load(open("parameters.json", "rt"), cls=MontyDecoder)
-    parameters["run_command"] = aims_cmd
+    if aims_cmd:
+        parameters["run_command"] = aims_cmd
     calculator = Aims(**parameters)
 
     host = parameters["use_pimd_wrapper"][0]
     port = parameters["use_pimd_wrapper"][1]
 
-    socket_calc = SocketIOCalculator(calculator, host=host, port=port)
+    socket_calc = SocketIOCalculator(calculator, port=port)
     atoms = atoms_to_calculate[0].copy()
     atoms.calc = socket_calc
 
-    for cc, atom_calc in enumerate(atoms_to_calculate):
+    for cc, atoms_calc in enumerate(atoms_to_calculate):
         # Delete prior calculation results
         atoms.calc.results.clear()
 
