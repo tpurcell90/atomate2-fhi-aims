@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from jobflow import job, Response
 from dataclasses import dataclass, field
 
@@ -25,6 +26,14 @@ from monty.shutil import gzip_dir
 from typing import Iterable
 
 logger = logging.getLogger(__name__)
+"""Core job makers for FHI-aims workflows"""
+
+from dataclasses import dataclass, field
+
+from fhi_aims_workflows.jobs.base import BaseAimsMaker
+from fhi_aims_workflows.sets.base import AimsInputGenerator
+from fhi_aims_workflows.sets.core import StaticSetGenerator, RelaxSetGenerator
+from fhi_aims_workflows.sets.bs import BandStructureSetGenerator, GWSetGenerator
 
 
 @dataclass
@@ -135,3 +144,16 @@ class SocketIOStaticMaker(BaseAimsMaker):
             # stored_data={"custodian": task_doc.custodian},
             output=task_doc if self.store_output_data else None,
         )
+
+@dataclass
+class BandStructureMaker(BaseAimsMaker):
+    """A job Maker for a band structure calculation"""
+    name: str = "bands"
+    input_set_generator: AimsInputGenerator = field(default_factory=BandStructureSetGenerator)
+
+
+@dataclass
+class GWMaker(BaseAimsMaker):
+    """A job Maker for a GW band structure calculation"""
+    name: str = "GW"
+    input_set_generator: AimsInputGenerator = field(default_factory=GWSetGenerator)
