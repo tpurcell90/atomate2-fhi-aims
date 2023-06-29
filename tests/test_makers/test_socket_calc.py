@@ -17,7 +17,7 @@ def test_static_socket_maker(Si, species_dir, mock_aims, tmp_path):
 
     from fhi_aims_workflows.jobs.core import SocketIOStaticMaker
     from fhi_aims_workflows.schemas.task import TaskDocument
-    from fhi_aims_workflows.sets.core import ScoketIOSetGenerator
+    from fhi_aims_workflows.sets.core import SocketIOSetGenerator
     from fhi_aims_workflows.io.parsers import read_aims_output
 
     atoms = MSONableAtoms(Si)
@@ -37,7 +37,7 @@ def test_static_socket_maker(Si, species_dir, mock_aims, tmp_path):
     parameters = {"k_grid": [2, 2, 2], "species_dir": species_dir.as_posix()}
     # generate job
     maker = SocketIOStaticMaker(
-        input_set_generator=ScoketIOSetGenerator(user_parameters=parameters)
+        input_set_generator=SocketIOSetGenerator(user_parameters=parameters)
     )
     maker.name = "socket"
     job = maker.make(atoms_list)

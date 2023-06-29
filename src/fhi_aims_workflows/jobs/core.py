@@ -9,7 +9,7 @@ from fhi_aims_workflows.sets.base import AimsInputGenerator
 from fhi_aims_workflows.sets.core import (
     StaticSetGenerator,
     RelaxSetGenerator,
-    ScoketIOSetGenerator,
+    SocketIOSetGenerator,
 )
 from fhi_aims_workflows.files import (
     copy_aims_outputs,
@@ -31,7 +31,6 @@ from dataclasses import dataclass, field
 
 from fhi_aims_workflows.jobs.base import BaseAimsMaker
 from fhi_aims_workflows.sets.base import AimsInputGenerator
-from fhi_aims_workflows.sets.core import StaticSetGenerator, RelaxSetGenerator
 
 from ase.atoms import Atoms
 
@@ -82,7 +81,7 @@ class SocketIOStaticMaker(BaseAimsMaker):
     host: str = "localhost"
     port: int = 12345
     input_set_generator: AimsInputGenerator = field(
-        default_factory=ScoketIOSetGenerator
+        default_factory=SocketIOSetGenerator
     )
 
     @job

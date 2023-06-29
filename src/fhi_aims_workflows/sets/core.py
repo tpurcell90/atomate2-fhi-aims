@@ -82,7 +82,7 @@ class RelaxSetGenerator(AimsInputGenerator):
 
 
 @dataclass
-class ScoketIOSetGenerator(AimsInputGenerator):
+class SocketIOSetGenerator(AimsInputGenerator):
     """Class to generate FHI-aims input sets for running with the socket"""
 
     calc_type: str = "multi_scf"
