@@ -1,10 +1,18 @@
-from jobflow import job, Response
+from __future__ import annotations
+
 from dataclasses import dataclass, field
-
+import logging
 from pathlib import Path
+from typing import Iterable
 
-from fhi_aims_workflows.io.parsers import read_aims_output
+from ase.atoms import Atoms
+from jobflow import job, Response
+from monty.serialization import dumpfn
+from monty.shutil import gzip_dir
+
 from fhi_aims_workflows.jobs.base import BaseAimsMaker
+from fhi_aims_workflows.io.parsers import read_aims_output
+from fhi_aims_workflows.sets.bs import BandStructureSetGenerator, GWSetGenerator
 from fhi_aims_workflows.sets.base import AimsInputGenerator
 from fhi_aims_workflows.sets.core import (
     StaticSetGenerator,
@@ -17,24 +25,12 @@ from fhi_aims_workflows.files import (
     cleanup_aims_outputs,
 )
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
-import logging
 from fhi_aims_workflows.schemas.task import TaskDocument
 from fhi_aims_workflows.run import run_aims_socket, should_stop_children
-from monty.shutil import gzip_dir
 
-from typing import Iterable
 
 logger = logging.getLogger(__name__)
 """Core job makers for FHI-aims workflows"""
-
-from dataclasses import dataclass, field
-
-from fhi_aims_workflows.jobs.base import BaseAimsMaker
-from fhi_aims_workflows.sets.base import AimsInputGenerator
-
-from ase.atoms import Atoms
-
-# from fhi_aims_workflows.sets.bs import BandStructureSetGenerator, GWSetGenerator
 
 
 @dataclass
@@ -148,19 +144,19 @@ class SocketIOStaticMaker(BaseAimsMaker):
         )
 
 
-# @dataclass
-# class BandStructureMaker(BaseAimsMaker):
-#     """A job Maker for a band structure calculation"""
+@dataclass
+class BandStructureMaker(BaseAimsMaker):
+    """A job Maker for a band structure calculation"""
 
-#     name: str = "bands"
-#     input_set_generator: AimsInputGenerator = field(
-#         default_factory=BandStructureSetGenerator
-#     )
+    name: str = "bands"
+    input_set_generator: AimsInputGenerator = field(
+        default_factory=BandStructureSetGenerator
+    )
 
 
-# @dataclass
-# class GWMaker(BaseAimsMaker):
-#     """A job Maker for a GW band structure calculation"""
+@dataclass
+class GWMaker(BaseAimsMaker):
+    """A job Maker for a GW band structure calculation"""
 
-#     name: str = "GW"
-#     input_set_generator: AimsInputGenerator = field(default_factory=GWSetGenerator)
+    name: str = "GW"
+    input_set_generator: AimsInputGenerator = field(default_factory=GWSetGenerator)

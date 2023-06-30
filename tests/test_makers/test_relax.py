@@ -17,7 +17,7 @@ cwd = os.getcwd()
 
 def test_base_maker(tmp_path, species_dir, mock_aims, Si):
     # mapping from job name to directory containing test files
-    ref_paths = {"relax_si": "relax_si"}
+    ref_paths = {"relax_si": "relax-si"}
 
     # settings passed to fake_run_aims; adjust these to check for certain input settings
     fake_run_aims_kwargs = {}
@@ -44,7 +44,7 @@ def test_base_maker(tmp_path, species_dir, mock_aims, Si):
 
 def test_relax_fixed_cell_maker(tmp_path, species_dir, mock_aims, Si):
     # mapping from job name to directory containing test files
-    ref_paths = {"relax_fixed_cell_si": "relax_fixed_cell_si"}
+    ref_paths = {"relax_fixed_cell_si": "relax-fixed-cell-si"}
 
     # settings passed to fake_run_aims; adjust these to check for certain input settings
     fake_run_aims_kwargs = {}

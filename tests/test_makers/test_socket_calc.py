@@ -1,16 +1,13 @@
-from pathlib import Path
 
 import pytest
 
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
-from ase.build import bulk
 import os
 
 
 cwd = os.getcwd()
 
 
-# def test_base_maker(tmp_path, mock_aims, Si):
 def test_static_socket_maker(Si, species_dir, mock_aims, tmp_path):
 
     from jobflow import run_locally
@@ -18,7 +15,6 @@ def test_static_socket_maker(Si, species_dir, mock_aims, tmp_path):
     from fhi_aims_workflows.jobs.core import SocketIOStaticMaker
     from fhi_aims_workflows.schemas.task import TaskDocument
     from fhi_aims_workflows.sets.core import SocketIOSetGenerator
-    from fhi_aims_workflows.io.parsers import read_aims_output
 
     atoms = MSONableAtoms(Si)
     atoms_list = [atoms, atoms.copy(), atoms.copy()]

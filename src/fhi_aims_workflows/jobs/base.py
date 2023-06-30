@@ -92,11 +92,9 @@ class BaseAimsMaker(Maker):
             dumpfn(data, filename.replace(":", "."))
 
         # run FHI-aims
-        print(Path.cwd())
         run_aims(**self.run_aims_kwargs)
 
         # parse FHI-aims outputs
-        print(Path.cwd())
         task_doc = TaskDocument.from_directory(Path.cwd(), **self.task_document_kwargs)
         task_doc.task_label = self.name
 

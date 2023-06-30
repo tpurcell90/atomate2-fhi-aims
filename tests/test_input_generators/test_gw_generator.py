@@ -15,4 +15,4 @@ def comp_system(atoms, user_params, test_name, work_path, ref_path):
 
 def test_si_gw(Si, species_dir, tmp_path, ref_path):
     parameters = {"species_dir": str(species_dir), "k_grid": [2, 2, 2], "k_point_density": 10}
-    comp_system(Si, parameters, "static-si-gw", Path('.'), ref_path)
+    comp_system(Si, parameters, "static-si-gw", tmp_path, ref_path)
