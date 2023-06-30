@@ -5,7 +5,7 @@ import copy
 import json
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Iterable, Dict, List, Tuple
+from typing import Any, Iterable, Dict, List, Tuple, Sequence
 
 import numpy as np
 
@@ -68,7 +68,7 @@ class AimsInputSet(InputSet):
         self,
         parameters: Dict[str, Any],
         atoms: Atoms,
-        properties: List[str] | Tuple[str] = ("energy", "free_energy"),
+        properties: Sequence[str] = ("energy", "free_energy"),
     ):
         self._parameters = parameters
         self._atoms = MSONableAtoms(atoms)
@@ -118,8 +118,8 @@ class AimsInputSet(InputSet):
 
         This sets the parameters object that is passed to an AimsTempalte and resets the control.in file
 
-        One can pass a dictionary mapping the abinit variables to their values or
-        the abinit variables as keyword arguments. A combination of the two
+        One can pass a dictionary mapping the aims variables to their values or
+        the aims variables as keyword arguments. A combination of the two
         options is also allowed.
 
         Returns
@@ -454,6 +454,9 @@ def recursive_update(d: dict, u: dict):
     for k, v in u.items():
         if isinstance(v, dict):
             d[k] = recursive_update(d.get(k, {}), v)
+        elif isinstance(v, list):
+            old_v = d.get(k, [])
+            d[k] = old_v + v
         else:
             d[k] = v
     return d

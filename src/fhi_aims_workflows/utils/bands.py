@@ -4,6 +4,8 @@ own dedicated FHI-aims python package (with the parsers, plotters etc.)"""
 from ase.dft.kpoints import resolve_kpt_path_string, kpoint_convert
 import numpy as np
 
+# TODO add the same procedures but using pymatgen routines
+
 
 def prepare_band_input(cell, density=20):
     """
