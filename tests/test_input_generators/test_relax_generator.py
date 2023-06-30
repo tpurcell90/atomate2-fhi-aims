@@ -12,9 +12,9 @@ def comp_system(atoms, user_params, test_name, work_path, ref_path):
     compare_files(test_name, work_path, ref_path)
 
 
-# def test_relax_si(Si, species_dir, tmp_path, ref_path):
-#     parameters = {"species_dir": str(species_dir), "k_grid": [2, 2, 2]}
-#     comp_system(Si, parameters, "relax-si", tmp_path, ref_path)
+def test_relax_si(Si, species_dir, tmp_path, ref_path):
+    parameters = {"species_dir": str(species_dir), "k_grid": [2, 2, 2]}
+    comp_system(Si, parameters, "relax-si/inputs", tmp_path, ref_path)
 
 
 def test_relax_si_no_kgrid(Si, species_dir, tmp_path, ref_path):

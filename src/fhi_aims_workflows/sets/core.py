@@ -79,3 +79,34 @@ class RelaxSetGenerator(AimsInputGenerator):
             updates["relax_unit_cell"] = "none"
 
         return updates
+
+
+@dataclass
+class SocketIOSetGenerator(AimsInputGenerator):
+    """Class to generate FHI-aims input sets for running with the socket"""
+
+    calc_type: str = "multi_scf"
+    host: str = "localhost"
+    port: int = 12345
+
+    def get_parameter_updates(
+        self, atoms: Atoms, prev_parameters: Dict[str, Any]
+    ) -> dict:
+        """
+        Updates the parameters for a given calculation type
+
+        Parameters
+        ----------
+        atoms : Atoms
+            ASE Atoms object.
+        prev_parameters
+            Previous calculation parameters.
+
+        Returns
+        -------
+        dict
+            A dictionary of updates to apply.
+        """
+        updates = {"use_pimd_wrapper": (self.host, self.port)}
+
+        return updates

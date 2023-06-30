@@ -1065,7 +1065,6 @@ def get_aims_out_chunks(fd, header_chunk):
                 line = next(fd).strip()
             except StopIteration:
                 break
-
         yield AimsOutCalcChunk(lines, header_chunk)
 
 
