@@ -1,5 +1,4 @@
 """Tests the band structure input set generator"""
-from pathlib import Path
 
 from fhi_aims_workflows.sets.bs import BandStructureSetGenerator
 from tests import compare_files
@@ -21,5 +20,3 @@ def test_si_bs(Si, species_dir, tmp_path, ref_path):
 def test_si_bs_density(Si, species_dir, tmp_path, ref_path):
     parameters = {"species_dir": str(species_dir), "k_grid": [8, 8, 8], "k_point_density": 40}
     comp_system(Si, parameters, "static-si-bs-density", tmp_path, ref_path)
-
-

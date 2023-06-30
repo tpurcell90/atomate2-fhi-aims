@@ -24,8 +24,19 @@ class BandStructureSetGenerator(AimsInputGenerator):
 class GWSetGenerator(AimsInputGenerator):
     """A generator for the input set for calculations employing GW self-energy correction"""
     calc_type: str = 'GW'
+    k_point_density: int = 20
 
     def get_parameter_updates(
         self, atoms: MSONableAtoms, prev_parameters: Dict[str, Any]
     ) -> dict:
-        return {}
+        updates = {'anacon_type': 'two-pole'}
+        if all(atoms.pbc):
+            updates.update({
+                'qpe_calc': 'gw_expt',
+                'output': prepare_band_input(atoms.cell, self.k_point_density)
+            })
+        else:
+            updates.update({
+                'qpe_calc': 'gw',
+            })
+        return updates
