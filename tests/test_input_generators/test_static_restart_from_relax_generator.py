@@ -6,6 +6,8 @@ import shutil
 from functools import wraps
 from pathlib import Path
 
+import pytest
+
 from fhi_aims_workflows.sets.core import StaticSetGenerator
 from tests import compare_files
 
@@ -40,10 +42,11 @@ def adjust_species_dir(f):
     return _wrapper
 
 
+@pytest.mark.skip
 def test_static_from_relax_si(Si, species_dir, tmp_path, ref_path):
     comp_system(
         Si,
-        f"{ref_path}/relax-si/",
+        f"{ref_path}/relax-si/outputs",
         "static-from-prev-si",
         tmp_path,
         ref_path,

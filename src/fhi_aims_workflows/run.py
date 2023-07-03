@@ -2,19 +2,18 @@
 from __future__ import annotations
 
 import logging
+import json
 import os
 from os.path import expandvars
 import subprocess
+from typing import Iterable
 
-from fhi_aims_workflows.schemas.task import TaskDocument
-
-import json
+from ase.calculators.socketio import SocketIOCalculator
+from ase.calculators.aims import Aims
 from monty.json import MontyDecoder
 
-from ase.calculators.socketio import Calculator, SocketIOCalculator
-from ase.calculators.aims import Aims
-
-# from typing import Dict, Any
+from fhi_aims_workflows.schemas.task import TaskDocument
+from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +40,7 @@ def run_aims(
     aims_cmd = expandvars(aims_cmd)
 
     logger.info(f"Running command: {aims_cmd}")
-    return_code = subprocess.call(aims_cmd, shell=True)
+    return_code = subprocess.call(['/bin/bash', '-c', aims_cmd], env=os.environ)
     logger.info(f"{aims_cmd} finished running with return code: {return_code}")
 
 

@@ -5,7 +5,7 @@ import copy
 import json
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Iterable, Dict, List
+from typing import Any, Iterable, Dict, List, Tuple, Sequence
 
 import numpy as np
 
@@ -68,7 +68,7 @@ class AimsInputSet(InputSet):
         self,
         parameters: Dict[str, Any],
         atoms: Atoms,
-        properties: Iterable[str] = ("energy", "free_energy"),
+        properties: Sequence[str] = ("energy", "free_energy"),
     ):
         self._parameters = parameters
         self._atoms = MSONableAtoms(atoms)
@@ -118,8 +118,8 @@ class AimsInputSet(InputSet):
 
         This sets the parameters object that is passed to an AimsTempalte and resets the control.in file
 
-        One can pass a dictionary mapping the abinit variables to their values or
-        the abinit variables as keyword arguments. A combination of the two
+        One can pass a dictionary mapping the aims variables to their values or
+        the aims variables as keyword arguments. A combination of the two
         options is also allowed.
 
         Returns
@@ -194,8 +194,6 @@ class AimsInputGenerator(InputGenerator):
     ----------
     user_parameters:
         Updates the default parameters for the FHI-aims calculator
-    config_dict
-        The config dictionary to use containing the base input set settings.
     """
 
     user_parameters: dict = field(default_factory=dict)
@@ -204,7 +202,7 @@ class AimsInputGenerator(InputGenerator):
         self,
         atoms: Atoms = None,
         prev_dir: str | Path = None,
-        properties: Iterable[str] = None,
+        properties: List[str] | Tuple[str] = None,
     ) -> AimsInputSet:
         """Generate an AimsInputSet object.
 
@@ -214,19 +212,15 @@ class AimsInputGenerator(InputGenerator):
             ASE Atoms object.
         prev_dir: str or Path
             Path to the previous working directory
-        properties: iterable of str
+        properties: list or tuple of str
             System properties that are being calculated
         """
         prev_atoms, prev_parameters, prev_results = self._read_previous(prev_dir)
         atoms = atoms if atoms is not None else prev_atoms
-        parameters = self._get_input_paramesters(atoms, prev_parameters)
+        parameters = self._get_input_parameters(atoms, prev_parameters)
         properties = self._get_properties(properties, parameters, prev_results)
 
-        return AimsInputSet(
-            parameters=parameters,
-            atoms=atoms,
-            properties=properties,
-        )
+        return AimsInputSet(parameters=parameters, atoms=atoms, properties=properties)
 
     def _read_previous(
         self, prev_dir: str | Path = None
@@ -296,7 +290,7 @@ class AimsInputGenerator(InputGenerator):
 
         return properties
 
-    def _get_input_paramesters(
+    def _get_input_parameters(
         self, atoms: Atoms, prev_parameters: Dict[str, Any] = None
     ) -> Dict[str, Any]:
         """Create the input parameters
@@ -389,8 +383,8 @@ class AimsInputGenerator(InputGenerator):
         recipcell = atoms.cell.reciprocal()
         return self.d2k_recipcell(recipcell, atoms.pbc, kptdensity, even)
 
+    @staticmethod
     def d2k_recipcell(
-        self,
         recipcell,
         pbc: List[bool],
         kptdensity: float | Iterable[float] = 5.0,
@@ -460,6 +454,9 @@ def recursive_update(d: dict, u: dict):
     for k, v in u.items():
         if isinstance(v, dict):
             d[k] = recursive_update(d.get(k, {}), v)
+        elif isinstance(v, list):
+            old_v = d.get(k, [])
+            d[k] = old_v + v
         else:
             d[k] = v
     return d

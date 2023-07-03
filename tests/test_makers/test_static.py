@@ -3,9 +3,7 @@ import os
 
 import pytest
 
-from fhi_aims_workflows.schemas.calculation import AimsObject
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
-from ase.build import bulk
 
 cwd = os.getcwd()
 

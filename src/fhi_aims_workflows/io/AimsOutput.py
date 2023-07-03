@@ -1,10 +1,12 @@
 """A representation of FHI-aims output (based on ASE output parser)"""
 from __future__ import annotations
 
-from fhi_aims_workflows.io.parsers import read_aims_output, read_aims_header_info
 from monty.json import MSONable, MontyDecoder
 from pathlib import Path
 from typing import Dict, Any
+
+from fhi_aims_workflows.io.parsers import read_aims_output, read_aims_header_info
+from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 
 class AimsOutput(MSONable):
@@ -60,7 +62,7 @@ class AimsOutput(MSONable):
         }
         return cls(decoded["results"], decoded["metadata"], decoded["atoms_summary"])
 
-    def get_results_for_image(self, image_ind: int | slice) -> Dict[str, Any]:
+    def get_results_for_image(self, image_ind: int | slice) -> MSONableAtoms:
         """Get the results dictionary for a particular image or slice of images
 
         Parameters
