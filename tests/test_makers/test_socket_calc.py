@@ -69,9 +69,10 @@ def test_ase_socket_maker(Si, species_dir, mock_aims, tmp_path):
 
     from fhi_aims_workflows.flows.ase_pymatgen_converter import ASECalculationMaker
     from fhi_aims_workflows.jobs.core import SocketIOStaticMaker
+    from fhi_aims_workflows.io.parsers import read_aims_output
+    from fhi_aims_workflows.schemas.ase import ASEOutput
     from fhi_aims_workflows.schemas.task import TaskDocument
     from fhi_aims_workflows.sets.core import SocketIOSetGenerator
-    from fhi_aims_workflows.io.parsers import read_aims_output
 
     ase_adaptor = AseAtomsAdaptor()
 
@@ -111,7 +112,7 @@ def test_ase_socket_maker(Si, species_dir, mock_aims, tmp_path):
     # os.chdir(cwd)
 
     # validation the outputs of the job
-    outputs = responses[flow.jobs[-1].uuid][1].output
+    outputs = responses[flow.jobs[0].uuid][1].output
     assert isinstance(outputs, TaskDocument)
     assert len(outputs.output.trajectory) == 3
     assert outputs.output.trajectory[0].get_potential_energy() == pytest.approx(
@@ -123,3 +124,16 @@ def test_ase_socket_maker(Si, species_dir, mock_aims, tmp_path):
     assert outputs.output.trajectory[2].get_potential_energy() == pytest.approx(
         -15800.1847237514
     )
+    dt_jobs = [job.uuid for job in responses[flow.jobs[-1].uuid][1].detour.jobs]
+
+    output_reconvert = responses[dt_jobs[0]][1].output
+    assert isinstance(output_reconvert, ASEOutput)
+    assert output_reconvert.energy == pytest.approx(-15800.0997410132)
+
+    output_reconvert = responses[dt_jobs[1]][1].output
+    assert isinstance(output_reconvert, ASEOutput)
+    assert output_reconvert.energy == pytest.approx(-15800.0962356206)
+
+    output_reconvert = responses[dt_jobs[2]][1].output
+    assert isinstance(output_reconvert, ASEOutput)
+    assert output_reconvert.energy == pytest.approx(-15800.1847237514)

@@ -52,6 +52,7 @@ def test_ase_static_maker(Si, tmp_path, mock_aims, species_dir):
     from fhi_aims_workflows.flows.ase_pymatgen_converter import ASECalculationMaker
     from fhi_aims_workflows.jobs.core import StaticMaker
     from fhi_aims_workflows.schemas.task import TaskDocument
+    from fhi_aims_workflows.schemas.ase import ASEOutput
     from fhi_aims_workflows.sets.core import StaticSetGenerator
 
     ase_adaptor = AseAtomsAdaptor()
@@ -82,6 +83,10 @@ def test_ase_static_maker(Si, tmp_path, mock_aims, species_dir):
     os.chdir(cwd)
 
     # validation the outputs of the job
-    output1 = responses[flow.jobs[-1].uuid][1].output
+    output1 = responses[flow.jobs[0].uuid][1].output
     assert isinstance(output1, TaskDocument)
     assert output1.output.energy == pytest.approx(-15800.099740991)
+
+    output_reconvert = responses[flow.jobs[1].uuid][1].output
+    assert isinstance(output_reconvert, ASEOutput)
+    assert output_reconvert.energy == pytest.approx(-15800.099740991)
