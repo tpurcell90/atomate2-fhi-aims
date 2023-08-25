@@ -10,6 +10,7 @@ OUTPUT_FILE_NAME: str = "aims.out"
 CONTROL_FILE_NAME: str = "control.in"
 PARAMS_JSON_FILE_NAME: str = "parameters.json"
 GEOMETRY_FILE_NAME: str = "geometry.in"
+ASE_JSON: str = "ase_calc.json"
 
 
 @contextlib.contextmanager
