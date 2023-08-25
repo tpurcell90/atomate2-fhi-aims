@@ -14,6 +14,8 @@ from monty.json import MontyDecoder
 from ase.calculators.socketio import Calculator, SocketIOCalculator
 from ase.calculators.aims import Aims
 
+from ase.calculators.calculator import get_calculator_class
+
 # from typing import Dict, Any
 
 logger = logging.getLogger(__name__)
@@ -95,13 +97,48 @@ def run_aims_socket(atoms_to_calculate: Iterable[MSONableAtoms], aims_cmd: str =
     parameters = json.load(open("parameters.json", "rt"), cls=MontyDecoder)
     if aims_cmd:
         parameters["run_command"] = aims_cmd
-    calculator = Aims(**parameters)
 
-    host = parameters["use_pimd_wrapper"][0]
+    host = (
+        parameters["use_pimd_wrapper"][0]
+        if "UNIX:" in parameters["use_pimd_wrapper"][0]
+        else None
+    )
     port = parameters["use_pimd_wrapper"][1]
 
+    run_ase_socket(atoms_to_calculate, "aims", parameters, port=port, unixsocket=host)
+
+
+def run_ase(atoms, calc_name, calc_parameters, properties):
+    calc_class = get_calculator_class(calc_name)
+    atoms.calc = calc_class(**calc_parameters)
+
+    atoms.calculate(atoms=atoms, properties=properties)
+
+    return atoms
+
+
+def run_ase_socket(
+    atoms_to_calculate,
+    calc_name,
+    calc_parameters,
+    properties=None,
+    port=None,
+    unixsocket=None,
+):
+    if port and unixsocket:
+        raise TypeError(
+            "Both the port and unixsocket were requested for an ase socket calculation, only one must be."
+        )
+    elif port is None and unixsocket is None:
+        raise TypeError(
+            "Neither the port or unixsocket were requested for an ase socket calculation, one must be specified."
+        )
+
+    calc_class = get_calculator_class(calc_name)
+    calculator = calc_class(**calc_parameters)
+
     atoms = atoms_to_calculate[0].copy()
-    atoms.calc = calculator.socketio(port=port)
+    atoms.calc = calculator.socketio(unixsocket=unixsocket, port=port)
 
     for cc, atoms_calc in enumerate(atoms_to_calculate):
         # Delete prior calculation results

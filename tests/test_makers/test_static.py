@@ -87,6 +87,6 @@ def test_ase_static_maker(Si, tmp_path, mock_aims, species_dir):
     assert isinstance(output1, TaskDocument)
     assert output1.output.energy == pytest.approx(-15800.099740991)
 
-    output_reconvert = responses[flow.jobs[1].uuid][1].output
+    output_reconvert = responses[flow.jobs[-1].uuid][1].output
     assert isinstance(output_reconvert, ASEOutput)
     assert output_reconvert.energy == pytest.approx(-15800.099740991)
