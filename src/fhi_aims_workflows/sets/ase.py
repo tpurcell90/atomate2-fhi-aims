@@ -176,6 +176,7 @@ class ASEInputGenerator(InputGenerator):
     """
 
     user_parameters: dict = field(default_factory=dict)
+    calc_name: str = field(default_factory=str)
 
     def get_input_set(  # type: ignore
         self,
@@ -197,7 +198,7 @@ class ASEInputGenerator(InputGenerator):
         prev_atoms, prev_parameters, prev_results = self._read_previous(prev_dir)
         atoms = atoms if atoms is not None else prev_atoms
         parameters = self._get_input_paramesters(atoms, prev_parameters)
-        properties = self._get_properties(properties, parameters, prev_results)
+        properties = self._get_properties(properties, prev_results)
 
         return ASEInputSet(
             parameters=parameters,
@@ -311,7 +312,7 @@ class ASEInputGenerator(InputGenerator):
         dict
             A dictionary of updates to apply.
         """
-        raise NotImplementedError
+        return dict()
 
 
 def recursive_update(d: dict, u: dict):
