@@ -33,7 +33,7 @@ dependencies = [
     "monty",
     "numpy",
     "pydantic",
-    "ase>=3.22.1",
+    "ase@git+https://gitlab.com/ase/ase.git@793179f4#egg=ase",
 ]
 
 [project.optional-dependencies]
