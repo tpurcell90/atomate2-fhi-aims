@@ -237,6 +237,7 @@ class AimsInputGenerator(InputGenerator):
         prev_results = {}
 
         if prev_dir:
+            print(f"Previous dir: {prev_dir}")
             prev_parameters = json.load(
                 open(f"{prev_dir}/parameters.json", "rt"), cls=MontyDecoder
             )

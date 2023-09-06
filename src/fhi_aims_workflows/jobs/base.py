@@ -77,12 +77,11 @@ class BaseAimsMaker(Maker):
         # the structure transformation part was deleted; can be reinserted when needed
 
         # copy previous inputs
-        from_prev = prev_dir is not None
         if prev_dir is not None:
             copy_aims_outputs(prev_dir, **self.copy_aims_kwargs)
 
         # write aims input files
-        self.write_input_set_kwargs["from_prev"] = from_prev
+        self.write_input_set_kwargs["prev_dir"] = prev_dir
         write_aims_input_set(
             atoms, self.input_set_generator, **self.write_input_set_kwargs
         )
@@ -105,7 +104,7 @@ class BaseAimsMaker(Maker):
         cleanup_aims_outputs(directory=Path.cwd())
 
         # gzip folder
-        gzip_dir(".")
+        # gzip_dir(".")
 
         return Response(
             stop_children=stop_children,

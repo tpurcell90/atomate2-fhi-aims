@@ -56,11 +56,12 @@ def mock_aims(monkeypatch, ref_path):
        folder. For example, if your calculation has one job named "static" and the
        reference files are present in "tests/test_data/aims/Si_static", the dictionary
        would look like: ``{"static": "Si_static"}``.
-    4. Optional: create a dictionary mapping each job name to custom keyword arguments
-       that will be supplied to fake_run_aims. This way you can configure which incar
-       settings are expected for each job. For example, if your calculation has one job
-       named "static" and you wish to validate that "NSW" is set correctly in the INCAR,
-       your dictionary would look like ``{"static": {"incar_settings": {"NSW": 0}}``.
+    4. Optional (does not work yet): create a dictionary mapping each job name to
+       custom keyword arguments that will be supplied to fake_run_aims.
+       This way you can configure which control.in settings are expected for each job.
+       For example, if your calculation has one job named "static" and you wish to validate
+       that "xc" is set correctly in the control.in, your dictionary would look like
+       ``{"static": {"input_settings": {"relativistic": "atomic_zora scalar"}}``.
     5. Inside the test function, call `mock_aims(ref_paths, fake_aims_kwargs)`, where
        ref_paths is the dictionary created in step 3 and fake_aims_kwargs is the
        dictionary created in step 4.

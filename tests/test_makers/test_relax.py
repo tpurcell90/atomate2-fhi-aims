@@ -1,15 +1,12 @@
-from pathlib import Path
 
-import pytest
-
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
-from ase.build import bulk
 import os
+import pytest
 
 from jobflow import run_locally
 
 from fhi_aims_workflows.jobs.core import RelaxMaker
 from fhi_aims_workflows.schemas.task import TaskDocument
+from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 
 cwd = os.getcwd()

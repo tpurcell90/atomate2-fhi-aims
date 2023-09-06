@@ -112,7 +112,7 @@ class SocketIOStaticMaker(BaseAimsMaker):
                     del atoms[ii]
 
         # write aims input files
-        self.write_input_set_kwargs["from_prev"] = from_prev
+        self.write_input_set_kwargs["prev_dir"] = prev_dir
         write_aims_input_set(
             atoms[0], self.input_set_generator, **self.write_input_set_kwargs
         )
@@ -135,7 +135,7 @@ class SocketIOStaticMaker(BaseAimsMaker):
         cleanup_aims_outputs(directory=Path.cwd())
 
         # gzip folder
-        gzip_dir(".")
+        # gzip_dir(".")
 
         return Response(
             stop_children=stop_children,
