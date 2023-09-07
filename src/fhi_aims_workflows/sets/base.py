@@ -237,7 +237,9 @@ class AimsInputGenerator(InputGenerator):
         prev_results = {}
 
         if prev_dir:
-            print(f"Previous dir: {prev_dir}")
+            # strip hostname from the directory (not good, works only with run_locally.
+            # Should be checked with Fireworks, will not for sure work with jobflow_remote)
+            prev_dir = prev_dir.split(":")[-1]
             prev_parameters = json.load(
                 open(f"{prev_dir}/parameters.json", "rt"), cls=MontyDecoder
             )

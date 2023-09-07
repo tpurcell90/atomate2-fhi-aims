@@ -1,14 +1,15 @@
 """ (Work)flows for FHI-aims
 """
-
+from copy import deepcopy
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Dict
 
 from jobflow import Maker, Flow
 
 from fhi_aims_workflows.jobs.base import BaseAimsMaker
 from fhi_aims_workflows.jobs.core import RelaxMaker
+from fhi_aims_workflows.sets.core import RelaxSetGenerator
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 
@@ -28,7 +29,7 @@ class DoubleRelaxMaker(Maker):
     relax_maker2: .BaseAimsMaker
         A maker that generates the second relaxation
     """
-    name: str = "double relax"
+    name: str = "Double relaxation"
     relax_maker1: BaseAimsMaker = field(default_factory=RelaxMaker)
     relax_maker2: BaseAimsMaker = field(default_factory=RelaxMaker)
 
@@ -42,11 +43,6 @@ class DoubleRelaxMaker(Maker):
             An MSON-able ASE Atoms structure object.
         prev_dir : str or Path or None
             A previous FHI-aims calculation directory to copy output files from.
-
-        Returns
-        -------
-        Flow
-            A flow containing two relaxations.
         """
         relax1 = self.relax_maker1.make(structure, prev_dir=prev_dir)
         relax1.name += " 1"
@@ -55,3 +51,36 @@ class DoubleRelaxMaker(Maker):
         relax2.name += " 2"
 
         return Flow([relax1, relax2], relax2.output, name=self.name)
+
+    @classmethod
+    def from_parameters(cls,
+                        parameters: Dict[str, any],
+                        species_defaults: list | tuple = ('light', 'tight')):
+        """
+        Creates a DoubleRelaxFlow for the same parameters with two different species defaults.
+
+        Parameters
+        ----------
+        parameters : dict
+            a dictionary with calculation parameters
+        species_defaults: list | tuple
+            paths for species defaults to use relative to the given `species_dir` in parameters
+        """
+        # various checks
+        if len(species_defaults) != 2:
+            raise ValueError("Two species defaults directories should be provided for DoubleRelaxFlow")
+        if 'species_dir' not in parameters:
+            raise KeyError("Provided parameters do not include species_dir")
+        species_dir = Path(parameters["species_dir"])
+        for basis_set in species_defaults:
+            if not (species_dir / basis_set).exists():
+                raise OSError(f"The species defaults directory {(species_dir / basis_set).as_posix()} does not exist")
+
+        # now the actual work begins
+        makers = []
+        for basis_set in species_defaults:
+            parameters['species_dir'] = (species_dir / basis_set).as_posix()
+            input_set = RelaxSetGenerator(user_parameters=deepcopy(parameters))
+            makers.append(RelaxMaker(input_set_generator=input_set))
+        return cls(relax_maker1=makers[0],
+                   relax_maker2=makers[1])
