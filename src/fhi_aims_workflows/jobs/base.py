@@ -120,8 +120,10 @@ class BaseAimsMaker(Maker):
 
 
 @dataclass
-class ConvergenceJob(Maker):
-    """ A job that performs convergence run for a given number of steps
+class ConvergenceMaker(Maker):
+    """ A job that performs convergence run for a given number of steps. Stops either when all steps are done,
+    or when the convergence criterion is reached, that is when the absolute difference between the subsequent values
+    of the convergence field is less than a given epsilon.
 
     Parameters
     ----------
@@ -151,20 +153,30 @@ class ConvergenceJob(Maker):
 
     @job
     def make(self, atoms,
-             prev_dir: str | Path = None,
-             criterion_value: float = None):
+             prev_dir: str | Path = None):
+        """
+        Runs several jobs with changing inputs consecutively to investigate convergence in the results
+
+        Parameters
+        ----------
+        atoms : MSONableAtoms
+            a structure to run a job
+        prev_dir: str | None
+            An FHI-aims calculation directory in which previous run contents are stored
+        """
         # getting the calculation index
         idx = 0
         converged = False
         if prev_dir is not None:
             prev_dir = prev_dir.split(':')[-1]
             convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
-            with open(convergence_file) as f:
-                data = json.load(f)
-                # check for convergence
-                if len(data['criterion_values']) > 1:
-                    converged = abs(data['criterion_values'][-1] - data['criterion_values'][-2]) < self.epsilon
-                idx = data['idx'] + 1
+            if convergence_file.exists():
+                with open(convergence_file) as f:
+                    data = json.load(f)
+                    idx = data['idx'] + 1
+                    # check for convergence
+                    if len(data['criterion_values']) > 1:
+                        converged = abs(data['criterion_values'][-1] - data['criterion_values'][-2]) < self.epsilon
 
         if idx < self.last_idx and not converged:
             # finding next jobs
@@ -187,7 +199,7 @@ class ConvergenceJob(Maker):
         else:
             get_results_job = self.get_results(prev_dir=prev_dir)
             replace_flow = Flow([get_results_job], output=get_results_job.output)
-        return Response(addition=replace_flow)
+        return Response(replace=replace_flow)
 
     @job(name='Writing a convergence file')
     def update_convergence_file(self, prev_dir, job_dir, output):
@@ -195,17 +207,18 @@ class ConvergenceJob(Maker):
         if prev_dir is not None:
             prev_dir = prev_dir.split(':')[-1]
             convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
-            with open(convergence_file) as f:
-                convergence_data = json.load(f)
-                idx = convergence_data['idx'] + 1
-        else:
-            convergence_data = {
-                'criterion_name': self.criterion_name,
-                'criterion_values': [],
-                'convergence_field_name': self.convergence_field,
-                'convergence_field_values': [],
-                'idx': 0
-            }
+            if convergence_file.exists():
+                with open(convergence_file) as f:
+                    convergence_data = json.load(f)
+                    idx = convergence_data['idx'] + 1
+            else:
+                convergence_data = {
+                    'criterion_name': self.criterion_name,
+                    'criterion_values': [],
+                    'convergence_field_name': self.convergence_field,
+                    'convergence_field_values': [],
+                    'idx': 0
+                }
         convergence_data['convergence_field_values'].append(self.convergence_steps[idx])
         convergence_data['criterion_values'].append(getattr(output.output, self.criterion_name))
         convergence_data['idx'] = idx

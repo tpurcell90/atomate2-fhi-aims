@@ -149,7 +149,7 @@ class BandStructureMaker(BaseAimsMaker):
     """A job Maker for a band structure calculation"""
 
     name: str = "bands"
-    input_set_generator: AimsInputGenerator = field(
+    input_set_generator: BandStructureSetGenerator = field(
         default_factory=BandStructureSetGenerator
     )
 
@@ -159,4 +159,4 @@ class GWMaker(BaseAimsMaker):
     """A job Maker for a GW band structure calculation"""
 
     name: str = "GW"
-    input_set_generator: AimsInputGenerator = field(default_factory=GWSetGenerator)
+    input_set_generator: GWSetGenerator = field(default_factory=GWSetGenerator)

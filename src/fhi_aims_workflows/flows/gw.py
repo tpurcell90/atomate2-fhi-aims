@@ -7,9 +7,8 @@ from pathlib import Path
 from jobflow import Maker, Flow
 
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
-from fhi_aims_workflows.jobs.base import BaseAimsMaker
-from fhi_aims_workflows.jobs.core import RelaxMaker, GWMaker
-
+from fhi_aims_workflows.jobs.base import BaseAimsMaker, ConvergenceMaker
+from fhi_aims_workflows.jobs.core import StaticMaker
 
 __all__ = ["PeriodicGWConvergenceMaker", ]
 
@@ -22,18 +21,18 @@ class PeriodicGWConvergenceMaker(Maker):
     ----------
     name : str
         A name for the flow
-    relax_maker: .RelaxMaker
-        A maker that generates the relaxed structure
-    gw_maker: .GWMaker
-        A maker that calculates GW band gap
+    static_maker: .StaticMaker
+        A maker that generates the static point calculation
+    gw_maker: .ConvergenceMaker
+        A maker that checks the convergence for GW band gap calculations
     """
     name: str = "GW convergence"
-    relax_maker: BaseAimsMaker = field(default_factory=RelaxMaker)
-    gw_maker: BaseAimsMaker = field(default_factory=GWMaker)
+    static_maker: BaseAimsMaker = field(default_factory=StaticMaker)
+    convergence_maker: ConvergenceMaker = field(default_factory=ConvergenceMaker)
 
     def make(self, structure: MSONableAtoms, prev_dir: str | Path | None = None):
         """
-        Create a flow from the relaxation and subsequent GW calculation
+        Create a flow from the DFT ground state and subsequent GW calculation
 
         Parameters
         ----------
@@ -42,7 +41,7 @@ class PeriodicGWConvergenceMaker(Maker):
         prev_dir : str or Path or None
             A previous FHI-aims calculation directory to copy output files from.
         """
-        relax = self.relax_maker.make(structure, prev_dir=prev_dir)
-        gw = self.gw_maker.make(relax.output.structure, prev_dir=relax.output.dir_name)
+        static = self.static_maker.make(structure, prev_dir=prev_dir)
+        gw = self.convergence_maker.make(static.output.structure, prev_dir=static.output.dir_name)
 
-        return Flow([relax, gw], gw.output, name=self.name)
+        return Flow([static, gw], gw.output, name=self.name)
