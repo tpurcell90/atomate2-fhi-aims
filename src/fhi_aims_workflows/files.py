@@ -59,7 +59,7 @@ def copy_aims_outputs(
         additional_files += ("hessian.aims", "geometry.in.next_step", "*.csc")
 
     # copy files
-    files = ["aims.out"]
+    files = ["aims.out", "*.json"]
 
     for pattern in set(additional_files):
         for f in (glob((Path(src_dir) / pattern).as_posix())):

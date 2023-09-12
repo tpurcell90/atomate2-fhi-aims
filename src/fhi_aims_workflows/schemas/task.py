@@ -193,7 +193,7 @@ class OutputSummary(BaseModel):
         )
 
 
-class TaskDocument(StructureMetadata, MoleculeMetadata):
+class AimsTaskDocument(StructureMetadata, MoleculeMetadata):
     """Definition of FHI-aims task document."""
 
     dir_name: str = Field(None, description="The directory for this FHI-aims task")

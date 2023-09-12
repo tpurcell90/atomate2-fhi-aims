@@ -25,7 +25,7 @@ from fhi_aims_workflows.files import (
     cleanup_aims_outputs,
 )
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
-from fhi_aims_workflows.schemas.task import TaskDocument
+from fhi_aims_workflows.schemas.task import AimsTaskDocument
 from fhi_aims_workflows.run import run_aims_socket, should_stop_children
 
 
@@ -37,8 +37,8 @@ logger = logging.getLogger(__name__)
 class StaticMaker(BaseAimsMaker):
     """Maker to create FHI-aims SCF jobs
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     name : str
         The job name
     """
@@ -125,7 +125,7 @@ class SocketIOStaticMaker(BaseAimsMaker):
         run_aims_socket(atoms, **self.run_aims_kwargs)
 
         # parse FHI-aims outputs
-        task_doc = TaskDocument.from_directory(Path.cwd(), **self.task_document_kwargs)
+        task_doc = AimsTaskDocument.from_directory(Path.cwd(), **self.task_document_kwargs)
         task_doc.task_label = self.name
 
         # decide whether child jobs should proceed

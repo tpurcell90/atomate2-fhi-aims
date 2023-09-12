@@ -3,7 +3,7 @@
 from copy import deepcopy
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Iterable, Dict
+from typing import Dict
 
 from jobflow import Maker, Flow
 
@@ -24,9 +24,9 @@ class DoubleRelaxMaker(Maker):
     ----------
     name : str
         A name for the flow
-    relax_maker1: .BaseAimsMaker
+    relax_maker1: .RelaxMaker
         A maker that generates the first relaxation
-    relax_maker2: .BaseAimsMaker
+    relax_maker2: .RelaxMaker
         A maker that generates the second relaxation
     """
     name: str = "Double relaxation"

@@ -457,9 +457,9 @@ def recursive_update(d: dict, u: dict):
     for k, v in u.items():
         if isinstance(v, dict):
             d[k] = recursive_update(d.get(k, {}), v)
-        elif isinstance(v, list):
-            old_v = d.get(k, [])
-            d[k] = old_v + v
+        # elif isinstance(v, list):
+        #     old_v = d.get(k, [])
+        #     d[k] = old_v + v
         else:
             d[k] = v
     return d

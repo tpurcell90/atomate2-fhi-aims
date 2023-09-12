@@ -13,7 +13,7 @@ def test_static_socket_maker(Si, species_dir, mock_aims, tmp_path):
     from jobflow import run_locally
 
     from fhi_aims_workflows.jobs.core import SocketIOStaticMaker
-    from fhi_aims_workflows.schemas.task import TaskDocument
+    from fhi_aims_workflows.schemas.task import AimsTaskDocument
     from fhi_aims_workflows.sets.core import SocketIOSetGenerator
 
     atoms = MSONableAtoms(Si)
@@ -45,7 +45,7 @@ def test_static_socket_maker(Si, species_dir, mock_aims, tmp_path):
 
     # validation the outputs of the job
     outputs = responses[job.uuid][1].output
-    assert isinstance(outputs, TaskDocument)
+    assert isinstance(outputs, AimsTaskDocument)
     assert len(outputs.output.trajectory) == 3
     assert outputs.output.trajectory[0].get_potential_energy() == pytest.approx(
         -15800.0997410132

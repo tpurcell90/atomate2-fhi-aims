@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import json
+import logging
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Type
 
-from jobflow import job, Maker, Response
+from jobflow import job, Maker, Response, Flow
 from monty.serialization import dumpfn
 from monty.shutil import gzip_dir
 
@@ -15,9 +18,13 @@ from fhi_aims_workflows.files import (
     cleanup_aims_outputs,
 )
 from fhi_aims_workflows.run import run_aims, should_stop_children
-from fhi_aims_workflows.schemas.task import TaskDocument
+from fhi_aims_workflows.schemas.task import AimsTaskDocument
 from fhi_aims_workflows.sets.base import AimsInputGenerator
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+
+
+logger = logging.getLogger(__name__)
+CONVERGENCE_FILE_NAME = 'convergence.json'  # make it a constant?
 
 
 @dataclass
@@ -94,7 +101,7 @@ class BaseAimsMaker(Maker):
         run_aims(**self.run_aims_kwargs)
 
         # parse FHI-aims outputs
-        task_doc = TaskDocument.from_directory(Path.cwd(), **self.task_document_kwargs)
+        task_doc = AimsTaskDocument.from_directory(Path.cwd(), **self.task_document_kwargs)
         task_doc.task_label = self.name
 
         # decide whether child jobs should proceed
@@ -108,6 +115,109 @@ class BaseAimsMaker(Maker):
 
         return Response(
             stop_children=stop_children,
-            # stored_data={"custodian": task_doc.custodian},
             output=task_doc if self.store_output_data else None,
         )
+
+
+@dataclass
+class ConvergenceJob(Maker):
+    """ A job that performs convergence run for a given number of steps
+
+    Parameters
+    ----------
+    name : str
+        A name for the job
+    maker: .BaseAimsMaker
+        A maker for the run
+    criterion_name: str
+        A name for the convergence criterion. Must be in the run results
+    epsilon: float
+        A difference in criterion value for subsequent runs
+    convergence_field: str
+        An input parameter that changes to achieve convergence
+    convergence_steps: list | tuple
+        An iterable of the possible values for the convergence field. If the iterable is depleted and the
+        convergence is not reached, that the job is failed
+    """
+    name: str = "Convergence job"
+    maker: BaseAimsMaker = field(default_factory=BaseAimsMaker)
+    criterion_name: str = "energy_per_atom"
+    epsilon: float = 0.001
+    convergence_field: str = field(default_factory=str)
+    convergence_steps: list = field(default_factory=list)
+
+    def __post_init__(self):
+        self.last_idx = len(self.convergence_steps)
+
+    @job
+    def make(self, atoms,
+             prev_dir: str | Path = None,
+             criterion_value: float = None):
+        # getting the calculation index
+        idx = 0
+        converged = False
+        if prev_dir is not None:
+            prev_dir = prev_dir.split(':')[-1]
+            convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
+            with open(convergence_file) as f:
+                data = json.load(f)
+                # check for convergence
+                if len(data['criterion_values']) > 1:
+                    converged = abs(data['criterion_values'][-1] - data['criterion_values'][-2]) < self.epsilon
+                idx = data['idx'] + 1
+
+        if idx < self.last_idx and not converged:
+            # finding next jobs
+            next_base_job = self.maker.make(atoms, prev_dir=prev_dir)
+            next_base_job.update_maker_kwargs(
+                {"_set": {f"input_set_generator->user_parameters->"
+                          f"{self.convergence_field}": self.convergence_steps[idx]}},
+                dict_mod=True
+            )
+            update_file_job = self.update_convergence_file(prev_dir=prev_dir,
+                                                           job_dir=next_base_job.output.dir_name,
+                                                           output=next_base_job.output)
+
+            next_job = self.make(atoms,
+                                 prev_dir=next_base_job.output.dir_name)
+
+            replace_flow = Flow([next_base_job,
+                                 update_file_job,
+                                 next_job], output=next_base_job.output)
+        else:
+            get_results_job = self.get_results(prev_dir=prev_dir)
+            replace_flow = Flow([get_results_job], output=get_results_job.output)
+        return Response(addition=replace_flow)
+
+    @job(name='Writing a convergence file')
+    def update_convergence_file(self, prev_dir, job_dir, output):
+        idx = 0
+        if prev_dir is not None:
+            prev_dir = prev_dir.split(':')[-1]
+            convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
+            with open(convergence_file) as f:
+                convergence_data = json.load(f)
+                idx = convergence_data['idx'] + 1
+        else:
+            convergence_data = {
+                'criterion_name': self.criterion_name,
+                'criterion_values': [],
+                'convergence_field_name': self.convergence_field,
+                'convergence_field_values': [],
+                'idx': 0
+            }
+        convergence_data['convergence_field_values'].append(self.convergence_steps[idx])
+        convergence_data['criterion_values'].append(getattr(output.output, self.criterion_name))
+        convergence_data['idx'] = idx
+
+        job_dir = job_dir.split(':')[-1]
+        convergence_file = Path(job_dir) / CONVERGENCE_FILE_NAME
+        with open(convergence_file, 'w') as f:
+            json.dump(convergence_data, f)
+
+    @job(name='Getting the results')
+    def get_results(self, prev_dir):
+        convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
+        with open(convergence_file) as f:
+            return json.load(f)
+
