@@ -1,15 +1,12 @@
-from pathlib import Path
 
-import pytest
-
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
-from ase.build import bulk
 import os
+import pytest
 
 from jobflow import run_locally
 
 from fhi_aims_workflows.jobs.core import RelaxMaker
-from fhi_aims_workflows.schemas.task import TaskDocument
+from fhi_aims_workflows.schemas.task import AimsTaskDocument
+from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 
 cwd = os.getcwd()
@@ -38,7 +35,7 @@ def test_base_maker(tmp_path, species_dir, mock_aims, Si):
 
     # validation the outputs of the job
     output1 = responses[job.uuid][1].output
-    assert isinstance(output1, TaskDocument)
+    assert isinstance(output1, AimsTaskDocument)
     assert output1.output.energy == pytest.approx(-15800.2255448846)
 
 
@@ -67,5 +64,5 @@ def test_relax_fixed_cell_maker(tmp_path, species_dir, mock_aims, Si):
 
     # validation the outputs of the job
     output1 = responses[job.uuid][1].output
-    assert isinstance(output1, TaskDocument)
+    assert isinstance(output1, AimsTaskDocument)
     assert output1.output.energy == pytest.approx(-15800.099741042)

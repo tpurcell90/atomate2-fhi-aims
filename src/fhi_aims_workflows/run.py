@@ -12,7 +12,7 @@ from ase.calculators.socketio import SocketIOCalculator
 from ase.calculators.aims import Aims
 from monty.json import MontyDecoder
 
-from fhi_aims_workflows.schemas.task import TaskDocument
+from fhi_aims_workflows.schemas.task import AimsTaskDocument
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 logger = logging.getLogger(__name__)
@@ -45,7 +45,7 @@ def run_aims(
 
 
 def should_stop_children(
-    task_document: TaskDocument,
+    task_document: AimsTaskDocument,
     handle_unsuccessful: bool | str = True,
 ) -> bool:
     """

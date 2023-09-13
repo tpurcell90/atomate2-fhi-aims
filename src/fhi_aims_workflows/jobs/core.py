@@ -25,7 +25,7 @@ from fhi_aims_workflows.files import (
     cleanup_aims_outputs,
 )
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
-from fhi_aims_workflows.schemas.task import TaskDocument
+from fhi_aims_workflows.schemas.task import AimsTaskDocument
 from fhi_aims_workflows.run import run_aims_socket, should_stop_children
 
 
@@ -37,8 +37,8 @@ logger = logging.getLogger(__name__)
 class StaticMaker(BaseAimsMaker):
     """Maker to create FHI-aims SCF jobs
 
-    Parameter
-    ---------
+    Parameters
+    ----------
     name : str
         The job name
     """
@@ -112,7 +112,7 @@ class SocketIOStaticMaker(BaseAimsMaker):
                     del atoms[ii]
 
         # write aims input files
-        self.write_input_set_kwargs["from_prev"] = from_prev
+        self.write_input_set_kwargs["prev_dir"] = prev_dir
         write_aims_input_set(
             atoms[0], self.input_set_generator, **self.write_input_set_kwargs
         )
@@ -125,7 +125,7 @@ class SocketIOStaticMaker(BaseAimsMaker):
         run_aims_socket(atoms, **self.run_aims_kwargs)
 
         # parse FHI-aims outputs
-        task_doc = TaskDocument.from_directory(Path.cwd(), **self.task_document_kwargs)
+        task_doc = AimsTaskDocument.from_directory(Path.cwd(), **self.task_document_kwargs)
         task_doc.task_label = self.name
 
         # decide whether child jobs should proceed
@@ -135,7 +135,7 @@ class SocketIOStaticMaker(BaseAimsMaker):
         cleanup_aims_outputs(directory=Path.cwd())
 
         # gzip folder
-        gzip_dir(".")
+        # gzip_dir(".")
 
         return Response(
             stop_children=stop_children,
@@ -149,7 +149,7 @@ class BandStructureMaker(BaseAimsMaker):
     """A job Maker for a band structure calculation"""
 
     name: str = "bands"
-    input_set_generator: AimsInputGenerator = field(
+    input_set_generator: BandStructureSetGenerator = field(
         default_factory=BandStructureSetGenerator
     )
 
@@ -159,4 +159,4 @@ class GWMaker(BaseAimsMaker):
     """A job Maker for a GW band structure calculation"""
 
     name: str = "GW"
-    input_set_generator: AimsInputGenerator = field(default_factory=GWSetGenerator)
+    input_set_generator: GWSetGenerator = field(default_factory=GWSetGenerator)

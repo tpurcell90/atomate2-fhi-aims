@@ -59,7 +59,7 @@ def copy_aims_outputs(
         additional_files += ("hessian.aims", "geometry.in.next_step", "*.csc")
 
     # copy files
-    files = ["aims.out"]
+    files = ["aims.out", "*.json"]
 
     for pattern in set(additional_files):
         for f in (glob((Path(src_dir) / pattern).as_posix())):
@@ -77,8 +77,10 @@ def copy_aims_outputs(
         file_client=file_client,
     )
 
+    zipped_files = [f for f in all_files if f.name.endswith("gz")]
+
     gunzip_files(
-        include_files=all_files,
+        include_files=zipped_files,
         allow_missing=True,
         file_client=file_client,
     )
@@ -90,7 +92,7 @@ def write_aims_input_set(
     structure: MSONableAtoms,
     input_set_generator: AimsInputGenerator,
     directory: str | Path = ".",
-    from_prev: bool = False,
+    prev_dir: str | Path | None = None,
     **kwargs,
 ):
     """
@@ -104,13 +106,12 @@ def write_aims_input_set(
         An GHI-aims input set generator.
     directory : str or Path
         The directory to write the input files to.
-    from_prev : bool
-        Whether to initialize the input set from a previous calculation.
+    prev_dir : str or Path or None
+        If the input set is to be initialized from a previous calculation, the previous calc directory
     **kwargs
         Keyword arguments to pass to :obj:`.AimsInputSet.write_input`.
     """
     properties = kwargs.get("properties", [])
-    prev_dir = "." if from_prev else None
     aims_is = input_set_generator.get_input_set(
         structure, prev_dir=prev_dir, properties=properties
     )
@@ -123,7 +124,7 @@ def write_aims_input_set(
 def cleanup_aims_outputs(
     directory: Path | str,
     host: str | None = None,
-    file_patterns: Sequence[str] = ("*.csc",),
+    file_patterns: Sequence[str] = (),
     file_client: FileClient | None = None,
 ):
     """

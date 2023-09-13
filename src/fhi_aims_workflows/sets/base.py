@@ -237,6 +237,9 @@ class AimsInputGenerator(InputGenerator):
         prev_results = {}
 
         if prev_dir:
+            # strip hostname from the directory (not good, works only with run_locally.
+            # Should be checked with Fireworks, will not for sure work with jobflow_remote)
+            prev_dir = prev_dir.split(":")[-1]
             prev_parameters = json.load(
                 open(f"{prev_dir}/parameters.json", "rt"), cls=MontyDecoder
             )
@@ -454,9 +457,9 @@ def recursive_update(d: dict, u: dict):
     for k, v in u.items():
         if isinstance(v, dict):
             d[k] = recursive_update(d.get(k, {}), v)
-        elif isinstance(v, list):
-            old_v = d.get(k, [])
-            d[k] = old_v + v
+        # elif isinstance(v, list):
+        #     old_v = d.get(k, [])
+        #     d[k] = old_v + v
         else:
             d[k] = v
     return d
