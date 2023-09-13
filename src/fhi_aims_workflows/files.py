@@ -124,7 +124,7 @@ def write_aims_input_set(
 def cleanup_aims_outputs(
     directory: Path | str,
     host: str | None = None,
-    file_patterns: Sequence[str] = ("*.csc",),
+    file_patterns: Sequence[str] = (),
     file_client: FileClient | None = None,
 ):
     """
