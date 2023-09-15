@@ -31,17 +31,6 @@ def comp_system(atoms, prev_dir, test_name, work_path, ref_path, species_dir):
     shutil.move(Path(prev_dir) / "~parameters.json", params_file)
 
 
-def adjust_species_dir(f):
-    """A decorator to adjust the species dir for the tests that need it"""
-
-    @wraps(f)
-    def _wrapper(**kwargs):
-        print(kwargs)
-        f(**kwargs)
-
-    return _wrapper
-
-
 @pytest.mark.skip
 def test_static_from_relax_si(Si, species_dir, tmp_path, ref_path):
     comp_system(
