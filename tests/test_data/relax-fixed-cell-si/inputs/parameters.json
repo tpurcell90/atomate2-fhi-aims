@@ -2,7 +2,7 @@
   "xc": "pbe",
   "relativistic": "atomic_zora scalar",
   "relax_geometry": "trm 1.000000e-03",
-  "relax_unit_cell": "full",
+  "relax_unit_cell": "none",
   "k_grid": [
     2,
     2,

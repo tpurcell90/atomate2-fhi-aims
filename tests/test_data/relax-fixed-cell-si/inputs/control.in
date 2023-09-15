@@ -1,13 +1,13 @@
 #===============================================================================
 # Created using the Atomic Simulation Environment (ASE)
 
-# Fri Sep 15 16:14:50 2023
+# Fri Sep 15 16:15:59 2023
 
 #===============================================================================
 xc                                 pbe
 relativistic                       atomic_zora scalar
 relax_geometry                     trm 1.000000e-03
-relax_unit_cell                    full
+relax_unit_cell                    none
 k_grid                             2 2 2
 #===============================================================================
 

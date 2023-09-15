@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 from typing import Union, Sequence, Literal
 
@@ -6,12 +7,24 @@ import pytest
 
 from ase.build import bulk, molecule
 
+import fhi_aims_workflows.jobs.base
+import fhi_aims_workflows.run
+from fhi_aims_workflows.sets.base import AimsInputGenerator
+
 _REF_PATHS = {}
 _FAKE_RUN_AIMS_KWARGS = {}
 _VFILES = "control.in"
 
 
 logger = logging.getLogger(__name__)
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--generate-test-data",
+        action="store_true",
+        help="Runs FHI-aims to create test data; runs tests against the created outputs",
+    )
 
 
 @pytest.fixture
@@ -38,8 +51,13 @@ def ref_path():
     return test_dir.resolve()
 
 
+@pytest.fixture
+def should_mock_aims(request):
+    return not request.config.getoption("--generate-test-data")
+
+
 @pytest.fixture()
-def mock_aims(monkeypatch, ref_path):
+def mock_aims(monkeypatch, ref_path, should_mock_aims):
     """
     This fixture allows one to mock (fake) running FHI-aims.
 
@@ -69,9 +87,6 @@ def mock_aims(monkeypatch, ref_path):
 
     For examples, see the tests in tests/aims/jobs/core.py.
     """
-    import fhi_aims_workflows.jobs.base
-    import fhi_aims_workflows.run
-    from fhi_aims_workflows.sets.base import AimsInputGenerator
 
     def mock_run_aims(*args, **kwargs):
         from jobflow import CURRENT_JOB
@@ -82,12 +97,38 @@ def mock_aims(monkeypatch, ref_path):
 
     get_input_set_orig = AimsInputGenerator.get_input_set
 
+    def generate_test_data(*args, **kwargs):
+        """A monkey patch for fhi_aims_workflows.run.run_aims that runs the actual executable and copies
+         inputs and outputs to the test data directory"""
+        import shutil
+        from jobflow import CURRENT_JOB
+
+        input_files = ['control.in', 'geometry.in', 'parameters.json']
+        name = CURRENT_JOB.job.name
+        ref_dir = ref_path / _REF_PATHS[name]
+        print(f"HELLO! {args} {kwargs} {ref_dir} {Path.cwd()}")
+        # running aims
+        fhi_aims_workflows.run.run_aims()
+        # copy output files
+        output_files = [f for f in Path.cwd().glob('*') if f.name not in input_files]
+        shutil.rmtree(ref_dir, ignore_errors=True)
+        os.makedirs(ref_dir / 'inputs')
+        os.makedirs(ref_dir / 'outputs')
+        for f in input_files:
+            shutil.copy(Path.cwd() / f, ref_dir / 'inputs')
+        for f in output_files:
+            shutil.copy(f, ref_dir / 'outputs')
+
+
     def mock_get_input_set(self, *args, **kwargs):
         return get_input_set_orig(self, *args, **kwargs)
 
-    monkeypatch.setattr(fhi_aims_workflows.run, "run_aims", mock_run_aims)
-    monkeypatch.setattr(fhi_aims_workflows.jobs.base, "run_aims", mock_run_aims)
-    monkeypatch.setattr(AimsInputGenerator, "get_input_set", mock_get_input_set)
+    if should_mock_aims:
+        monkeypatch.setattr(fhi_aims_workflows.run, "run_aims", mock_run_aims)
+        monkeypatch.setattr(fhi_aims_workflows.jobs.base, "run_aims", mock_run_aims)
+        monkeypatch.setattr(AimsInputGenerator, "get_input_set", mock_get_input_set)
+    else:
+        monkeypatch.setattr(fhi_aims_workflows.jobs.base, "run_aims", generate_test_data)
 
     def _run(ref_paths, fake_run_aims_kwargs=None):
         if fake_run_aims_kwargs is None:
@@ -137,26 +178,6 @@ def fake_run_aims(
 
     # pretend to run aims by copying pre-generated outputs from reference dir
     logger.info("Generated fake aims outputs")
-
-
-# @pytest.fixture()
-# def check_input():
-#     def _check_input(ref_path, user_input):
-#         from pymatgen.io.aims.inputs import AimsInput
-#
-#         ref = aimsInput.from_file(ref_path / "inputs" / "aims.inp")
-#         user_input.verbosity(False)
-#         ref.verbosity(False)
-#         user_string = " ".join(user_input.get_string().lower().split())
-#         user_hash = md5(user_string.encode("utf-8")).hexdigest()
-#
-#         ref_string = " ".join(ref.get_string().lower().split())
-#         ref_hash = md5(ref_string.encode("utf-8")).hexdigest()
-#
-#         if ref_hash != user_hash:
-#             raise ValueError("aims Inputs do not match!")
-#
-#     return _check_input
 
 
 def clear_aims_inputs():
