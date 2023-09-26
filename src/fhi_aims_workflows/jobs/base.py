@@ -11,6 +11,7 @@ from typing import Type
 from jobflow import job, Maker, Response, Flow
 from monty.serialization import dumpfn
 from monty.shutil import gzip_dir
+from pymatgen.core import Structure
 
 from fhi_aims_workflows.files import (
     copy_aims_outputs,
@@ -24,7 +25,7 @@ from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 
 logger = logging.getLogger(__name__)
-CONVERGENCE_FILE_NAME = 'convergence.json'  # make it a constant?
+CONVERGENCE_FILE_NAME = "convergence.json"  # make it a constant?
 
 
 @dataclass
@@ -70,7 +71,11 @@ class BaseAimsMaker(Maker):
     store_output_data: bool = True
 
     @job
-    def make(self, atoms: MSONableAtoms, prev_dir: str | Path | None = None):
+    def make(
+        self,
+        atoms: MSONableAtoms | Structure | Molecule,
+        prev_dir: str | Path | None = None,
+    ):
         """
         Run an FHI-aims calculation.
 
@@ -82,6 +87,8 @@ class BaseAimsMaker(Maker):
             A previous FHI-aims calculation directory to copy output files from.
         """
         # the structure transformation part was deleted; can be reinserted when needed
+        if isinstance(atoms, Structure) or isinstance(atoms, Molecule):
+            atoms = MSONableAtoms.from_pymatgen(atoms)
 
         # copy previous inputs
         if prev_dir is not None:
@@ -101,7 +108,9 @@ class BaseAimsMaker(Maker):
         run_aims(**self.run_aims_kwargs)
 
         # parse FHI-aims outputs
-        task_doc = AimsTaskDocument.from_directory(Path.cwd(), **self.task_document_kwargs)
+        task_doc = AimsTaskDocument.from_directory(
+            Path.cwd(), **self.task_document_kwargs
+        )
         task_doc.task_label = self.name
 
         # decide whether child jobs should proceed
@@ -121,7 +130,7 @@ class BaseAimsMaker(Maker):
 
 @dataclass
 class ConvergenceMaker(Maker):
-    """ A job that performs convergence run for a given number of steps. Stops either when all steps are done,
+    """A job that performs convergence run for a given number of steps. Stops either when all steps are done,
     or when the convergence criterion is reached, that is when the absolute difference between the subsequent values
     of the convergence field is less than a given epsilon.
 
@@ -141,6 +150,7 @@ class ConvergenceMaker(Maker):
         An iterable of the possible values for the convergence field. If the iterable is depleted and the
         convergence is not reached, that the job is failed
     """
+
     name: str = "Convergence job"
     maker: BaseAimsMaker = field(default_factory=BaseAimsMaker)
     criterion_name: str = "energy_per_atom"
@@ -152,8 +162,7 @@ class ConvergenceMaker(Maker):
         self.last_idx = len(self.convergence_steps)
 
     @job
-    def make(self, atoms,
-             prev_dir: str | Path = None):
+    def make(self, atoms, prev_dir: str | Path = None):
         """
         Runs several jobs with changing inputs consecutively to investigate convergence in the results
 
@@ -168,69 +177,81 @@ class ConvergenceMaker(Maker):
         idx = 0
         converged = False
         if prev_dir is not None:
-            prev_dir = prev_dir.split(':')[-1]
+            prev_dir = prev_dir.split(":")[-1]
             convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
             if convergence_file.exists():
                 with open(convergence_file) as f:
                     data = json.load(f)
-                    idx = data['idx'] + 1
+                    idx = data["idx"] + 1
                     # check for convergence
-                    if len(data['criterion_values']) > 1:
-                        converged = abs(data['criterion_values'][-1] - data['criterion_values'][-2]) < self.epsilon
+                    if len(data["criterion_values"]) > 1:
+                        converged = (
+                            abs(
+                                data["criterion_values"][-1]
+                                - data["criterion_values"][-2]
+                            )
+                            < self.epsilon
+                        )
 
         if idx < self.last_idx and not converged:
             # finding next jobs
             next_base_job = self.maker.make(atoms, prev_dir=prev_dir)
             next_base_job.update_maker_kwargs(
-                {"_set": {f"input_set_generator->user_parameters->"
-                          f"{self.convergence_field}": self.convergence_steps[idx]}},
-                dict_mod=True
+                {
+                    "_set": {
+                        f"input_set_generator->user_parameters->"
+                        f"{self.convergence_field}": self.convergence_steps[idx]
+                    }
+                },
+                dict_mod=True,
             )
-            update_file_job = self.update_convergence_file(prev_dir=prev_dir,
-                                                           job_dir=next_base_job.output.dir_name,
-                                                           output=next_base_job.output)
+            update_file_job = self.update_convergence_file(
+                prev_dir=prev_dir,
+                job_dir=next_base_job.output.dir_name,
+                output=next_base_job.output,
+            )
 
-            next_job = self.make(atoms,
-                                 prev_dir=next_base_job.output.dir_name)
+            next_job = self.make(atoms, prev_dir=next_base_job.output.dir_name)
 
-            replace_flow = Flow([next_base_job,
-                                 update_file_job,
-                                 next_job], output=next_base_job.output)
+            replace_flow = Flow(
+                [next_base_job, update_file_job, next_job], output=next_base_job.output
+            )
         else:
             get_results_job = self.get_results(prev_dir=prev_dir)
             replace_flow = Flow([get_results_job], output=get_results_job.output)
         return Response(replace=replace_flow)
 
-    @job(name='Writing a convergence file')
+    @job(name="Writing a convergence file")
     def update_convergence_file(self, prev_dir, job_dir, output):
         idx = 0
         if prev_dir is not None:
-            prev_dir = prev_dir.split(':')[-1]
+            prev_dir = prev_dir.split(":")[-1]
             convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
             if convergence_file.exists():
                 with open(convergence_file) as f:
                     convergence_data = json.load(f)
-                    idx = convergence_data['idx'] + 1
+                    idx = convergence_data["idx"] + 1
             else:
                 convergence_data = {
-                    'criterion_name': self.criterion_name,
-                    'criterion_values': [],
-                    'convergence_field_name': self.convergence_field,
-                    'convergence_field_values': [],
-                    'idx': 0
+                    "criterion_name": self.criterion_name,
+                    "criterion_values": [],
+                    "convergence_field_name": self.convergence_field,
+                    "convergence_field_values": [],
+                    "idx": 0,
                 }
-        convergence_data['convergence_field_values'].append(self.convergence_steps[idx])
-        convergence_data['criterion_values'].append(getattr(output.output, self.criterion_name))
-        convergence_data['idx'] = idx
+        convergence_data["convergence_field_values"].append(self.convergence_steps[idx])
+        convergence_data["criterion_values"].append(
+            getattr(output.output, self.criterion_name)
+        )
+        convergence_data["idx"] = idx
 
-        job_dir = job_dir.split(':')[-1]
+        job_dir = job_dir.split(":")[-1]
         convergence_file = Path(job_dir) / CONVERGENCE_FILE_NAME
-        with open(convergence_file, 'w') as f:
+        with open(convergence_file, "w") as f:
             json.dump(convergence_data, f)
 
-    @job(name='Getting the results')
+    @job(name="Getting the results")
     def get_results(self, prev_dir):
         convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
         with open(convergence_file) as f:
             return json.load(f)
-

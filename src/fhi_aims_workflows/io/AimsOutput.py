@@ -93,7 +93,7 @@ class AimsOutput(MSONable):
 
     @property
     def initial_structure(self):
-        return self._atoms_summary['initial_atoms']
+        return self._atoms_summary["initial_atoms"]
 
     @property
     def final_structure(self):
@@ -105,27 +105,27 @@ class AimsOutput(MSONable):
 
     @property
     def fermi_energy(self):
-        return self.get_results_for_image(-1).calc.results['fermi_energy']
+        return self.get_results_for_image(-1).calc.results["fermi_energy"]
 
     @property
     def homo(self):
-        return self.get_results_for_image(-1).calc.results['homo']
+        return self.get_results_for_image(-1).calc.results["homo"]
 
     @property
     def lumo(self):
-        return self.get_results_for_image(-1).calc.results['lumo']
+        return self.get_results_for_image(-1).calc.results["lumo"]
 
     @property
     def band_gap(self):
-        return self.get_results_for_image(-1).calc.results['gap']
+        return self.get_results_for_image(-1).calc.results["gap"]
 
     @property
     def direct_band_gap(self):
-        return self.get_results_for_image(-1).calc.results['direct_gap']
+        return self.get_results_for_image(-1).calc.results["direct_gap"]
 
     @property
     def final_energy(self):
-        return self.get_results_for_image(-1).calc.results['energy']
+        return self.get_results_for_image(-1).calc.results["energy"]
 
     @property
     def completed(self):
@@ -133,4 +133,16 @@ class AimsOutput(MSONable):
 
     @property
     def aims_version(self):
-        return self._metadata['version_number']
+        return self._metadata["version_number"]
+
+    @property
+    def forces(self):
+        return self.get_results_for_image(-1).calc.results.get("forces", None)
+
+    @property
+    def stress(self):
+        return self.get_results_for_image(-1).calc.results.get("stress", None)
+
+    @property
+    def stresses(self):
+        return self.get_results_for_image(-1).calc.results.get("stresses", None)
