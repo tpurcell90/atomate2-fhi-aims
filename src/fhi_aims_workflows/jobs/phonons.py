@@ -74,7 +74,6 @@ def generate_phonon_displacements(
     code:
         code to perform the computations
     """
-    print(type(structure))
     cell = get_phonopy_structure(structure)
     factor = VaspToTHz
 

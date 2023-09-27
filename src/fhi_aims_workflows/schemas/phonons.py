@@ -256,7 +256,6 @@ class PhononBSDOSDoc(BaseModel):
             is_symmetry=sym_reduce,
         )
         phonon.generate_displacements(distance=displacement)
-        print(displacement_data)
         set_of_forces = [np.array(forces) for forces in displacement_data["forces"]]
 
         if born is not None and epsilon_static is not None:
@@ -286,7 +285,6 @@ class PhononBSDOSDoc(BaseModel):
             epsilon = None
 
         # Produces all force constants
-        print(set_of_forces)
         phonon.produce_force_constants(forces=set_of_forces)
 
         # with phonon.load("phonopy.yaml") the phonopy API can be used
