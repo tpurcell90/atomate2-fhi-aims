@@ -146,3 +146,7 @@ class AimsOutput(MSONable):
     @property
     def stresses(self):
         return self.get_results_for_image(-1).calc.results.get("stresses", None)
+
+    @property
+    def all_forces(self):
+        return [res.calc.results.get("forces", None) for res in self._results]

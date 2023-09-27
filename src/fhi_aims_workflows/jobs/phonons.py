@@ -22,8 +22,9 @@ from pymatgen.phonon.bandstructure import PhononBandStructureSymmLine
 from pymatgen.phonon.dos import PhononDos
 
 from fhi_aims_workflows.jobs.base import BaseAimsMaker
+from fhi_aims_workflows.jobs.core import SocketIOStaticMaker
 from fhi_aims_workflows.sets.base import AimsInputGenerator
-from fhi_aims_workflows.sets.core import StaticSetGenerator
+from fhi_aims_workflows.sets.core import StaticSetGenerator, SocketIOSetGenerator
 
 from atomate2.vasp.jobs.phonons import (
     get_total_energy_per_cell,
@@ -112,6 +113,7 @@ def run_phonon_displacements(
     structure: Structure,
     supercell_matrix,
     phonon_maker: BaseAimsMaker = None,
+    socket: bool = False,
 ):
     """
     Run phonon displacements.
@@ -129,7 +131,10 @@ def run_phonon_displacements(
         A VaspMaker to use to generate the elastic relaxation jobs.
     """
     if phonon_maker is None:
-        phonon_maker = PhononDisplacementMaker()
+        if socket:
+            phonon_maker = PhononDisplacementMakerSocket()
+        else:
+            phonon_maker = PhononDisplacementMaker()
 
     phonon_jobs = []
     outputs: dict[str, list] = {
@@ -140,26 +145,44 @@ def run_phonon_displacements(
         "displaced_structures": [],
     }
 
-    for i, displacement in enumerate(displacements):
-        phonon_job = phonon_maker.make(displacement)
-        phonon_job.append_name(f" {i + 1}/{len(displacements)}")
-
-        # we will add some meta data
+    if socket:
+        phonon_job = phonon_maker.make(displacements)
         info = {
-            "displacement_number": i,
             "original_structure": structure,
             "supercell_matrix": supercell_matrix,
-            "displaced_structure": displacement,
+            "displaced_structures": displacements,
         }
         phonon_job.update_maker_kwargs(
             {"_set": {"write_additional_data->phonon_info:json": info}}, dict_mod=True
         )
         phonon_jobs.append(phonon_job)
-        outputs["displacement_number"].append(i)
-        outputs["uuids"].append(phonon_job.output.uuid)
-        outputs["dirs"].append(phonon_job.output.dir_name)
-        outputs["forces"].append(phonon_job.output.output.forces)
-        outputs["displaced_structures"].append(displacement)
+        outputs["displacement_number"] = list(range(len(displacements)))
+        outputs["uuids"] = [phonon_job.output.uuid] * len(displacements)
+        outputs["dirs"] = [phonon_job.output.dir_name] * len(displacements)
+        outputs["forces"] = phonon_job.output.output.all_forces
+        outputs["displaced_structures"] = displacements
+    else:
+        for i, displacement in enumerate(displacements):
+            phonon_job = phonon_maker.make(displacement)
+            phonon_job.append_name(f" {i + 1}/{len(displacements)}")
+
+            # we will add some meta data
+            info = {
+                "displacement_number": i,
+                "original_structure": structure,
+                "supercell_matrix": supercell_matrix,
+                "displaced_structure": displacement,
+            }
+            phonon_job.update_maker_kwargs(
+                {"_set": {"write_additional_data->phonon_info:json": info}},
+                dict_mod=True,
+            )
+            phonon_jobs.append(phonon_job)
+            outputs["displacement_number"].append(i)
+            outputs["uuids"].append(phonon_job.output.uuid)
+            outputs["dirs"].append(phonon_job.output.dir_name)
+            outputs["forces"].append(phonon_job.output.output.forces)
+            outputs["displaced_structures"].append(displacement)
 
     displacement_flow = Flow(phonon_jobs, outputs)
     return Response(replace=displacement_flow)
@@ -254,6 +277,33 @@ class PhononDisplacementMaker(BaseAimsMaker):
 
     input_set_generator: AimsInputGenerator = field(
         default_factory=lambda: StaticSetGenerator(
+            user_parameters={"compute_forces": True},
+            user_kpoints_settings={"density": 5.0, "even": True},
+        )
+    )
+
+
+@dataclass
+class PhononDisplacementMakerSocket(SocketIOStaticMaker):
+    """
+    Maker to perform a static calculation as a part of the finite displacement method.
+
+    The input set is for a static run with tighter convergence parameters.
+    Both the k-point mesh density and convergence parameters
+    are stricter than a normal relaxation.
+
+    Parameters
+    ----------
+    name : str
+        The job name.
+    input_set_generator : .AimsInputGenerator
+        A generator used to make the input set.
+    """
+
+    name: str = "phonon static aims socket"
+
+    input_set_generator: AimsInputGenerator = field(
+        default_factory=lambda: SocketIOSetGenerator(
             user_parameters={"compute_forces": True},
             user_kpoints_settings={"density": 5.0, "even": True},
         )

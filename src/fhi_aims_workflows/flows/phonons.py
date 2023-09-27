@@ -133,14 +133,16 @@ class PhononMaker(Maker):
         default_factory=lambda: DoubleRelaxMaker.from_parmeters(dict())
     )
     static_energy_maker: BaseAimsMaker | None = field(default_factory=StaticMaker)
-    phonon_displacement_maker: BaseAimsMaker = field(
-        default_factory=PhononDisplacementMaker
-    )
+    # phonon_displacement_maker: BaseAimsMaker = field(
+    #     default_factory=PhononDisplacementMaker
+    # )
+    phonon_displacement_maker: BaseAimsMaker = None
     create_thermal_displacements: bool = True
     generate_frequencies_eigenvectors_kwargs: dict = field(default_factory=dict)
     kpath_scheme: str = "seekpath"
     code: str = "aims"
     store_force_constants: bool = True
+    socket: bool = False
 
     def make(
         self,
@@ -275,6 +277,7 @@ class PhononMaker(Maker):
             structure=structure,
             supercell_matrix=supercell_matrix,
             phonon_maker=self.phonon_displacement_maker,
+            socket=self.socket,
         )
         jobs.append(aims_displacement_calcs)
 

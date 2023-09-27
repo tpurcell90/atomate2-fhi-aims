@@ -86,8 +86,16 @@ class CalculationOutput(BaseModel):
     )
 
     forces: List[Vector3D] = Field(None, description="Forces acting on each atom")
+    all_forces: List[List[Vector3D]] = Field(
+        None,
+        description="Forces acting on each atom for each structure in the output file",
+    )
     stress: Matrix3D = Field(None, description="The stress on the cell")
     stresses: List[Matrix3D] = Field(None, description="The stress on the cell")
+
+    all_forces: List[List[Vector3D]] = Field(
+        None, description="Forces acting on each atom for all images in the calculation"
+    )
 
     is_metal: bool = Field(None, description="Whether the system is metallic")
     bandgap: float = Field(None, description="The band gap from the calculation in eV")
@@ -169,6 +177,12 @@ class CalculationOutput(BaseModel):
                 voigt_6_to_full_3x3_stress(st).tolist() for st in output.stresses
             ]
 
+        all_forces = None
+        if not any([ff is None for ff in output.all_forces]):
+            all_forces = [
+                f.tolist() if (f is not None) else None for f in output.all_forces
+            ]
+
         return cls(
             structure=structure,
             energy=output.final_energy,
@@ -178,6 +192,7 @@ class CalculationOutput(BaseModel):
             forces=forces,
             stress=stress,
             stresses=stresses,
+            all_forces=all_forces,
         )
 
 

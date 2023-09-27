@@ -11,7 +11,7 @@ from typing import Type
 from jobflow import job, Maker, Response, Flow
 from monty.serialization import dumpfn
 from monty.shutil import gzip_dir
-from pymatgen.core import Structure
+from pymatgen.core import Structure, Molecule
 
 from fhi_aims_workflows.files import (
     copy_aims_outputs,

@@ -152,6 +152,9 @@ class OutputSummary(BaseModel):
     stress: Matrix3D = Field(
         None, description="Stress on the unit cell from the last calculation"
     )
+    all_forces: List[List[Vector3D]] = Field(
+        None, description="Forces on atoms from all calculations."
+    )
 
     @classmethod
     def from_aims_calc_doc(cls, calc_doc: Calculation) -> "OutputSummary":
@@ -169,9 +172,6 @@ class OutputSummary(BaseModel):
             The calculation output summary.
         """
 
-        forces = calc_doc.output.forces
-        stress = calc_doc.output.stress
-
         return cls(
             structure=calc_doc.output.structure,
             energy=calc_doc.output.energy,
@@ -179,8 +179,9 @@ class OutputSummary(BaseModel):
             bandgap=calc_doc.output.bandgap,
             cbm=calc_doc.output.cbm,
             vbm=calc_doc.output.vbm,
-            forces=forces,
-            stress=stress,
+            forces=calc_doc.output.forces,
+            stress=calc_doc.output.stress,
+            all_forces=calc_doc.output.all_forces,
             trajectory=calc_doc.output.atomic_steps,
         )
 
