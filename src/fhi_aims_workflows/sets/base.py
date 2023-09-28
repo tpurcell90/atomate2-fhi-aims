@@ -87,6 +87,7 @@ class AimsInputSet(InputSet):
         )
 
     def get_input_files(self):
+        print("PARAMS: ", self._parameters)
         with cwd(TMPDIR_NAME, mkdir=True, rmdir=True):
             aims_template = AimsTemplate()
             aims_template.write_input(
@@ -95,7 +96,6 @@ class AimsInputSet(InputSet):
 
             aims_control_in = AimsInputFile.from_file("control.in")
             aims_geometry_in = AimsInputFile.from_file("geometry.in")
-
         return aims_control_in, aims_geometry_in
 
     @property
@@ -394,7 +394,7 @@ class AimsInputGenerator(InputGenerator):
         recipcell = atoms.cell.reciprocal()
         return self.d2k_recipcell(recipcell, atoms.pbc, kptdensity, even)
 
-    def k2d(atoms: MSONableAtoms, k_grid: Iterable[int]):
+    def k2d(self, atoms: MSONableAtoms, k_grid: Iterable[int]):
         """Generate the kpoint density in each direction from given k_grid.
 
         Parameters
