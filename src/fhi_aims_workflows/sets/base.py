@@ -87,7 +87,6 @@ class AimsInputSet(InputSet):
         )
 
     def get_input_files(self):
-        print("PARAMS: ", self._parameters)
         with cwd(TMPDIR_NAME, mkdir=True, rmdir=True):
             aims_template = AimsTemplate()
             aims_template.write_input(

@@ -26,10 +26,9 @@ from fhi_aims_workflows.jobs.core import SocketIOStaticMaker
 from fhi_aims_workflows.sets.base import AimsInputGenerator
 from fhi_aims_workflows.sets.core import StaticSetGenerator, SocketIOSetGenerator
 
-from atomate2.vasp.jobs.phonons import (
+from atomate2.common.jobs.phonons import (
     get_total_energy_per_cell,
     get_supercell_size,
-    # generate_frequencies_eigenvectors,
 )
 from fhi_aims_workflows.schemas.phonons import PhononBSDOSDoc
 

@@ -35,6 +35,7 @@ dependencies = [
     "pydantic",
     "ase@git+https://gitlab.com/ase/ase.git@793179f4#egg=ase",
     "phonopy",
+    "seekpath",
 ]
 
 [project.optional-dependencies]
