@@ -1,8 +1,6 @@
 """Test various makers"""
 import os
 
-import pytest
-
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 cwd = os.getcwd()
