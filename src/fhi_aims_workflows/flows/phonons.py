@@ -14,7 +14,6 @@ from fhi_aims_workflows.flows.core import DoubleRelaxMaker
 from fhi_aims_workflows.jobs.base import BaseAimsMaker
 from fhi_aims_workflows.jobs.core import StaticMaker, RelaxMaker, SocketIOStaticMaker
 from fhi_aims_workflows.jobs.phonons import (
-    PhononDisplacementMaker,
     generate_frequencies_eigenvectors,
     generate_phonon_displacements,
     get_supercell_size,

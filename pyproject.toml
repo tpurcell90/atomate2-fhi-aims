@@ -34,6 +34,7 @@ dependencies = [
     "numpy",
     "pydantic",
     "ase@git+https://gitlab.com/ase/ase.git@793179f4#egg=ase",
+    "phonopy",
 ]
 
 [project.optional-dependencies]
