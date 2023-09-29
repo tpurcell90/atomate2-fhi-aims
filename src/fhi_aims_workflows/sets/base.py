@@ -217,11 +217,10 @@ class AimsInputGenerator(InputGenerator):
         """
         prev_atoms, prev_parameters, prev_results = self._read_previous(prev_dir)
         atoms = atoms if atoms is not None else prev_atoms
-        print(prev_dir, prev_parameters)
+
         parameters = self._get_input_parameters(atoms, prev_parameters)
         properties = self._get_properties(properties, parameters, prev_results)
 
-        print("\n\n\n", parameters, prev_parameters, "\n\n\n")
         return AimsInputSet(parameters=parameters, atoms=atoms, properties=properties)
 
     def _read_previous(
@@ -333,9 +332,6 @@ class AimsInputGenerator(InputGenerator):
                 kpt_settings["density"] = density
 
         parameter_updates = self.get_parameter_updates(atoms, prev_parameters)
-
-        print("\n\n", parameter_updates, "\n\n")
-        print("\n\n", prev_parameters, "\n\n")
         parameters = recursive_update(parameters, parameter_updates)
 
         # Override default parameters with user_parameters
