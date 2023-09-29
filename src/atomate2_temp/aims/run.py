@@ -12,8 +12,8 @@ from ase.calculators.socketio import SocketIOCalculator
 from ase.calculators.aims import Aims
 from monty.json import MontyDecoder
 
-from fhi_aims_workflows.schemas.task import AimsTaskDocument
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.schemas.task import AimsTaskDocument
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 logger = logging.getLogger(__name__)
 

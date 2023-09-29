@@ -1,4 +1,4 @@
-from fhi_aims_workflows.io.AimsOutput import AimsOutput
+from atomate2_temp.aims.io.AimsOutput import AimsOutput
 from pathlib import Path
 
 from monty.json import MontyDecoder

@@ -13,7 +13,7 @@ from ase.io import ParseError
 from ase.utils import lazymethod, lazyproperty, reader
 
 from typing import Any, Callable, Iterable, Dict
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 LINE_NOT_FOUND = object()
 

@@ -1,4 +1,4 @@
-from fhi_aims_workflows.sets.core import StaticSetGenerator
+from atomate2_temp.aims.sets.core import StaticSetGenerator
 from tests import compare_files
 
 import os

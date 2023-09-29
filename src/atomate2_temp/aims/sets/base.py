@@ -10,19 +10,19 @@ from typing import Any, Iterable, Dict, List, Tuple, Sequence
 import numpy as np
 
 from monty.json import MontyEncoder, MontyDecoder
-from fhi_aims_workflows.io.parsers import read_aims_output, AimsParseError
-from fhi_aims_workflows.utils.pymatgen_core_io import (
+from atomate2_temp.aims.io.parsers import read_aims_output, AimsParseError
+from atomate2_temp.aims.utils.pymatgen_core_io import (
     InputGenerator,
     InputSet,
     InputFile,
 )
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 from ase.calculators.aims import AimsTemplate
 from ase.atoms import Atoms
 
 from pathlib import Path
 
-from fhi_aims_workflows.utils.common import (
+from atomate2_temp.aims.utils.common import (
     TMPDIR_NAME,
     CONTROL_FILE_NAME,
     GEOMETRY_FILE_NAME,

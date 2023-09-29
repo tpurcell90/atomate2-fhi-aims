@@ -13,15 +13,15 @@ from monty.serialization import dumpfn
 from monty.shutil import gzip_dir
 from pymatgen.core import Structure, Molecule
 
-from fhi_aims_workflows.files import (
+from atomate2_temp.aims.files import (
     copy_aims_outputs,
     write_aims_input_set,
     cleanup_aims_outputs,
 )
-from fhi_aims_workflows.run import run_aims, should_stop_children
-from fhi_aims_workflows.schemas.task import AimsTaskDocument, ConvergenceSummary
-from fhi_aims_workflows.sets.base import AimsInputGenerator
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.run import run_aims, should_stop_children
+from atomate2_temp.aims.schemas.task import AimsTaskDocument, ConvergenceSummary
+from atomate2_temp.aims.sets.base import AimsInputGenerator
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 
 logger = logging.getLogger(__name__)
@@ -162,16 +162,16 @@ class ConvergenceMaker(Maker):
         self.last_idx = len(self.convergence_steps)
 
     def make(self, atoms):
-        """ A top-level flow controlling convergence iteration
+        """A top-level flow controlling convergence iteration
 
         Parameters
         ----------
             atoms : MSONableAtoms
                 a structure to run a job
         """
-        convergence_job = self.convergence_iteration(atoms)       
+        convergence_job = self.convergence_iteration(atoms)
         return Flow([convergence_job], output=convergence_job.output)
-    
+
     @job
     def convergence_iteration(self, atoms, prev_dir: str | Path = None):
         """
@@ -211,20 +211,21 @@ class ConvergenceMaker(Maker):
                 dict_mod=True,
             )
             next_base_job.append_name(append_str=f" {idx}")
-           
+
             update_file_job = self.update_convergence_file(
                 prev_dir=prev_dir,
                 job_dir=next_base_job.output.dir_name,
                 output=next_base_job.output,
             )
 
-            next_job = self.convergence_iteration(atoms, prev_dir=next_base_job.output.dir_name)
+            next_job = self.convergence_iteration(
+                atoms, prev_dir=next_base_job.output.dir_name
+            )
 
             replace_flow = Flow(
                 [next_base_job, update_file_job, next_job], output=next_base_job.output
             )
-            return Response(detour=replace_flow,
-                            output=replace_flow.output)
+            return Response(detour=replace_flow, output=replace_flow.output)
         else:
             task_doc = AimsTaskDocument.from_directory(prev_dir)
             summary = ConvergenceSummary.from_aims_calc_doc(task_doc)
@@ -232,7 +233,6 @@ class ConvergenceMaker(Maker):
 
     @job(name="Writing a convergence file")
     def update_convergence_file(self, prev_dir, job_dir, output):
-
         if prev_dir is not None:
             prev_dir = prev_dir.split(":")[-1]
             convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
@@ -247,7 +247,7 @@ class ConvergenceMaker(Maker):
                 "criterion_values": [],
                 "convergence_field_name": self.convergence_field,
                 "convergence_field_values": [],
-                "converged": False
+                "converged": False,
             }
         convergence_data["convergence_field_values"].append(self.convergence_steps[idx])
         convergence_data["criterion_values"].append(

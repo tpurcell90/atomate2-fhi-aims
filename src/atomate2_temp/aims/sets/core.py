@@ -6,7 +6,7 @@ from typing import Dict, Any
 
 from ase import Atoms
 
-from fhi_aims_workflows.sets.base import AimsInputGenerator
+from atomate2_temp.aims.sets.base import AimsInputGenerator
 
 __all__ = [
     "StaticSetGenerator",
