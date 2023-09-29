@@ -3,12 +3,13 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 import logging
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Sequence
 
 from ase.atoms import Atoms
 from jobflow import job, Response
 from monty.serialization import dumpfn
 from monty.shutil import gzip_dir
+from pymatgen.core import Structure
 
 from fhi_aims_workflows.jobs.base import BaseAimsMaker
 from fhi_aims_workflows.io.parsers import read_aims_output
@@ -81,7 +82,11 @@ class SocketIOStaticMaker(BaseAimsMaker):
     )
 
     @job
-    def make(self, atoms: Iterable[MSONableAtoms], prev_dir: str | Path | None = None):
+    def make(
+        self,
+        atoms: Sequence[MSONableAtoms | Structure],
+        prev_dir: str | Path | None = None,
+    ):
         """Run an FHI-aims calculation on multiple atoms object using the socket communicator.
 
         Parameters
@@ -92,8 +97,14 @@ class SocketIOStaticMaker(BaseAimsMaker):
             A previous FHI-aims calculation directory to copy output files from.
         """
         # copy previous inputs
-        if isinstance(atoms, MSONableAtoms) or isinstance(atoms, Atoms):
+
+        if not isinstance(atoms, Sequence):
             atoms = [MSONableAtoms(atoms)]
+
+        atoms = [
+            at if isinstance(at, MSONableAtoms) else MSONableAtoms.from_pymatgen(at)
+            for at in atoms
+        ]
 
         from_prev = prev_dir is not None
         if from_prev:
@@ -125,7 +136,9 @@ class SocketIOStaticMaker(BaseAimsMaker):
         run_aims_socket(atoms, **self.run_aims_kwargs)
 
         # parse FHI-aims outputs
-        task_doc = AimsTaskDocument.from_directory(Path.cwd(), **self.task_document_kwargs)
+        task_doc = AimsTaskDocument.from_directory(
+            Path.cwd(), **self.task_document_kwargs
+        )
         task_doc.task_label = self.name
 
         # decide whether child jobs should proceed
@@ -139,7 +152,6 @@ class SocketIOStaticMaker(BaseAimsMaker):
 
         return Response(
             stop_children=stop_children,
-            # stored_data={"custodian": task_doc.custodian},
             output=task_doc if self.store_output_data else None,
         )
 

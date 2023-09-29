@@ -40,7 +40,7 @@ def run_aims(
     aims_cmd = expandvars(aims_cmd)
 
     logger.info(f"Running command: {aims_cmd}")
-    return_code = subprocess.call(['/bin/bash', '-c', aims_cmd], env=os.environ)
+    return_code = subprocess.call(["/bin/bash", "-c", aims_cmd], env=os.environ)
     logger.info(f"{aims_cmd} finished running with return code: {return_code}")
 
 
@@ -93,7 +93,10 @@ def run_aims_socket(atoms_to_calculate: Iterable[MSONableAtoms], aims_cmd: str =
 
     parameters = json.load(open("parameters.json", "rt"), cls=MontyDecoder)
     if aims_cmd:
-        parameters["run_command"] = aims_cmd
+        parameters["aims_command"] = aims_cmd
+    elif "aims_command" not in parameters:
+        aims_cmd = os.getenv("ASE_AIMS_COMMAND")
+
     calculator = Aims(**parameters)
 
     host = parameters["use_pimd_wrapper"][0]

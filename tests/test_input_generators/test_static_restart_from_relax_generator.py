@@ -31,7 +31,6 @@ def comp_system(atoms, prev_dir, test_name, work_path, ref_path, species_dir):
     shutil.move(Path(prev_dir) / "~parameters.json", params_file)
 
 
-@pytest.mark.skip
 def test_static_from_relax_si(Si, species_dir, tmp_path, ref_path):
     comp_system(
         Si,

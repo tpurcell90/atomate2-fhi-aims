@@ -1,7 +1,14 @@
 from ase.atoms import Atoms
 from ase.calculators.singlepoint import SinglePointDFTCalculator
 
+import numpy as np
+
 from monty.json import MSONable, MontyDecoder
+
+from pymatgen.core import Structure, Molecule
+from pymatgen.io.ase import AseAtomsAdaptor
+
+ASE_ADAPTOR = AseAtomsAdaptor()
 
 
 class MSONableAtoms(Atoms, MSONable):
@@ -31,3 +38,18 @@ class MSONableAtoms(Atoms, MSONable):
         calculator.results = calculated_results
 
         return cls(atoms, calculator=calculator)
+
+    @classmethod
+    def from_pymatgen(cls, structure: Structure | Molecule):
+        return ASE_ADAPTOR.get_atoms(structure)
+
+    @property
+    def structure(self):
+        return ASE_ADAPTOR.get_structure(self)
+
+    @property
+    def pymatgen(self):
+        if np.any(self.pbc):
+            return ASE_ADAPTOR.get_structure(self)
+
+        return ASE_ADAPTOR.get_molecule(self)

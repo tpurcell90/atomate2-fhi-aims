@@ -97,9 +97,7 @@ class SpeciesSummary(BaseModel):
 class InputSummary(BaseModel):
     """Summary of inputs for an FHI-aims calculation."""
 
-    structure: MSONableAtoms = Field(
-        None, description="The input structure object"
-    )
+    structure: MSONableAtoms = Field(None, description="The input structure object")
 
     species_info: SpeciesSummary = Field(
         None, description="Summary of the species defaults used for each atom kind"
@@ -123,9 +121,7 @@ class InputSummary(BaseModel):
         InputSummary
             A summary of the input structure and parameters.
         """
-        summary = SpeciesSummary.from_species_info(
-            calc_doc.input.species_info
-        )
+        summary = SpeciesSummary.from_species_info(calc_doc.input.species_info)
 
         return cls(
             structure=calc_doc.input.structure,
@@ -137,11 +133,9 @@ class InputSummary(BaseModel):
 class OutputSummary(BaseModel):
     """Summary of the outputs for an FHI-aims calculation."""
 
-    structure: MSONableAtoms = Field(
-        None, description="The output structure object"
-    )
+    structure: MSONableAtoms = Field(None, description="The output structure object")
     trajectory: List[MSONableAtoms] = Field(
-        None, description='The trajectory of output structures'
+        None, description="The trajectory of output structures"
     )
     energy: float = Field(
         None, description="The final total DFT energy for the last calculation"
@@ -157,6 +151,9 @@ class OutputSummary(BaseModel):
     )
     stress: Matrix3D = Field(
         None, description="Stress on the unit cell from the last calculation"
+    )
+    all_forces: List[List[Vector3D]] = Field(
+        None, description="Forces on atoms from all calculations."
     )
 
     @classmethod
@@ -174,12 +171,7 @@ class OutputSummary(BaseModel):
         OutputSummary
             The calculation output summary.
         """
-        # if calc_doc.output.ionic_steps:
-        #     forces = calc_doc.output.ionic_steps[-1].get("forces", None)
-        #     stress = calc_doc.output.ionic_steps[-1].get("stress", None)
-        # else:
-        forces = None
-        stress = None
+
         return cls(
             structure=calc_doc.output.structure,
             energy=calc_doc.output.energy,
@@ -187,9 +179,10 @@ class OutputSummary(BaseModel):
             bandgap=calc_doc.output.bandgap,
             cbm=calc_doc.output.cbm,
             vbm=calc_doc.output.vbm,
-            forces=forces,
-            stress=stress,
-            trajectory=calc_doc.output.atomic_steps
+            forces=calc_doc.output.forces,
+            stress=calc_doc.output.stress,
+            all_forces=calc_doc.output.all_forces,
+            trajectory=calc_doc.output.atomic_steps,
         )
 
 

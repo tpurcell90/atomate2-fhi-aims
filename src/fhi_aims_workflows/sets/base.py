@@ -95,7 +95,6 @@ class AimsInputSet(InputSet):
 
             aims_control_in = AimsInputFile.from_file("control.in")
             aims_geometry_in = AimsInputFile.from_file("geometry.in")
-
         return aims_control_in, aims_geometry_in
 
     @property
@@ -197,6 +196,7 @@ class AimsInputGenerator(InputGenerator):
     """
 
     user_parameters: dict = field(default_factory=dict)
+    user_kpoints_settings: dict = field(default_factory=dict)
 
     def get_input_set(  # type: ignore
         self,
@@ -217,6 +217,7 @@ class AimsInputGenerator(InputGenerator):
         """
         prev_atoms, prev_parameters, prev_results = self._read_previous(prev_dir)
         atoms = atoms if atoms is not None else prev_atoms
+
         parameters = self._get_input_parameters(atoms, prev_parameters)
         properties = self._get_properties(properties, parameters, prev_results)
 
@@ -318,24 +319,31 @@ class AimsInputGenerator(InputGenerator):
         }
 
         # Override default parameters with previous parameters
-        prev_parameters = {} if prev_parameters is None else prev_parameters
+        prev_parameters = (
+            {} if prev_parameters is None else copy.deepcopy(prev_parameters)
+        )
         prev_parameters.pop("relax_geometry", None)
         prev_parameters.pop("relax_unit_cell", None)
 
-        parameters = recursive_update(parameters, prev_parameters)
+        kpt_settings = copy.deepcopy(self.user_kpoints_settings)
+        if "k_grid" in prev_parameters:
+            density = self.k2d(atoms, prev_parameters.pop("k_grid"))
+            if "density" not in kpt_settings:
+                kpt_settings["density"] = density
 
-        # Override default parameters with job-specific updates
         parameter_updates = self.get_parameter_updates(atoms, prev_parameters)
         parameters = recursive_update(parameters, parameter_updates)
 
         # Override default parameters with user_parameters
         parameters = recursive_update(parameters, self.user_parameters)
-
-        if np.any(atoms.pbc) and ("k_grid" not in parameters):
+        if ("k_grid" in parameters) and ("density" in kpt_settings):
             warn(
-                "WARNING: the k_grid was not set, setting to a grid with a k-point density of 5.0"
+                "WARNING: the k_grid is set in user_parameters and in the kpt_settings, using the one passed in user_parameters."
             )
-            parameters["k_grid"] = self.d2k(atoms)
+        elif np.any(atoms.pbc) and ("k_grid" not in parameters):
+            density = kpt_settings.get("density", 5.0)
+            even = kpt_settings.get("even", True)
+            parameters["k_grid"] = self.d2k(atoms, density, even)
         elif not np.any(atoms.pbc) and "k_grid" in parameters:
             warn("WARNING: removing unnecessary k_grid information")
             del parameters["k_grid"]
@@ -360,7 +368,7 @@ class AimsInputGenerator(InputGenerator):
         dict
             A dictionary of updates to apply.
         """
-        raise NotImplementedError
+        return prev_parameters
 
     def d2k(
         self, atoms: Atoms, kptdensity: float | Iterable[float] = 5.0, even: bool = True
@@ -385,6 +393,25 @@ class AimsInputGenerator(InputGenerator):
         """
         recipcell = atoms.cell.reciprocal()
         return self.d2k_recipcell(recipcell, atoms.pbc, kptdensity, even)
+
+    def k2d(self, atoms: MSONableAtoms, k_grid: Iterable[int]):
+        """Generate the kpoint density in each direction from given k_grid.
+
+        Parameters
+        ----------
+        atoms: MSONableAtoms
+            Atoms object of interest.
+        k_grid: list
+            k_grid that was used.
+
+        Returns
+        -------
+        np.ndarray
+            density of kpoints in each direction. result.mean() computes average density
+        """
+        recipcell = atoms.cell.reciprocal()
+        densities = k_grid / (2 * np.pi * np.sqrt((recipcell**2).sum(axis=1)))
+        return np.array(densities)
 
     @staticmethod
     def d2k_recipcell(
@@ -411,7 +438,7 @@ class AimsInputGenerator(InputGenerator):
         list
             Monkhorst-Pack grid size in all directions
         """
-        if not isinstance(kptdensity, list) and not isinstance(kptdensity, np.ndarray):
+        if not isinstance(kptdensity, Iterable):
             kptdensity = 3 * [float(kptdensity)]
         kpts = []
         for i in range(3):
@@ -457,7 +484,9 @@ def recursive_update(d: dict, u: dict):
     for k, v in u.items():
         if isinstance(v, dict):
             d[k] = recursive_update(d.get(k, {}), v)
-        elif k == 'output' and isinstance(v, list):  # for all other keys the list addition is not needed (I guess)
+        elif k == "output" and isinstance(
+            v, list
+        ):  # for all other keys the list addition is not needed (I guess)
             old_v = d.get(k, [])
             d[k] = old_v + v
         else:

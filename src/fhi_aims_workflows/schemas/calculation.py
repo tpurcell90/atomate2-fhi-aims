@@ -4,9 +4,12 @@ import os
 from datetime import datetime
 from pathlib import Path
 from typing import Union, List, Dict, Any, Tuple, Optional
+from emmet.core.math import Vector3D, Matrix3D
 
 import numpy as np
 from ase.spectrum.band_structure import BandStructure
+from ase.stress import voigt_6_to_full_3x3_stress
+
 from pydantic import BaseModel, Field
 from jobflow.utils import ValueEnum
 from pymatgen.core.trajectory import Trajectory
@@ -16,13 +19,13 @@ from pymatgen.io.common import VolumetricData
 from fhi_aims_workflows.io.AimsOutput import AimsOutput
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
-STORE_VOLUMETRIC_DATA = ('total_density',)
+STORE_VOLUMETRIC_DATA = ("total_density",)
 
 
 __all__ = [
-    'Status',
-    'AimsObject',
-    'Calculation',
+    "Status",
+    "AimsObject",
+    "Calculation",
 ]
 
 
@@ -40,21 +43,21 @@ class AimsObject(ValueEnum):
     BAND_STRUCTURE = "band_structure"
     ELECTRON_DENSITY = "electron_density"  # e_density
     WFN = "wfn"  # Wavefunction file
-    TRAJECTORY = 'trajectory'
+    TRAJECTORY = "trajectory"
 
 
 class CalculationInput(BaseModel):
     """Summary of inputs for an FHI-aims calculation."""
 
-    structure: MSONableAtoms = Field(
-        None, description="The input Atoms object"
-    )
+    structure: MSONableAtoms = Field(None, description="The input Atoms object")
 
     species_info: Dict = Field(
         None, description="Description of parameters used for each atomic species"
     )
 
-    aims_input: Dict = Field(None, description="The aims input parameters used for this task")
+    aims_input: Dict = Field(
+        None, description="The aims input parameters used for this task"
+    )
 
     @classmethod
     def from_aims_output(cls, output: AimsOutput):
@@ -62,7 +65,7 @@ class CalculationInput(BaseModel):
         return cls(
             structure=output.initial_structure,
             species_info=output.data.get("species_info", None),
-            aims_input=output.input.as_dict()
+            aims_input=output.input.as_dict(),
         )
 
 
@@ -81,6 +84,19 @@ class CalculationOutput(BaseModel):
     efermi: float = Field(
         None, description="The Fermi level from the calculation in eV"
     )
+
+    forces: List[Vector3D] = Field(None, description="Forces acting on each atom")
+    all_forces: List[List[Vector3D]] = Field(
+        None,
+        description="Forces acting on each atom for each structure in the output file",
+    )
+    stress: Matrix3D = Field(None, description="The stress on the cell")
+    stresses: List[Matrix3D] = Field(None, description="The stress on the cell")
+
+    all_forces: List[List[Vector3D]] = Field(
+        None, description="Forces acting on each atom for all images in the calculation"
+    )
+
     is_metal: bool = Field(None, description="Whether the system is metallic")
     bandgap: float = Field(None, description="The band gap from the calculation in eV")
     cbm: float = Field(
@@ -147,19 +163,45 @@ class CalculationOutput(BaseModel):
         # else:
         #     scf = None
 
+        forces = None
+        if output.forces is not None:
+            forces = output.forces.tolist()
+
+        stress = None
+        if output.stress is not None:
+            stress = voigt_6_to_full_3x3_stress(output.stress).tolist()
+
+        stresses = None
+        if output.stresses is not None:
+            stresses = [
+                voigt_6_to_full_3x3_stress(st).tolist() for st in output.stresses
+            ]
+
+        all_forces = None
+        if not any([ff is None for ff in output.all_forces]):
+            all_forces = [
+                f.tolist() if (f is not None) else None for f in output.all_forces
+            ]
+
         return cls(
             structure=structure,
             energy=output.final_energy,
             energy_per_atom=output.final_energy / len(structure),
             **electronic_output,
             atomic_steps=output.structures,
+            forces=forces,
+            stress=stress,
+            stresses=stresses,
+            all_forces=all_forces,
         )
 
 
 class Calculation(BaseModel):
     """Full FHI-aims calculation inputs and outputs."""
 
-    dir_name: str = Field(None, description="The directory for this FHI-aims calculation")
+    dir_name: str = Field(
+        None, description="The directory for this FHI-aims calculation"
+    )
     aims_version: str = Field(
         None, description="FHI-aims version used to perform the calculation"
     )
@@ -169,7 +211,9 @@ class Calculation(BaseModel):
     # input: CalculationInput = Field(
     #     None, description="FHI-aims input settings for the calculation"
     # )
-    output: CalculationOutput = Field(None, description="The FHI-aims calculation output")
+    output: CalculationOutput = Field(
+        None, description="The FHI-aims calculation output"
+    )
     completed_at: str = Field(
         None, description="Timestamp for when the calculation was completed"
     )
@@ -287,9 +331,7 @@ class Calculation(BaseModel):
             aims_objects[AimsObject.BANDSTRUCTURE] = bandstructure  # type: ignore
 
         # input_doc = CalculationInput.from_aims_output(aims_output)
-        output_doc = CalculationOutput.from_aims_output(
-            aims_output
-        )
+        output_doc = CalculationOutput.from_aims_output(aims_output)
 
         has_aims_completed = Status.SUCCESS if aims_output.completed else Status.FAILED
 
@@ -370,7 +412,9 @@ def _get_volumetric_data(
         if file_type.name not in store_volumetric_data:
             continue
         try:
-            volumetric_data[file_type] = VolumetricData.from_cube((dir_name / file).as_posix())
+            volumetric_data[file_type] = VolumetricData.from_cube(
+                (dir_name / file).as_posix()
+            )
         except Exception as err:
             raise ValueError(f"Failed to parse {file_type} at {file}.") from err
 

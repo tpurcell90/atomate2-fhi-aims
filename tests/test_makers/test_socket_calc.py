@@ -39,9 +39,9 @@ def test_static_socket_maker(Si, species_dir, mock_aims, tmp_path):
     job = maker.make(atoms_list)
 
     # run the flow or job and ensure that it finished running successfully
-    # os.chdir(tmp_path)
+    os.chdir(tmp_path)
     responses = run_locally(job, create_folders=True, ensure_success=True)
-    # os.chdir(cwd)
+    os.chdir(cwd)
 
     # validation the outputs of the job
     outputs = responses[job.uuid][1].output
