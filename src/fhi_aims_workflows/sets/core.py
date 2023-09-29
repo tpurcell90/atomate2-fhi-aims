@@ -38,7 +38,7 @@ class StaticSetGenerator(AimsInputGenerator):
         dict
             A dictionary of updates to apply.
         """
-        return {}
+        return prev_parameters
 
 
 @dataclass
