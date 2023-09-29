@@ -22,7 +22,7 @@ def tmp_dir():
 
 
 def test_copy_aims_outputs(tmp_dir):
-    from fhi_aims_workflows.files import copy_aims_outputs
+    from atomate2_temp.aims.files import copy_aims_outputs
 
     files = ["aims.out"]
     restart_files = ["geometry.in.next_step", "D_spin_01_kpt_000001.csc"]

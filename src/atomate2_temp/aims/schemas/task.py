@@ -11,9 +11,9 @@ from emmet.core.tasks import get_uri
 from pydantic import Field, BaseModel
 from pymatgen.entries.computed_entries import ComputedEntry
 
-from fhi_aims_workflows.schemas.calculation import Status, AimsObject, Calculation
-from fhi_aims_workflows.utils import datetime_str
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.schemas.calculation import Status, AimsObject, Calculation
+from atomate2_temp.aims.utils import datetime_str
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 _T = TypeVar("_T", bound="TaskDocument")
 _VOLUMETRIC_FILES = ("total_density", "spin_density", "eigenstate_density")

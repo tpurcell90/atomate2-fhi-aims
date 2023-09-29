@@ -13,15 +13,15 @@ from monty.serialization import dumpfn
 from monty.shutil import gzip_dir
 from pymatgen.core import Structure, Molecule
 
-from fhi_aims_workflows.files import (
+from atomate2_temp.aims.files import (
     copy_aims_outputs,
     write_aims_input_set,
     cleanup_aims_outputs,
 )
-from fhi_aims_workflows.run import run_aims, should_stop_children
-from fhi_aims_workflows.schemas.task import AimsTaskDocument
-from fhi_aims_workflows.sets.base import AimsInputGenerator
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.run import run_aims, should_stop_children
+from atomate2_temp.aims.schemas.task import AimsTaskDocument
+from atomate2_temp.aims.sets.base import AimsInputGenerator
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 
 logger = logging.getLogger(__name__)

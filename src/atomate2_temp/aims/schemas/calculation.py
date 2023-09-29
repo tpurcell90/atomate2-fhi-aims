@@ -16,8 +16,8 @@ from pymatgen.core.trajectory import Trajectory
 from pymatgen.electronic_structure.dos import Dos
 from pymatgen.io.common import VolumetricData
 
-from fhi_aims_workflows.io.AimsOutput import AimsOutput
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.io.AimsOutput import AimsOutput
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 STORE_VOLUMETRIC_DATA = ("total_density",)
 

@@ -21,16 +21,16 @@ from pymatgen.transformations.advanced_transformations import (
 from pymatgen.phonon.bandstructure import PhononBandStructureSymmLine
 from pymatgen.phonon.dos import PhononDos
 
-from fhi_aims_workflows.jobs.base import BaseAimsMaker
-from fhi_aims_workflows.jobs.core import SocketIOStaticMaker
-from fhi_aims_workflows.sets.base import AimsInputGenerator
-from fhi_aims_workflows.sets.core import StaticSetGenerator, SocketIOSetGenerator
+from atomate2_temp.aims.jobs.base import BaseAimsMaker
+from atomate2_temp.aims.jobs.core import SocketIOStaticMaker
+from atomate2_temp.aims.sets.base import AimsInputGenerator
+from atomate2_temp.aims.sets.core import StaticSetGenerator, SocketIOSetGenerator
 
 from atomate2.common.jobs.phonons import (
     get_total_energy_per_cell,
     get_supercell_size,
 )
-from fhi_aims_workflows.schemas.phonons import PhononBSDOSDoc
+from atomate2_temp.aims.schemas.phonons import PhononBSDOSDoc
 
 logger = logging.getLogger(__name__)
 

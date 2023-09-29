@@ -7,9 +7,9 @@ import pytest
 
 from ase.build import bulk, molecule
 
-import fhi_aims_workflows.jobs.base
-import fhi_aims_workflows.run
-from fhi_aims_workflows.sets.base import AimsInputGenerator
+import atomate2_temp.aims.jobs.base
+import atomate2_temp.aims.run
+from atomate2_temp.aims.sets.base import AimsInputGenerator
 
 _REF_PATHS = {}
 _FAKE_RUN_AIMS_KWARGS = {}
@@ -98,37 +98,38 @@ def mock_aims(monkeypatch, ref_path, should_mock_aims):
     get_input_set_orig = AimsInputGenerator.get_input_set
 
     def generate_test_data(*args, **kwargs):
-        """A monkey patch for fhi_aims_workflows.run.run_aims that runs the actual executable and copies
-         inputs and outputs to the test data directory"""
+        """A monkey patch for atomate2_temp.aims.run.run_aims that runs the actual executable and copies
+        inputs and outputs to the test data directory"""
         import shutil
         from jobflow import CURRENT_JOB
 
-        input_files = ['control.in', 'geometry.in', 'parameters.json']
+        input_files = ["control.in", "geometry.in", "parameters.json"]
         name = CURRENT_JOB.job.name
         ref_dir = ref_path / _REF_PATHS[name]
         print(f"HELLO! {args} {kwargs} {ref_dir} {Path.cwd()}")
         # running aims
-        fhi_aims_workflows.run.run_aims()
+        atomate2_temp.aims.run.run_aims()
         # copy output files
-        output_files = [f for f in Path.cwd().glob('*') if f.name not in input_files]
+        output_files = [f for f in Path.cwd().glob("*") if f.name not in input_files]
         shutil.rmtree(ref_dir, ignore_errors=True)
-        os.makedirs(ref_dir / 'inputs')
-        os.makedirs(ref_dir / 'outputs')
+        os.makedirs(ref_dir / "inputs")
+        os.makedirs(ref_dir / "outputs")
         for f in input_files:
-            shutil.copy(Path.cwd() / f, ref_dir / 'inputs')
+            shutil.copy(Path.cwd() / f, ref_dir / "inputs")
         for f in output_files:
-            shutil.copy(f, ref_dir / 'outputs')
-
+            shutil.copy(f, ref_dir / "outputs")
 
     def mock_get_input_set(self, *args, **kwargs):
         return get_input_set_orig(self, *args, **kwargs)
 
     if should_mock_aims:
-        monkeypatch.setattr(fhi_aims_workflows.run, "run_aims", mock_run_aims)
-        monkeypatch.setattr(fhi_aims_workflows.jobs.base, "run_aims", mock_run_aims)
+        monkeypatch.setattr(atomate2_temp.aims.run, "run_aims", mock_run_aims)
+        monkeypatch.setattr(atomate2_temp.aims.jobs.base, "run_aims", mock_run_aims)
         monkeypatch.setattr(AimsInputGenerator, "get_input_set", mock_get_input_set)
     else:
-        monkeypatch.setattr(fhi_aims_workflows.jobs.base, "run_aims", generate_test_data)
+        monkeypatch.setattr(
+            atomate2_temp.aims.jobs.base, "run_aims", generate_test_data
+        )
 
     def _run(ref_paths, fake_run_aims_kwargs=None):
         if fake_run_aims_kwargs is None:
@@ -181,11 +182,7 @@ def fake_run_aims(
 
 
 def clear_aims_inputs():
-    for aims_file in (
-        "control.in",
-        "geometry.in",
-        "parameters.json"
-    ):
+    for aims_file in ("control.in", "geometry.in", "parameters.json"):
         if Path(aims_file).exists():
             Path(aims_file).unlink()
     logger.info("Cleared aims inputs")

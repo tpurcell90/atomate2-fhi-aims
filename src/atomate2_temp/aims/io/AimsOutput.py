@@ -5,8 +5,8 @@ from monty.json import MSONable, MontyDecoder
 from pathlib import Path
 from typing import Dict, Any
 
-from fhi_aims_workflows.io.parsers import read_aims_output, read_aims_header_info
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.io.parsers import read_aims_output, read_aims_header_info
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 
 class AimsOutput(MSONable):

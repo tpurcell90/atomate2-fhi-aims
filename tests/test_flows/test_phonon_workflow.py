@@ -1,7 +1,7 @@
 """Test various makers"""
 import os
 
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 cwd = os.getcwd()
 
@@ -12,12 +12,12 @@ def test_phonon_flow(Si, tmp_path, mock_aims, species_dir):
 
     from jobflow import run_locally
 
-    from fhi_aims_workflows.jobs.core import StaticMaker, RelaxMaker
-    from fhi_aims_workflows.jobs.phonons import PhononDisplacementMaker
-    
-    from fhi_aims_workflows.sets.core import StaticSetGenerator
-    
-    from fhi_aims_workflows.flows.phonons import PhononMaker
+    from atomate2_temp.aims.jobs.core import StaticMaker, RelaxMaker
+    from atomate2_temp.aims.jobs.phonons import PhononDisplacementMaker
+
+    from atomate2_temp.aims.sets.core import StaticSetGenerator
+
+    from atomate2_temp.aims.flows.phonons import PhononMaker
 
     # mapping from job name to directory containing test files
     ref_paths = {
@@ -43,7 +43,7 @@ def test_phonon_flow(Si, tmp_path, mock_aims, species_dir):
         ),
         use_symmetrized_structure="primitive",
         phonon_displacement_maker=PhononDisplacementMaker(
-            input_set_generator= StaticSetGenerator(
+            input_set_generator=StaticSetGenerator(
                 user_parameters=parameters_phonon_disp,
                 user_kpoints_settings={"density": 5.0, "even": True},
             )
@@ -82,11 +82,11 @@ def test_phonon_socket_flow(Si, tmp_path, mock_aims, species_dir):
 
     from jobflow import run_locally
 
-    from fhi_aims_workflows.jobs.core import StaticMaker, RelaxMaker
-    from fhi_aims_workflows.jobs.phonons import PhononDisplacementMakerSocket
-    from fhi_aims_workflows.sets.core import StaticSetGenerator
+    from atomate2_temp.aims.jobs.core import StaticMaker, RelaxMaker
+    from atomate2_temp.aims.jobs.phonons import PhononDisplacementMakerSocket
+    from atomate2_temp.aims.sets.core import StaticSetGenerator
 
-    from fhi_aims_workflows.flows.phonons import PhononMaker
+    from atomate2_temp.aims.flows.phonons import PhononMaker
 
     # mapping from job name to directory containing test files
     ref_paths = {
@@ -102,7 +102,9 @@ def test_phonon_socket_flow(Si, tmp_path, mock_aims, species_dir):
     mock_aims(ref_paths, fake_run_aims_kwargs)
 
     parameters = {"k_grid": [2, 2, 2], "species_dir": species_dir.as_posix()}
-    parameters_phonon_disp = dict(compute_forces=True, use_pimd_wrapper=("localhost", 12345), **parameters)
+    parameters_phonon_disp = dict(
+        compute_forces=True, use_pimd_wrapper=("localhost", 12345), **parameters
+    )
 
     # generate job
 
@@ -114,7 +116,7 @@ def test_phonon_socket_flow(Si, tmp_path, mock_aims, species_dir):
         use_symmetrized_structure="primitive",
         socket=True,
         phonon_displacement_maker=PhononDisplacementMakerSocket(
-            input_set_generator= StaticSetGenerator(
+            input_set_generator=StaticSetGenerator(
                 user_parameters=parameters_phonon_disp,
                 user_kpoints_settings={"density": 5.0, "even": True},
             )

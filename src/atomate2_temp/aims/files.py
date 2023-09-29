@@ -10,16 +10,12 @@ from atomate2.common.files import get_zfile, copy_files, gunzip_files
 from atomate2.utils.file_client import auto_fileclient, FileClient
 from atomate2.utils.path import strip_hostname
 
-from fhi_aims_workflows.sets.base import AimsInputGenerator
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.sets.base import AimsInputGenerator
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 logger = logging.getLogger(__name__)
 
-__all__ = [
-    "copy_aims_outputs",
-    "write_aims_input_set",
-    "cleanup_aims_outputs"
-]
+__all__ = ["copy_aims_outputs", "write_aims_input_set", "cleanup_aims_outputs"]
 
 
 @auto_fileclient
@@ -62,12 +58,10 @@ def copy_aims_outputs(
     files = ["aims.out", "*.json"]
 
     for pattern in set(additional_files):
-        for f in (glob((Path(src_dir) / pattern).as_posix())):
+        for f in glob((Path(src_dir) / pattern).as_posix()):
             files.append(Path(f).name)
 
-    all_files = [
-        get_zfile(directory_listing, r, allow_missing=True) for r in files
-    ]
+    all_files = [get_zfile(directory_listing, r, allow_missing=True) for r in files]
     all_files = [f for f in all_files if f]
 
     copy_files(

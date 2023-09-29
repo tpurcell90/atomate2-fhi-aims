@@ -10,17 +10,17 @@ from jobflow import Flow, Maker
 from pymatgen.core.structure import Structure
 
 from atomate2.common.jobs.utils import structure_to_conventional, structure_to_primitive
-from fhi_aims_workflows.flows.core import DoubleRelaxMaker
-from fhi_aims_workflows.jobs.base import BaseAimsMaker
-from fhi_aims_workflows.jobs.core import StaticMaker, RelaxMaker, SocketIOStaticMaker
-from fhi_aims_workflows.jobs.phonons import (
+from atomate2_temp.aims.flows.core import DoubleRelaxMaker
+from atomate2_temp.aims.jobs.base import BaseAimsMaker
+from atomate2_temp.aims.jobs.core import StaticMaker, RelaxMaker, SocketIOStaticMaker
+from atomate2_temp.aims.jobs.phonons import (
     generate_frequencies_eigenvectors,
     generate_phonon_displacements,
     get_supercell_size,
     get_total_energy_per_cell,
     run_phonon_displacements,
 )
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 __all__ = ["PhononMaker"]
 
