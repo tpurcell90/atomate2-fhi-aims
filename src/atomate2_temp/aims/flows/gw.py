@@ -7,7 +7,7 @@ from pathlib import Path
 
 from atomate2_temp.aims.sets.bs import BandStructureSetGenerator, GWSetGenerator
 from atomate2_temp.aims.sets.core import StaticSetGenerator
-from jobflow import  Flow
+from jobflow import Flow
 
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 from atomate2_temp.aims.jobs.base import BaseAimsMaker, ConvergenceMaker
@@ -45,7 +45,11 @@ class PeriodicGWConvergenceMaker(BaseAimsMaker):
     convergence_field: str = field(default_factory=str)
     convergence_steps: list = field(default_factory=list)
 
-    def make(self, structure: MSONableAtoms | Structure | Molecule, prev_dir: str | Path | None = None):
+    def make(
+        self,
+        structure: MSONableAtoms | Structure | Molecule,
+        prev_dir: str | Path | None = None,
+    ):
         """
         Create a flow from the DFT ground state and subsequent GW calculation.
 

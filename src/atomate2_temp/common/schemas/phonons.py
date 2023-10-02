@@ -314,7 +314,7 @@ class PhononBSDOSDoc(StructureMetadata):
 
         # phonon band structures will always be cmouted
         filename_band_yaml = "phonon_band_structure.yaml"
-        
+
         # TODO: potentially add kwargs to avoid computation of eigenvectors
         phonon.run_band_structure(
             qpoints,

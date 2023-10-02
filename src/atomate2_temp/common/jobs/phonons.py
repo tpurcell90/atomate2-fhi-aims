@@ -22,11 +22,11 @@ from pymatgen.phonon.bandstructure import PhononBandStructureSymmLine
 from pymatgen.phonon.dos import PhononDos
 
 from atomate2_temp.aims.jobs.phonons import (
-    PhononDisplacementMakerSocket as PhononDisplacementMakerAimsSocket, 
-    PhononDisplacementMaker as PhononDisplacementMakerAims
+    PhononDisplacementMakerSocket as PhononDisplacementMakerAimsSocket,
+    PhononDisplacementMaker as PhononDisplacementMakerAims,
 )
 from atomate2_temp.vasp.jobs.phonons import (
-    PhononDisplacementMaker as PhononDisplacementMakerVasp
+    PhononDisplacementMaker as PhononDisplacementMakerVasp,
 )
 from atomate2_temp.common.utils.phonons import get_factor
 
@@ -54,6 +54,7 @@ __all__ = [
     "PhononDisplacementMaker",
 ]
 
+
 @job
 def get_total_energy_per_cell(
     total_dft_energy_per_formula_unit: float, structure: Structure
@@ -74,6 +75,7 @@ def get_total_energy_per_cell(
     )
 
     return total_dft_energy_per_formula_unit * formula_units
+
 
 @job
 def get_supercell_size(
@@ -170,7 +172,6 @@ def generate_phonon_displacements(
     """
     cell = get_phonopy_structure(structure)
     factor = get_factor(code)
-
 
     # a bit of code repetition here as I currently
     # do not see how to pass the phonopy object?
@@ -269,13 +270,12 @@ def generate_frequencies_eigenvectors(
     return phonon_doc
 
 
-
 @job(data=["forces", "displaced_structures"])
 def run_phonon_displacements(
     displacements,
     structure: Structure,
     supercell_matrix: Matrix3D,
-    code: str=None,
+    code: str = None,
     phonon_maker: BaseVaspMaker | ForceFieldStaticMaker | BaseAimsMaker = None,
     prev_dir: str | Path = None,
     socket: bool = False,
@@ -304,12 +304,14 @@ def run_phonon_displacements(
                 phonon_maker = PhononDisplacementMakerAimsSocket()
             else:
                 phonon_maker = PhononDisplacementMakerAims()
-        elif code =="vasp":
+        elif code == "vasp":
             if socket:
                 raise ValueError("Socket calculations are not supported for vasp.")
             phonon_maker = PhononDisplacementMakerVasp()
         else:
-            raise ValueError(f"No value passed to phonon_maker and {code} is not a supported code for phonopy calculatiosn, can't calculate forces for displaced geometeries.")
+            raise ValueError(
+                f"No value passed to phonon_maker and {code} is not a supported code for phonopy calculatiosn, can't calculate forces for displaced geometeries."
+            )
 
     phonon_jobs = []
     outputs: dict[str, list] = {
@@ -365,4 +367,3 @@ def run_phonon_displacements(
 
     displacement_flow = Flow(phonon_jobs, outputs)
     return Response(replace=displacement_flow)
-

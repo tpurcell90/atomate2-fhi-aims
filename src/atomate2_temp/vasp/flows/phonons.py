@@ -11,6 +11,7 @@ from atomate2.vasp.sets.core import StaticSetGenerator
 if TYPE_CHECKING:
     from atomate2.vasp.jobs.base import BaseVaspMaker
 
+
 @dataclass
 class PhononMaker(BasePhononMaker):
     """
@@ -33,6 +34,7 @@ class PhononMaker(BasePhononMaker):
     phonon_displacement_maker : .BaseVaspMaker or None
         Maker used to compute the forces for a supercell.
     """
+
     code: str = "vasp"
     bulk_relax_maker: BaseVaspMaker | None = field(
         default_factory=lambda: DoubleRelaxMaker.from_relax_maker(TightRelaxMaker())

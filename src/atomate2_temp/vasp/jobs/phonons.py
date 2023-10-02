@@ -4,6 +4,7 @@ from atomate2.vasp.sets.core import StaticSetGenerator
 
 from atomate2.vasp.sets.base import VaspInputGenerator
 
+
 @dataclass
 class PhononDisplacementMaker(BaseVaspMaker):
     """
