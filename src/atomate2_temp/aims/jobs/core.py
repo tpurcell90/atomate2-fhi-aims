@@ -99,7 +99,9 @@ class SocketIOStaticMaker(BaseAimsMaker):
         if not isinstance(structure, Sequence):
             structure = [MSONableAtoms(structure)]
         atoms = [
-            st.copy() if isinstance(st, MSONableAtoms) else MSONableAtoms.from_pymatgen(st)
+            st.copy()
+            if isinstance(st, MSONableAtoms)
+            else MSONableAtoms.from_pymatgen(st)
             for st in structure
         ]
 

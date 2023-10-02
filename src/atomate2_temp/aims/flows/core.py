@@ -38,7 +38,11 @@ class DoubleRelaxMaker(Maker):
     relax_maker1: BaseAimsMaker = field(default_factory=RelaxMaker)
     relax_maker2: BaseAimsMaker = field(default_factory=RelaxMaker)
 
-    def make(self, structure: MSONableAtoms | Structure | Molecule, prev_dir: str | Path | None = None):
+    def make(
+        self,
+        structure: MSONableAtoms | Structure | Molecule,
+        prev_dir: str | Path | None = None,
+    ):
         """
         Create a flow with two chained relaxations.
 

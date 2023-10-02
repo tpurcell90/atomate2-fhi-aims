@@ -5,6 +5,7 @@ from atomate2_temp.aims.sets.base import AimsInputGenerator
 from atomate2_temp.aims.sets.core import StaticSetGenerator, SocketIOSetGenerator
 from atomate2_temp.aims.jobs.base import BaseAimsMaker
 
+
 @dataclass
 class PhononDisplacementMaker(BaseAimsMaker):
     """

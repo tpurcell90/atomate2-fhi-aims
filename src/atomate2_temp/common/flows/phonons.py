@@ -30,6 +30,7 @@ __all__ = ["PhononMaker"]
 
 SUPPORTED_CODES = ["vasp", "aims"]
 
+
 @dataclass
 class BasePhononMaker(Maker):
     """
@@ -189,8 +190,10 @@ class BasePhononMaker(Maker):
             be given, e.g. [[1.0,0.0,0.0],[0.0,1.0,0.0],[0.0,0.0,1.0]
         """
         if self.code is None:
-            raise ValueError(f"The code variable must be passed upon construction. Supported codes are: {SUPPORTED_CODES}")
-        
+            raise ValueError(
+                f"The code variable must be passed upon construction. Supported codes are: {SUPPORTED_CODES}"
+            )
+
         if isinstance(structure, MSONableAtoms):
             structure = structure.pymatgen
 
@@ -347,6 +350,6 @@ class BasePhononMaker(Maker):
         )
 
         jobs.append(phonon_collect)
-        
+
         # create a flow including all jobs for a phonon computation
         return Flow(jobs, phonon_collect.output)

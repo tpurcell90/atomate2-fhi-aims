@@ -14,4 +14,3 @@ def datetime_str() -> str:
         The current time.
     """
     return str(datetime.utcnow())
-

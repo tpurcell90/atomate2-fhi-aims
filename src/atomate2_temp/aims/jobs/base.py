@@ -159,7 +159,11 @@ class ConvergenceMaker(Maker):
         self.last_idx = len(self.convergence_steps)
 
     @job
-    def make(self, structure: MSONableAtoms | Structure | Molecule, prev_dir: str | Path = None):
+    def make(
+        self,
+        structure: MSONableAtoms | Structure | Molecule,
+        prev_dir: str | Path = None,
+    ):
         """
         Runs several jobs with changing inputs consecutively to investigate convergence in the results
 

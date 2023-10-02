@@ -1,6 +1,7 @@
 from atomate2_temp.aims.utils.units import omega_to_THz
 from phonopy.units import VaspToTHz
 
+
 def get_factor(code: str):
     """
     Get the frequency conversion factor to THz for each code
@@ -9,12 +10,12 @@ def get_factor(code: str):
     ----------
     code: str
         The code to get the conversion factor for
-    
+
     Returns
     -------
     float
         The correct conversion factor
-    
+
     Raises
     ------
     ValueError
@@ -23,6 +24,6 @@ def get_factor(code: str):
     if code == "vasp":
         return VaspToTHz
     elif code == "aims":
-        return omega_to_THz # Based on CODATA 2002
+        return omega_to_THz  # Based on CODATA 2002
     else:
         raise ValueError(f"Frequency conversion factor for code ({code}) not defined.")

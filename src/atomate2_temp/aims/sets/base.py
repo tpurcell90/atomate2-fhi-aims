@@ -65,6 +65,7 @@ class AimsInputFile(InputFile):
     def from_str(cls, contents: str):
         return cls(contents)
 
+
 class AimsInputSet(InputSet):
     """
     A class to represent a set of Aims inputs.
