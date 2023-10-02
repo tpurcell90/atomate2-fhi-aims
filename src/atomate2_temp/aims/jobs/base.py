@@ -6,11 +6,9 @@ import json
 import logging
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Type
 
 from jobflow import job, Maker, Response, Flow
 from monty.serialization import dumpfn
-from monty.shutil import gzip_dir
 from pymatgen.core import Structure, Molecule
 
 from atomate2_temp.aims.files import (
@@ -120,9 +118,6 @@ class BaseAimsMaker(Maker):
 
         # cleanup files to save disk space
         cleanup_aims_outputs(directory=Path.cwd())
-
-        # gzip folder
-        # gzip_dir(".")
 
         return Response(
             stop_children=stop_children,

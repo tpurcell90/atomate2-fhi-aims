@@ -2,12 +2,13 @@
 own dedicated FHI-aims python package (with the parsers, plotters etc.)"""
 
 from ase.dft.kpoints import resolve_kpt_path_string, kpoint_convert
+from ase.cell import Cell
 import numpy as np
 
 # TODO add the same procedures but using pymatgen routines
 
 
-def prepare_band_input(cell, density=20):
+def prepare_band_input(cell: Cell, density=20):
     """
     Prepares the band information needed for the FHI-aims control.in file.
 
@@ -19,7 +20,6 @@ def prepare_band_input(cell, density=20):
         Number of kpoints per Angstrom. Default: 20
     """
     bp = cell.bandpath()
-    # print(cell.get_bravais_lattice())
     r_kpts = resolve_kpt_path_string(bp.path, bp.special_points)
 
     lines_and_labels = []

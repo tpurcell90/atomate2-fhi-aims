@@ -55,11 +55,7 @@ class AnalysisSummary(BaseModel):
         final_calc = calc_docs[-1]
         max_force = None
         if final_calc.has_aims_completed == Status.SUCCESS:
-            # max force and valid structure checks
-            # structure = final_calc.output.structure
             max_force = _get_max_force(final_calc)
-            # if not structure.is_valid():
-            #     errors.append("Bad structure (atoms are too close!)")
 
         return cls(
             delta_volume=delta_vol,
@@ -300,7 +296,6 @@ class AimsTaskDocument(StructureMetadata, MoleculeMetadata):
         cls: Type[_T],
         dir_name: Union[Path, str],
         volumetric_files: Tuple[str, ...] = _VOLUMETRIC_FILES,
-        # store_additional_json: bool = SETTINGS.AIMS_STORE_ADDITIONAL_JSON,
         additional_fields: Dict[str, Any] = None,
         **aims_calculation_kwargs,
     ) -> _T:
@@ -311,8 +306,6 @@ class AimsTaskDocument(StructureMetadata, MoleculeMetadata):
         ----------
         dir_name
             The path to the folder containing the calculation outputs.
-        # store_additional_json
-        #     Whether to store additional json files found in the calculation directory.
         volumetric_files
             A volumetric files to search for.
         additional_fields
@@ -345,18 +338,7 @@ class AimsTaskDocument(StructureMetadata, MoleculeMetadata):
             all_aims_objects.append(aims_objects)
 
         analysis = AnalysisSummary.from_aims_calc_docs(calcs_reversed)
-        # transformations, icsd_id, tags, author = parse_transformations(dir_name)
-        # if tags:
-        #     tags.extend(additional_fields.get("tags", []))
-        # else:
         tags = additional_fields.get("tags")
-
-        # custodian = parse_custodian(dir_name)
-        # orig_inputs = _parse_orig_inputs(dir_name)
-
-        # additional_json = None
-        # if store_additional_json:
-        #     additional_json = parse_additional_json(dir_name)
 
         dir_name = get_uri(dir_name)  # convert to full uri path
 
@@ -375,23 +357,14 @@ class AimsTaskDocument(StructureMetadata, MoleculeMetadata):
             "dir_name": dir_name,
             "calcs_reversed": calcs_reversed,
             "analysis": analysis,
-            # "transformations": transformations,
-            # "custodian": custodian,
-            # "orig_inputs": orig_inputs,
-            # "additional_json": additional_json,
-            # "icsd_id": icsd_id,
             "tags": tags,
-            # "author": author,
             "completed_at": calcs_reversed[-1].completed_at,
-            # "input": InputSummary.from_aims_calc_doc(calcs_reversed[0]),
             "output": OutputSummary.from_aims_calc_doc(calcs_reversed[-1]),
             "state": _get_state(calcs_reversed, analysis),
             "entry": cls.get_entry(calcs_reversed),
             "aims_objects": aims_objects,
             "included_objects": included_objects,
         }
-        # doc = cls(**ddict)
-        # doc = doc.copy(update=data)
         doc = cls(**data)
         return doc.copy(update=additional_fields)
 
@@ -474,7 +447,6 @@ def _find_aims_files(
                 aims_files["aims_output_file"] = Path(file).name
         for vol in volumetric_files:
             _files = [f.name for f in files if f.match(f"*{vol}*cube{suffix}*")]
-            # _files.sort(key=natural_keys, reverse=True)
             if _files:
                 vol_files.append(_files[0])
 
@@ -507,18 +479,9 @@ def _find_aims_files(
 
 def _get_max_force(calc_doc: Calculation) -> Optional[float]:
     """Get max force acting on atoms from a calculation document."""
-    forces = None
-    # forces = (
-    #     calc_doc.output.ionic_steps[-1].get("forces")
-    #     if calc_doc.output.ionic_steps
-    #     else None
-    # )
-    # structure = calc_doc.output.structure
-    if forces:
+    forces = calc_doc.output.forces
+    if forces is not None:
         forces = np.array(forces)
-        # sdyn = structure.site_properties.get("selective_dynamics")
-        # if sdyn:
-        #     forces[np.logical_not(sdyn)] = 0
         return max(np.linalg.norm(forces, axis=1))
     return None
 
