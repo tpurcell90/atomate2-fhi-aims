@@ -2,9 +2,7 @@ from dataclasses import dataclass, field
 from atomate2.vasp.jobs.base import BaseVaspMaker
 from atomate2.vasp.sets.core import StaticSetGenerator
 
-from typing import TYPE_CHECKING
-if TYPE_CHECKING:
-    from atomate2.vasp.sets.base import VaspInputGenerator
+from atomate2.vasp.sets.base import VaspInputGenerator
 
 @dataclass
 class PhononDisplacementMaker(BaseVaspMaker):

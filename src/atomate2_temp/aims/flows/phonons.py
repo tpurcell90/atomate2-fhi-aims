@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
-from atomate2_temp.common.flows.phonons import PhononMaker as PhononMakerBase
+from atomate2_temp.common.flows.phonons import BasePhononMaker
 
 from atomate2.common.jobs.utils import structure_to_conventional, structure_to_primitive
 from atomate2_temp.aims.flows.core import DoubleRelaxMaker
@@ -12,7 +12,8 @@ from atomate2_temp.aims.jobs.phonons import PhononDisplacementMaker, PhononDispl
 if TYPE_CHECKING:
     from atomate2_temp.aims.jobs.base import BaseAimsMaker
 
-class PhononMaker(PhononMakerBase):
+@dataclass
+class PhononMaker(BasePhononMaker):
     """
     Maker to calculate harmonic phonons with VASP and Phonopy.
 
@@ -39,10 +40,11 @@ class PhononMaker(PhononMakerBase):
     )
     static_energy_maker: BaseAimsMaker | None = field(default_factory=StaticMaker)
     born_maker : BaseAimsMaker | None = None
-    phonon_displacement_maker: BaseAimsMaker | None = field(init=False)
+    phonon_displacement_maker: BaseAimsMaker | None = None
 
     def __post_init__(self):
-        if self.socket:
-            self.phonon_displacement_maker = PhononDisplacementMakerSocket()
-        else:
-            self.phonon_displacement_maker = PhononDisplacementMaker()
+        if self.phonon_displacement_maker is None:
+            if self.socket:
+                self.phonon_displacement_maker = PhononDisplacementMakerSocket()
+            else:
+                self.phonon_displacement_maker = PhononDisplacementMaker()

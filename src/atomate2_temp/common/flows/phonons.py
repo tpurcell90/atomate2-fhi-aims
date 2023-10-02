@@ -15,6 +15,7 @@ from atomate2_temp.common.jobs.phonons import (
     get_total_energy_per_cell,
     run_phonon_displacements,
 )
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -24,14 +25,13 @@ if TYPE_CHECKING:
 
     from atomate2.vasp.jobs.base import BaseVaspMaker
     from atomate2_temp.aims.jobs.base import BaseAimsMaker
-    from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 __all__ = ["PhononMaker"]
 
 SUPPORTED_CODES = ["vasp", "aims"]
 
 @dataclass
-class PhononMaker(Maker):
+class BasePhononMaker(Maker):
     """
     Maker to calculate harmonic phonons with VASP or FHI-aims and Phonopy.
 

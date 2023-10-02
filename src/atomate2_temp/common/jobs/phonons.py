@@ -30,7 +30,7 @@ from atomate2_temp.vasp.jobs.phonons import (
 )
 from atomate2_temp.common.utils.phonons import get_factor
 
-from atomate2.common.schemas.phonons import ForceConstants, PhononBSDOSDoc
+from atomate2_temp.common.schemas.phonons import ForceConstants, PhononBSDOSDoc
 
 if TYPE_CHECKING:
     from pathlib import Path
