@@ -73,7 +73,7 @@ class BaseAimsMaker(Maker):
     @job
     def make(
         self,
-        atoms: MSONableAtoms | Structure | Molecule,
+        structure: MSONableAtoms | Structure | Molecule,
         prev_dir: str | Path | None = None,
     ):
         """
@@ -87,8 +87,10 @@ class BaseAimsMaker(Maker):
             A previous FHI-aims calculation directory to copy output files from.
         """
         # the structure transformation part was deleted; can be reinserted when needed
-        if isinstance(atoms, Structure) or isinstance(atoms, Molecule):
-            atoms = MSONableAtoms.from_pymatgen(atoms)
+        if isinstance(structure, Structure) or isinstance(structure, Molecule):
+            atoms = MSONableAtoms.from_pymatgen(structure)
+        else:
+            atoms = structure.copy()
 
         # copy previous inputs
         if prev_dir is not None:
@@ -173,7 +175,11 @@ class ConvergenceMaker(Maker):
         return Flow([convergence_job], output=convergence_job.output)
 
     @job
-    def convergence_iteration(self, atoms, prev_dir: str | Path = None):
+    def convergence_iteration(
+        self,
+        structure: MSONableAtoms | Structure | Molecule,
+        prev_dir: str | Path = None,
+    ):
         """
         Runs several jobs with changing inputs consecutively to investigate convergence in the results
 
@@ -184,6 +190,11 @@ class ConvergenceMaker(Maker):
         prev_dir: str | None
             An FHI-aims calculation directory in which previous run contents are stored
         """
+        if isinstance(structure, Structure) or isinstance(structure, Molecule):
+            atoms = MSONableAtoms.from_pymatgen(atoms)
+        else:
+            atoms = structure.copy()
+
         # getting the calculation index
         idx = 0
         converged = False

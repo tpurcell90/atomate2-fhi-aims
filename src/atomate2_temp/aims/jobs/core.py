@@ -84,26 +84,25 @@ class SocketIOStaticMaker(BaseAimsMaker):
     @job
     def make(
         self,
-        atoms: Sequence[MSONableAtoms | Structure],
+        structure: Sequence[MSONableAtoms | Structure],
         prev_dir: str | Path | None = None,
     ):
         """Run an FHI-aims calculation on multiple atoms object using the socket communicator.
 
         Parameters
         ----------
-        atoms : MSONableAtoms
+        structure : Sequence[MSONableAtoms | Structure]
             The list of atoms objects to run FHI-aims on
         prev_dir : str or Path or None
             A previous FHI-aims calculation directory to copy output files from.
         """
         # copy previous inputs
 
-        if not isinstance(atoms, Sequence):
-            atoms = [MSONableAtoms(atoms)]
-
+        if not isinstance(structure, Sequence):
+            structure = [MSONableAtoms(structure)]
         atoms = [
-            at if isinstance(at, MSONableAtoms) else MSONableAtoms.from_pymatgen(at)
-            for at in atoms
+            st.copy() if isinstance(st, MSONableAtoms) else MSONableAtoms.from_pymatgen(st)
+            for st in structure
         ]
 
         from_prev = prev_dir is not None
@@ -115,6 +114,9 @@ class SocketIOStaticMaker(BaseAimsMaker):
                 dest_dir = Path.cwd()
 
             images = read_aims_output(f"{dest_dir}/aims.out")
+            if not isinstance(images, Sequence):
+                images = [images]
+
             for img in images:
                 img.calc = None
 

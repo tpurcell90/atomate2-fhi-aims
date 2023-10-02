@@ -107,7 +107,7 @@ class PhononJobDirs(BaseModel):
     )
 
 
-class PhononBSDOSDoc(BaseModel):
+class PhononBSDOSDoc(StructureMetadata):
     """Collection of all data produced by the phonon workflow."""
 
     structure: Structure = Field(
@@ -461,7 +461,7 @@ class PhononBSDOSDoc(BaseModel):
             epsilon_static=epsilon.tolist() if epsilon is not None else None,
             supercell_matrix=phonon.supercell_matrix.tolist(),
             primitive_matrix=phonon.primitive_matrix.tolist(),
-            code="vasp",
+            code=code,
             thermal_displacement_data={
                 "temperatures_thermal_displacements": temperature_range_thermal_displacements.tolist(),  # noqa: E501
                 "thermal_displacement_matrix_cif": tdisp_mat_cif,

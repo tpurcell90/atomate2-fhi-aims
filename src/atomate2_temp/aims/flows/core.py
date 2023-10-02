@@ -12,6 +12,8 @@ from atomate2_temp.aims.jobs.core import RelaxMaker
 from atomate2_temp.aims.sets.core import RelaxSetGenerator
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
+from pymatgen.core import Structure, Molecule
+
 
 __all__ = [
     "DoubleRelaxMaker",
@@ -36,14 +38,14 @@ class DoubleRelaxMaker(Maker):
     relax_maker1: BaseAimsMaker = field(default_factory=RelaxMaker)
     relax_maker2: BaseAimsMaker = field(default_factory=RelaxMaker)
 
-    def make(self, structure: MSONableAtoms, prev_dir: str | Path | None = None):
+    def make(self, structure: MSONableAtoms | Structure | Molecule, prev_dir: str | Path | None = None):
         """
         Create a flow with two chained relaxations.
 
         Parameters
         ----------
-        structure : .MSONableAtoms
-            An MSON-able ASE Atoms structure object.
+        structure : .MSONableAtoms, Structure, Molecule
+            The structure to relax.
         prev_dir : str or Path or None
             A previous FHI-aims calculation directory to copy output files from.
         """

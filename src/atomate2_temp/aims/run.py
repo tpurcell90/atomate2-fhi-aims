@@ -98,15 +98,11 @@ def run_aims_socket(atoms_to_calculate: Iterable[MSONableAtoms], aims_cmd: str =
         aims_cmd = os.getenv("ASE_AIMS_COMMAND")
 
     calculator = Aims(**parameters)
-
-    host = parameters["use_pimd_wrapper"][0]
     port = parameters["use_pimd_wrapper"][1]
-
     atoms = atoms_to_calculate[0].copy()
-    # atoms.calc = SocketIOCalculator(calculator, port=port)
 
     with calculator.socketio(port=port) as calc:
-        for cc, atoms_calc in enumerate(atoms_to_calculate):
+        for atoms_calc in atoms_to_calculate:
             # Delete prior calculation results
             calc.results.clear()
 
