@@ -35,10 +35,93 @@ from atomate2_temp.aims.schemas.phonons import PhononBSDOSDoc
 logger = logging.getLogger(__name__)
 
 __all__ = [
+    "get_total_energy_per_cell",
+    "get_supercell_size",
+    "generate_phonon_displacements",
     "run_phonon_displacements",
-    "PhononDisplacementMaker",
     "generate_frequencies_eigenvectors",
+    "PhononDisplacementMaker",
 ]
+
+@job
+def get_total_energy_per_cell(
+    total_dft_energy_per_formula_unit: float, structure: Structure
+):
+    """
+    Job that computes total dft energy of the cell.
+
+    Parameters
+    ----------
+    total_dft_energy_per_formula_unit: float
+        Total DFT energy in eV per formula unit.
+    structure: Structure object
+        Corresponding structure object.
+    """
+    formula_units = (
+        structure.composition.num_atoms
+        / structure.composition.reduced_composition.num_atoms
+    )
+
+    return total_dft_energy_per_formula_unit * formula_units
+
+@job
+def get_supercell_size(
+    structure: Structure, min_length: float, prefer_90_degrees: bool, **kwargs
+):
+    """
+    Determine supercell size with given min_length.
+
+    Parameters
+    ----------
+    structure: Structure Object
+        Input structure that will be used to determine supercell
+    min_length: float
+        minimum length of cell in Angstrom
+    prefer_90_degrees: bool
+        if True, the algorithm will try to find a cell with 90 degree angles first
+    **kwargs:
+        Additional parameters that can be set.
+    """
+    kwargs.setdefault("min_atoms", None)
+    kwargs.setdefault("force_diagonal", False)
+
+    if not prefer_90_degrees:
+        kwargs.setdefault("max_atoms", None)
+        transformation = CubicSupercellTransformation(
+            min_length=min_length,
+            min_atoms=kwargs["min_atoms"],
+            max_atoms=kwargs["max_atoms"],
+            force_diagonal=kwargs["force_diagonal"],
+            force_90_degrees=False,
+        )
+        transformation.apply_transformation(structure=structure)
+    else:
+        max_atoms = kwargs.get("max_atoms", 1000)
+        kwargs.setdefault("angle_tolerance", 1e-2)
+        try:
+            transformation = CubicSupercellTransformation(
+                min_length=min_length,
+                min_atoms=kwargs["min_atoms"],
+                max_atoms=max_atoms,
+                force_diagonal=kwargs["force_diagonal"],
+                force_90_degrees=True,
+                angle_tolerance=kwargs["angle_tolerance"],
+            )
+            transformation.apply_transformation(structure=structure)
+
+        except AttributeError:
+            kwargs.setdefault("max_atoms", None)
+
+            transformation = CubicSupercellTransformation(
+                min_length=min_length,
+                min_atoms=kwargs["min_atoms"],
+                max_atoms=kwargs["max_atoms"],
+                force_diagonal=kwargs["force_diagonal"],
+                force_90_degrees=False,
+            )
+            transformation.apply_transformation(structure=structure)
+
+    return transformation.transformation_matrix.tolist()
 
 
 @job
