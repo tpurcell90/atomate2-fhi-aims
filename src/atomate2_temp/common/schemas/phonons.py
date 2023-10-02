@@ -6,10 +6,11 @@ from typing import Dict, List, Optional, Union
 
 import numpy as np
 from emmet.core.math import Matrix3D
+from emmet.core.structure import StructureMetadata
+from monty.json import MSONable
 from phonopy import Phonopy
 from phonopy.phonon.band_structure import get_band_qpoints_and_path_connections
 from phonopy.structure.symmetry import symmetrize_borns_and_epsilon
-from phonopy.units import VaspToTHz
 from pydantic import BaseModel, Field
 from pymatgen.core import Structure
 from pymatgen.io.phonopy import (
@@ -24,6 +25,8 @@ from pymatgen.phonon.dos import PhononDos
 from pymatgen.phonon.plotter import PhononBSPlotter, PhononDosPlotter
 from pymatgen.symmetry.bandstructure import HighSymmKpath
 from pymatgen.symmetry.kpath import KPathSeek
+
+from atomate2_temp.common.utils.phonons import get_factor
 
 logger = logging.getLogger(__name__)
 
@@ -78,6 +81,13 @@ class PhononUUIDs(BaseModel):
     )
     static_run_uuid: str = Field(None, description="static run uuid")
     born_run_uuid: str = Field(None, description="born run uuid")
+
+
+class ForceConstants(MSONable):
+    """A force constants class."""
+
+    def __init__(self, force_constants: List[List[Matrix3D]]):
+        self.force_constants = force_constants
 
 
 class PhononJobDirs(BaseModel):
@@ -152,7 +162,7 @@ class PhononBSDOSDoc(BaseModel):
     )
 
     # needed, e.g. to compute Grueneisen parameter etc
-    force_constants: List[List[Matrix3D]] = Field(
+    force_constants: ForceConstants = Field(
         None, description="Force constants between every pair of atoms in the structure"
     )
 
@@ -233,7 +243,7 @@ class PhononBSDOSDoc(BaseModel):
         **kwargs:
             additional arguments
         """
-        factor = VaspToTHz
+        factor = get_factor(code)
         # This opens the opportunity to add support for other codes
         # that are supported by phonopy
 
@@ -304,8 +314,13 @@ class PhononBSDOSDoc(BaseModel):
 
         # phonon band structures will always be cmouted
         filename_band_yaml = "phonon_band_structure.yaml"
+        
+        # TODO: potentially add kwargs to avoid computation of eigenvectors
         phonon.run_band_structure(
-            qpoints, path_connections=connections, with_eigenvectors=True
+            qpoints,
+            path_connections=connections,
+            with_eigenvectors=kwargs.get("band_structure_eigenvectors", False),
+            is_band_connection=kwargs.get("band_structure_eigenvectors", False),
         )
         phonon.write_yaml_band_structure(filename=filename_band_yaml)
         bs_symm_line = get_ph_bs_symm_line(
@@ -325,7 +340,8 @@ class PhononBSDOSDoc(BaseModel):
         )
 
         # gets data for visualization on website - yaml is also enough
-        bs_symm_line.write_phononwebsite("phonon_website.json")
+        if kwargs.get("band_structure_eigenvectors", False):
+            bs_symm_line.write_phononwebsite("phonon_website.json")
 
         # get phonon density of states
         filename_dos_yaml = "phonon_dos.yaml"
@@ -380,7 +396,7 @@ class PhononBSDOSDoc(BaseModel):
         # will compute thermal displacement matrices
         # for the primitive cell (phonon.primitive!)
         # only this is available in phonopy
-        if kwargs["create_thermal_displacements"]:
+        if kwargs.get("create_thermal_displacements", False):
             phonon.run_mesh(
                 kpoint.kpts[0], with_eigenvectors=True, is_mesh_symmetry=False
             )
@@ -426,8 +442,9 @@ class PhononBSDOSDoc(BaseModel):
             total_dft_energy / formula_units if total_dft_energy is not None else None
         )
 
-        return cls(
+        return cls.from_structure(
             structure=structure,
+            meta_structure=structure,
             phonon_bandstructure=bs_symm_line,
             phonon_dos=dos,
             free_energies=free_energies,
@@ -437,31 +454,31 @@ class PhononBSDOSDoc(BaseModel):
             temperatures=temperature_range.tolist(),
             total_dft_energy=total_dft_energy_per_formula_unit,
             has_imaginary_modes=imaginary_modes,
-            force_constants=phonon.force_constants.tolist()
+            force_constants={"force_constants": phonon.force_constants.tolist()}
             if kwargs["store_force_constants"]
             else None,
             born=borns.tolist() if borns is not None else None,
             epsilon_static=epsilon.tolist() if epsilon is not None else None,
             supercell_matrix=phonon.supercell_matrix.tolist(),
             primitive_matrix=phonon.primitive_matrix.tolist(),
-            code="aims",
+            code="vasp",
             thermal_displacement_data={
                 "temperatures_thermal_displacements": temperature_range_thermal_displacements.tolist(),  # noqa: E501
                 "thermal_displacement_matrix_cif": tdisp_mat_cif,
                 "thermal_displacement_matrix": tdisp_mat,
                 "freq_min_thermal_displacements": freq_min_thermal_displacements,
             }
-            if kwargs["create_thermal_displacements"]
+            if kwargs.get("create_thermal_displacements", False)
             else None,
             jobdirs={
                 "displacements_job_dirs": displacement_data["dirs"],
                 "static_run_job_dir": kwargs["static_run_job_dir"],
-                # "born_run_job_dir": kwargs["born_run_job_dir"],
+                "born_run_job_dir": kwargs["born_run_job_dir"],
                 "optimization_run_job_dir": kwargs["optimization_run_job_dir"],
             },
             uuids={
                 "displacements_uuids": displacement_data["uuids"],
-                # "born_run_uuid": kwargs["born_run_uuid"],
+                "born_run_uuid": kwargs["born_run_uuid"],
                 "optimization_run_uuid": kwargs["optimization_run_uuid"],
                 "static_run_uuid": kwargs["static_run_uuid"],
             },
