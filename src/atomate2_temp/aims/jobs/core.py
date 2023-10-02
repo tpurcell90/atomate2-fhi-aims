@@ -3,12 +3,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 import logging
 from pathlib import Path
-from typing import Iterable, Sequence
+from typing import Sequence
 
-from ase.atoms import Atoms
 from jobflow import job, Response
 from monty.serialization import dumpfn
-from monty.shutil import gzip_dir
 from pymatgen.core import Structure
 
 from atomate2_temp.aims.jobs.base import BaseAimsMaker
@@ -148,9 +146,6 @@ class SocketIOStaticMaker(BaseAimsMaker):
 
         # cleanup files to save disk space
         cleanup_aims_outputs(directory=Path.cwd())
-
-        # gzip folder
-        # gzip_dir(".")
 
         return Response(
             stop_children=stop_children,

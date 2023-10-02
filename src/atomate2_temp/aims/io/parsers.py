@@ -12,7 +12,7 @@ from ase.constraints import FixAtoms, FixCartesian
 from ase.io import ParseError
 from ase.utils import lazymethod, lazyproperty, reader
 
-from typing import Any, Callable, Iterable, Dict
+from typing import Any, Iterable, Dict
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 LINE_NOT_FOUND = object()
@@ -846,8 +846,6 @@ class AimsOutCalcChunk(AimsOutChunk):
             "hirshfeld_dipole": self.hirshfeld_dipole,
             "hirshfeld_volumes": self.hirshfeld_volumes,
             "hirshfeld_atomic_dipoles": self.hirshfeld_atomic_dipoles,
-            # "eigenvalues": self.eigenvalues,
-            # "occupancies": self.occupancies,
             "dielectric_tensor": self.dielectric_tensor,
             "polarization": self.polarization,
             "homo": self.homo,

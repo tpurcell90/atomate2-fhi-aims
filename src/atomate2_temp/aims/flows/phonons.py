@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 
 from atomate2_temp.common.flows.phonons import BasePhononMaker
 
-from atomate2.common.jobs.utils import structure_to_conventional, structure_to_primitive
 from atomate2_temp.aims.flows.core import DoubleRelaxMaker
 from atomate2_temp.aims.jobs.base import BaseAimsMaker
 from atomate2_temp.aims.jobs.core import StaticMaker

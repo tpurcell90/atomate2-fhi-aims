@@ -1,6 +1,5 @@
 """Module with common file names and classes used for Abinit flows."""
 
-import logging
 import os
 import shutil
 import contextlib

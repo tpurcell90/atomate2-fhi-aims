@@ -12,6 +12,7 @@ class DataFile(MSONable):
 
     objects: Sequence | None = None
 
+    # TARP: Do these classmethods do anything?
     @classmethod
     def from_file(cls, fn):
         """Load from a file"""

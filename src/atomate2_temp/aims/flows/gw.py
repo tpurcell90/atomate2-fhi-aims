@@ -7,7 +7,7 @@ from pathlib import Path
 
 from atomate2_temp.aims.sets.bs import BandStructureSetGenerator, GWSetGenerator
 from atomate2_temp.aims.sets.core import StaticSetGenerator
-from jobflow import Maker, Flow
+from jobflow import  Flow
 
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 from atomate2_temp.aims.jobs.base import BaseAimsMaker, ConvergenceMaker

@@ -109,7 +109,6 @@ class CalculationOutput(BaseModel):
     atomic_steps: List[MSONableAtoms] = Field(
         None, description="Structures for each ionic step"
     )
-    # scf: List = Field(None, description="SCF optimization steps")
 
     @classmethod
     def from_aims_output(
@@ -134,34 +133,13 @@ class CalculationOutput(BaseModel):
 
         structure = output.final_structure
 
-        # if output.band_structure:
-        #     bandgap_info = output.band_structure.get_band_gap()
-        #     electronic_output = {
-        #         "efermi": output.band_structure.efermi,
-        #         "vbm": output.band_structure.get_vbm()["energy"],
-        #         "cbm": output.band_structure.get_cbm()["energy"],
-        #         "bandgap": bandgap_info["energy"],
-        #         "is_gap_direct": bandgap_info["direct"],
-        #         "is_metal": output.band_structure.is_metal(),
-        #         "direct_gap": output.band_structure.get_direct_band_gap(),
-        #         "transition": bandgap_info["transition"],
-        #     }
-        # else:
         electronic_output = {
             "efermi": output.fermi_energy,
             "homo": output.homo,
             "lumo": output.lumo,
             "bandgap": output.band_gap,
             "direct_bandgap": output.direct_band_gap,
-            # "is_metal": output.is_metal,
         }
-
-        # if store_scf:
-        #     output.parse_scf_opt()
-        #     scf = output.data.get("electronic_steps")
-        #     scf = [item for sublist in scf for item in sublist]
-        # else:
-        #     scf = None
 
         forces = None
         if output.forces is not None:
@@ -208,32 +186,17 @@ class Calculation(BaseModel):
     has_aims_completed: Status = Field(
         None, description="Whether FHI-aims completed the calculation successfully"
     )
-    # input: CalculationInput = Field(
-    #     None, description="FHI-aims input settings for the calculation"
-    # )
     output: CalculationOutput = Field(
         None, description="The FHI-aims calculation output"
     )
     completed_at: str = Field(
         None, description="Timestamp for when the calculation was completed"
     )
-    # task_name: str = Field(
-    #     None, description="Name of task given by custodian (e.g., relax1, relax2)"
-    # )
     output_file_paths: Dict[str, str] = Field(
         None,
         description="Paths (relative to dir_name) of the FHI-aims output files "
         "associated with this calculation",
     )
-    # run_type: RunType = Field(
-    #     None, description="Calculation run type (e.g., HF, HSE06, PBE)"
-    # )
-    # task_type: TaskType = Field(
-    #     None, description="Calculation task type (e.g., Structure Optimization)."
-    # )
-    # calc_type: CalcType = Field(
-    #     None, description="Return calculation type (run type + task_type)."
-    # )
 
     @classmethod
     def from_aims_files(
@@ -244,9 +207,6 @@ class Calculation(BaseModel):
         volumetric_files: List[str] = None,
         parse_dos: Union[str, bool] = False,
         parse_bandstructure: Union[str, bool] = False,
-        # run_bader: bool = (SETTINGS.AIMS_RUN_BADER and _BADER_EXE_EXISTS),
-        # strip_bandstructure_projections: bool = False,
-        # strip_dos_projections: bool = False,
         store_trajectory: bool = False,
         store_scf: bool = False,
         store_volumetric_data: Optional[Tuple[str]] = STORE_VOLUMETRIC_DATA,
@@ -284,13 +244,6 @@ class Calculation(BaseModel):
               vbm, cbm, band_gap, is_metal and efermi rather than the full
               band structure object.
 
-        # strip_dos_projections : bool
-        #     Whether to strip the element and site projections from the density of
-        #     states. This can help reduce the size of DOS objects in systems with
-        #     many atoms.
-        # strip_bandstructure_projections : bool
-        #     Whether to strip the element and site projections from the band structure.
-        #     This can help reduce the size of DOS objects in systems with many atoms.
         store_trajectory:
             Whether to store the ionic steps as a pmg trajectory object, which can be
             pushed, to a bson data store, instead of as a list od dicts. Useful for
@@ -320,17 +273,12 @@ class Calculation(BaseModel):
 
         dos = _parse_dos(parse_dos, aims_output)
         if dos is not None:
-            # if strip_dos_projections:
-            #     dos = Dos(dos.efermi, dos.energies, dos.densities)
             aims_objects[AimsObject.DOS] = dos  # type: ignore
 
         bandstructure = _parse_bandstructure(parse_bandstructure, aims_output)
         if bandstructure is not None:
-            # if strip_bandstructure_projections:
-            #     bandstructure.projections = {}
             aims_objects[AimsObject.BANDSTRUCTURE] = bandstructure  # type: ignore
 
-        # input_doc = CalculationInput.from_aims_output(aims_output)
         output_doc = CalculationOutput.from_aims_output(aims_output)
 
         has_aims_completed = Status.SUCCESS if aims_output.completed else Status.FAILED
@@ -346,14 +294,10 @@ class Calculation(BaseModel):
                 aims_version=aims_output.aims_version,
                 has_aims_completed=has_aims_completed,
                 completed_at=completed_at,
-                # input=input_doc,
                 output=output_doc,
                 output_file_paths={
                     k.name.lower(): v for k, v in output_file_paths.items()
                 },
-                # run_type=run_type(input_doc.dict()),
-                # task_type=task_type(input_doc.dict()),
-                # calc_type=calc_type(input_doc.dict()),
             ),
             aims_objects,
         )
@@ -467,8 +411,4 @@ def _parse_trajectory(aims_output: AimsOutput) -> Optional[Trajectory]:
     Grab a Trajectory object given an FHI-aims output object.
     """
 
-    # constant_lattice = all([
-    #     np.all(s.cell == aims_output.initial_structure.cell)
-    #     for s in aims_output.structures
-    # ])
     return aims_output.structures
