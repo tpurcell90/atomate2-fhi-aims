@@ -3,32 +3,37 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from pathlib import Path
+from typing import TYPE_CHECKING
 
-from emmet.core.math import Matrix3D
 from jobflow import Flow, Maker
-from pymatgen.core.structure import Structure
 
 from atomate2.common.jobs.utils import structure_to_conventional, structure_to_primitive
-from atomate2_temp.aims.flows.core import DoubleRelaxMaker
-from atomate2_temp.aims.jobs.base import BaseAimsMaker
-from atomate2_temp.aims.jobs.core import StaticMaker, RelaxMaker, SocketIOStaticMaker
-from atomate2_temp.aims.jobs.phonons import (
+from atomate2_temp.common.jobs.phonons import (
     generate_frequencies_eigenvectors,
     generate_phonon_displacements,
     get_supercell_size,
     get_total_energy_per_cell,
     run_phonon_displacements,
 )
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from emmet.core.math import Matrix3D
+    from pymatgen.core.structure import Structure
+
+    from atomate2.vasp.jobs.base import BaseVaspMaker
+    from atomate2_temp.aims.jobs.base import BaseAimsMaker
+    from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 __all__ = ["PhononMaker"]
 
+SUPPORTED_CODES = ["vasp", "aims"]
 
 @dataclass
 class PhononMaker(Maker):
     """
-    Maker to calculate harmonic phonons with VASP and Phonopy.
+    Maker to calculate harmonic phonons with VASP or FHI-aims and Phonopy.
 
     Calculate the harmonic phonons of a material. Initially, a tight structural
     relaxation is performed to obtain a structure without forces on the atoms.
@@ -36,7 +41,7 @@ class PhononMaker(Maker):
     forces are computed for these structures. With the help of phonopy, these
     forces are then converted into a dynamical matrix. To correct for polarization
     effects, a correction of the dynamical matrix based on BORN charges can
-    be performed.     Finally, phonon densities of states, phonon band structures
+    be performed. Finally, phonon densities of states, phonon band structures
     and thermodynamic properties are computed.
 
     .. Note::
@@ -128,18 +133,14 @@ class PhononMaker(Maker):
     prefer_90_degrees: bool = True
     get_supercell_size_kwargs: dict = field(default_factory=dict)
     use_symmetrized_structure: str | None = None
-    bulk_relax_maker: BaseAimsMaker | None = field(
-        default_factory=lambda: DoubleRelaxMaker.from_parmeters(dict())
-    )
-    static_energy_maker: BaseAimsMaker | None = field(default_factory=StaticMaker)
-    # phonon_displacement_maker: BaseAimsMaker = field(
-    #     default_factory=PhononDisplacementMaker
-    # )
-    phonon_displacement_maker: BaseAimsMaker = None
+    bulk_relax_maker: BaseVaspMaker | BaseAimsMaker | None = None
+    static_energy_maker: BaseVaspMaker | BaseAimsMaker | None = None
+    born_maker: BaseVaspMaker | None = None
+    phonon_displacement_maker: BaseVaspMaker | BaseAimsMaker = None
     create_thermal_displacements: bool = True
     generate_frequencies_eigenvectors_kwargs: dict = field(default_factory=dict)
     kpath_scheme: str = "seekpath"
-    code: str = "aims"
+    code: str = None
     store_force_constants: bool = True
     socket: bool = False
 
@@ -187,6 +188,9 @@ class PhononMaker(Maker):
             instead of min_length, also a supercell_matrix can
             be given, e.g. [[1.0,0.0,0.0],[0.0,1.0,0.0],[0.0,0.0,1.0]
         """
+        if self.code is None:
+            raise ValueError(f"The code variable must be passed upon construction. Supported codes are: {SUPPORTED_CODES}")
+        
         if isinstance(structure, MSONableAtoms):
             structure = structure.pymatgen
 
@@ -257,6 +261,29 @@ class PhononMaker(Maker):
             jobs.append(supercell_job)
             supercell_matrix = supercell_job.output
 
+        # Computation of static energy
+        total_dft_energy = None
+        static_run_job_dir = None
+        static_run_uuid = None
+        if (self.static_energy_maker is not None) and (
+            total_dft_energy_per_formula_unit is None
+        ):
+            static_job = self.static_energy_maker.make(
+                structure=structure, prev_dir=prev_dir
+            )
+            jobs.append(static_job)
+            total_dft_energy = static_job.output.output.energy
+            static_run_job_dir = static_job.output.dir_name
+            static_run_uuid = static_job.output.uuid
+            prev_dir = static_job.output.dir_name
+        elif total_dft_energy_per_formula_unit is not None:
+            # to make sure that one can reuse results from Doc
+            compute_total_energy_job = get_total_energy_per_cell(
+                total_dft_energy_per_formula_unit, structure
+            )
+            jobs.append(compute_total_energy_job)
+            total_dft_energy = compute_total_energy_job.output
+
         # get a phonon object from phonopy
         displacements = generate_phonon_displacements(
             structure=structure,
@@ -271,51 +298,29 @@ class PhononMaker(Maker):
         jobs.append(displacements)
 
         # perform the phonon displacement calculations
-        aims_displacement_calcs = run_phonon_displacements(
+        displacement_calcs = run_phonon_displacements(
             displacements=displacements.output,
             structure=structure,
             supercell_matrix=supercell_matrix,
             phonon_maker=self.phonon_displacement_maker,
             socket=self.socket,
+            prev_dir=prev_dir,
         )
-        jobs.append(aims_displacement_calcs)
+        jobs.append(displacement_calcs)
 
-        # Computation of static energy
-        if (self.static_energy_maker is not None) and (
-            total_dft_energy_per_formula_unit is None
-        ):
-            static_job = self.static_energy_maker.make(atoms=structure)
-            jobs.append(static_job)
-            total_dft_energy = static_job.output.output.energy
-            static_run_job_dir = static_job.output.dir_name
-            static_run_uuid = static_job.output.uuid
-        else:
-            if total_dft_energy_per_formula_unit is not None:
-                # to make sure that one can reuse results from Doc
-                compute_total_energy_job = get_total_energy_per_cell(
-                    total_dft_energy_per_formula_unit, structure
-                )
-                jobs.append(compute_total_energy_job)
-                total_dft_energy = compute_total_energy_job.output
-            else:
-                total_dft_energy = None
-            static_run_job_dir = None
-            static_run_uuid = None
+        # Computation of BORN charges
+        born_run_job_dir = None
+        born_run_uuid = None
+        if self.born_maker is not None and (born is None or epsilon_static is None):
+            born_job = self.born_maker.make(structure, prev_dir=prev_dir)
+            jobs.append(born_job)
 
-        # Computation of BORN charges Not supported for FHI-aims at the moment
-        # if self.born_maker is not None and (born is None or epsilon_static is None):
-        #     born_job = self.born_maker.make(structure)
-        #     jobs.append(born_job)
-
-        #     # I am not happy how we currently access "born" charges
-        #     # This is very vasp specific code
-        #     epsilon_static = born_job.output.calcs_reversed[0].output.epsilon_static
-        #     born = born_job.output.calcs_reversed[0].output.outcar["born"]
-        #     born_run_job_dir = born_job.output.dir_name
-        #     born_run_uuid = born_job.output.uuid
-        # else:
-        #     born_run_job_dir = None
-        #     born_run_uuid = None
+            # I am not happy how we currently access "born" charges
+            # This is very vasp specific code
+            epsilon_static = born_job.output.calcs_reversed[0].output.epsilon_static
+            born = born_job.output.calcs_reversed[0].output.outcar["born"]
+            born_run_job_dir = born_job.output.dir_name
+            born_run_uuid = born_job.output.uuid
 
         phonon_collect = generate_frequencies_eigenvectors(
             supercell_matrix=supercell_matrix,
@@ -326,14 +331,14 @@ class PhononMaker(Maker):
             kpath_scheme=self.kpath_scheme,
             code=self.code,
             structure=structure,
-            displacement_data=aims_displacement_calcs.output,
+            displacement_data=displacement_calcs.output,
             epsilon_static=epsilon_static,
             born=born,
             total_dft_energy=total_dft_energy,
             static_run_job_dir=static_run_job_dir,
             static_run_uuid=static_run_uuid,
-            # born_run_job_dir=born_run_job_dir,
-            # born_run_uuid=born_run_uuid,
+            born_run_job_dir=born_run_job_dir,
+            born_run_uuid=born_run_uuid,
             optimization_run_job_dir=optimization_run_job_dir,
             optimization_run_uuid=optimization_run_uuid,
             create_thermal_displacements=self.create_thermal_displacements,
@@ -342,6 +347,6 @@ class PhononMaker(Maker):
         )
 
         jobs.append(phonon_collect)
+        
         # create a flow including all jobs for a phonon computation
-        flow = Flow(jobs, phonon_collect.output)
-        return flow
+        return Flow(jobs, phonon_collect.output)
