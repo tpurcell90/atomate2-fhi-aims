@@ -11,7 +11,7 @@ import numpy as np
 
 from monty.json import MontyEncoder, MontyDecoder
 from atomate2_temp.aims.io.parsers import read_aims_output, AimsParseError
-from atomate2_temp.aims.utils.pymatgen_core_io import (
+from pymatgen.io.core import (
     InputGenerator,
     InputSet,
     InputFile,
@@ -54,10 +54,16 @@ class AimsInputFile(InputFile):
     def get_string(self) -> str:
         return self._content_str
 
+    def get_str(self) -> str:
+        return self._content_str
+
     @classmethod
     def from_string(cls, contents: str):
         return cls(contents)
 
+    @classmethod
+    def from_str(cls, contents: str):
+        return cls(contents)
 
 class AimsInputSet(InputSet):
     """
@@ -75,7 +81,6 @@ class AimsInputSet(InputSet):
         self._properties = properties
 
         aims_control_in, aims_geometry_in = self.get_input_files()
-
         super().__init__(
             inputs={
                 CONTROL_FILE_NAME: aims_control_in,
@@ -92,7 +97,6 @@ class AimsInputSet(InputSet):
             aims_template.write_input(
                 Path("./"), self._atoms, self._parameters, self._properties
             )
-
             aims_control_in = AimsInputFile.from_file("control.in")
             aims_geometry_in = AimsInputFile.from_file("geometry.in")
         return aims_control_in, aims_geometry_in
