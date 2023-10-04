@@ -16,7 +16,7 @@ from atomate2_temp.aims.schemas.calculation import AimsObject, Calculation, Stat
 from atomate2_temp.aims.utils import datetime_str
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
-_T = TypeVar("_T", bound="TaskDocument")
+_T = TypeVar("_T", bound="AimsTaskDocument")
 _VOLUMETRIC_FILES = ("total_density", "spin_density", "eigenstate_density")
 logger = logging.getLogger(__name__)
 
@@ -156,7 +156,8 @@ class OutputSummary(BaseModel):
     @classmethod
     def from_aims_calc_doc(cls, calc_doc: Calculation) -> "OutputSummary":
         """
-        Create a summary of FHI-aims calculation outputs from an FHI-aims calculation document.
+        Create a summary of FHI-aims calculation outputs from an FHI-aims
+        calculation document.
 
         Parameters
         ----------
@@ -426,8 +427,8 @@ def _find_aims_files(
     Returns
     -------
     dict[str, Any]
-        The filenames of the calculation outputs for each FHI-aims task, given as a ordered
-        dictionary of::
+        The filenames of the calculation outputs for each FHI-aims task,
+        given as a ordered dictionary of::
 
             {
                 task_name: {

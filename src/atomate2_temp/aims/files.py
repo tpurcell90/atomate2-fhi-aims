@@ -101,7 +101,8 @@ def write_aims_input_set(
     directory : str or Path
         The directory to write the input files to.
     prev_dir : str or Path or None
-        If the input set is to be initialized from a previous calculation, the previous calc directory
+        If the input set is to be initialized from a previous calculation,
+        the previous calc directory
     **kwargs
         Keyword arguments to pass to :obj:`.AimsInputSet.write_input`.
     """

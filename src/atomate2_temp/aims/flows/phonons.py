@@ -10,9 +10,6 @@ from atomate2_temp.aims.jobs.phonons import (
 )
 from atomate2_temp.common.flows.phonons import BasePhononMaker
 
-if TYPE_CHECKING:
-    from atomate2_temp.aims.jobs.base import BaseAimsMaker
-
 
 @dataclass
 class PhononMaker(BasePhononMaker):

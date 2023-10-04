@@ -84,7 +84,9 @@ class SocketIOStaticMaker(BaseAimsMaker):
         structure: Sequence[MSONableAtoms | Structure],
         prev_dir: str | Path | None = None,
     ):
-        """Run an FHI-aims calculation on multiple atoms object using the socket communicator.
+        """
+        Run an FHI-aims calculation on multiple atoms object using the socket
+        communicator.
 
         Parameters
         ----------

@@ -26,7 +26,7 @@ if TYPE_CHECKING:
 
     from atomate2_temp.aims.jobs.base import BaseAimsMaker
 
-__all__ = ["PhononMaker"]
+__all__ = ["BasePhononMaker"]
 
 SUPPORTED_CODES = ["vasp", "aims"]
 

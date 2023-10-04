@@ -20,7 +20,9 @@ __all__ = [
 
 @dataclass
 class DoubleRelaxMaker(Maker):
-    """A maker to perform a double relaxation in FHI-aims (first with light, and then with tight species_defaults)
+    """
+    A maker to perform a double relaxation in FHI-aims (first with light,
+    and then with tight species_defaults)
 
     Parameters
     ----------
@@ -68,14 +70,16 @@ class DoubleRelaxMaker(Maker):
         species_defaults: list | tuple = ("light", "tight"),
     ):
         """
-        Creates a DoubleRelaxFlow for the same parameters with two different species defaults.
+        Creates a DoubleRelaxFlow for the same parameters with two different
+        species defaults.
 
         Parameters
         ----------
         parameters : dict
             a dictionary with calculation parameters
         species_defaults: list | tuple
-            paths for species defaults to use relative to the given `species_dir` in parameters
+            paths for species defaults to use relative to the given `species_dir`
+            in parameters
         """
         # various checks
         if len(species_defaults) != 2:
