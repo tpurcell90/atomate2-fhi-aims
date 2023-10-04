@@ -5,32 +5,25 @@ import copy
 import json
 import logging
 from dataclasses import dataclass, field
-from typing import Any, Iterable, Dict, List, Tuple, Sequence
+from pathlib import Path
+from typing import Any, Dict, Iterable, List, Sequence, Tuple
+from warnings import warn
 
 import numpy as np
-
-from monty.json import MontyEncoder, MontyDecoder
-from atomate2_temp.aims.io.parsers import read_aims_output, AimsParseError
-from pymatgen.io.core import (
-    InputGenerator,
-    InputSet,
-    InputFile,
-)
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
-from ase.calculators.aims import AimsTemplate
 from ase.atoms import Atoms
+from ase.calculators.aims import AimsTemplate
+from monty.json import MontyDecoder, MontyEncoder
+from pymatgen.io.core import InputFile, InputGenerator, InputSet
 
-from pathlib import Path
-
+from atomate2_temp.aims.io.parsers import AimsParseError, read_aims_output
 from atomate2_temp.aims.utils.common import (
-    TMPDIR_NAME,
     CONTROL_FILE_NAME,
     GEOMETRY_FILE_NAME,
     PARAMS_JSON_FILE_NAME,
+    TMPDIR_NAME,
     cwd,
 )
-
-from warnings import warn
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 DEFAULT_AIMS_PROPERTIES = [
     "energy",

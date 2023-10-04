@@ -1,7 +1,7 @@
 """Input sets for band structure calculations"""
 
 from dataclasses import dataclass
-from typing import Dict, Any
+from typing import Any, Dict
 
 from atomate2_temp.aims.sets.base import AimsInputGenerator
 from atomate2_temp.aims.utils.bands import prepare_band_input

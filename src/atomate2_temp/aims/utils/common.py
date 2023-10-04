@@ -1,8 +1,8 @@
 """Module with common file names and classes used for Abinit flows."""
 
+import contextlib
 import os
 import shutil
-import contextlib
 
 TMPDIR_NAME = "tmpdir"
 OUTPUT_FILE_NAME: str = "aims.out"

@@ -7,20 +7,19 @@ import logging
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from jobflow import job, Maker, Response, Flow
+from jobflow import Flow, Maker, Response, job
 from monty.serialization import dumpfn
-from pymatgen.core import Structure, Molecule
+from pymatgen.core import Molecule, Structure
 
 from atomate2_temp.aims.files import (
+    cleanup_aims_outputs,
     copy_aims_outputs,
     write_aims_input_set,
-    cleanup_aims_outputs,
 )
 from atomate2_temp.aims.run import run_aims, should_stop_children
 from atomate2_temp.aims.schemas.task import AimsTaskDocument
 from atomate2_temp.aims.sets.base import AimsInputGenerator
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
-
 
 logger = logging.getLogger(__name__)
 CONVERGENCE_FILE_NAME = "convergence.json"  # make it a constant?

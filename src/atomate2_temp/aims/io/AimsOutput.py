@@ -1,11 +1,12 @@
 """A representation of FHI-aims output (based on ASE output parser)"""
 from __future__ import annotations
 
-from monty.json import MSONable, MontyDecoder
 from pathlib import Path
-from typing import Dict, Any
+from typing import Any, Dict
 
-from atomate2_temp.aims.io.parsers import read_aims_output, read_aims_header_info
+from monty.json import MontyDecoder, MSONable
+
+from atomate2_temp.aims.io.parsers import read_aims_header_info, read_aims_output
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 

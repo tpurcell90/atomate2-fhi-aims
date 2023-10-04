@@ -5,15 +5,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict
 
-from jobflow import Maker, Flow
+from jobflow import Flow, Maker
+from pymatgen.core import Molecule, Structure
 
 from atomate2_temp.aims.jobs.base import BaseAimsMaker
 from atomate2_temp.aims.jobs.core import RelaxMaker
 from atomate2_temp.aims.sets.core import RelaxSetGenerator
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
-
-from pymatgen.core import Structure, Molecule
-
 
 __all__ = [
     "DoubleRelaxMaker",

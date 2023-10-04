@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
-from atomate2_temp.common.flows.phonons import BasePhononMaker
-
 from atomate2.vasp.flows.core import DoubleRelaxMaker
 from atomate2.vasp.jobs.core import DielectricMaker, StaticMaker, TightRelaxMaker
-from atomate2_temp.vasp.jobs.phonons import PhononDisplacementMaker
 from atomate2.vasp.sets.core import StaticSetGenerator
+
+from atomate2_temp.common.flows.phonons import BasePhononMaker
+from atomate2_temp.vasp.jobs.phonons import PhononDisplacementMaker
 
 if TYPE_CHECKING:
     from atomate2.vasp.jobs.base import BaseVaspMaker

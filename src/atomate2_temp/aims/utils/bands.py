@@ -1,9 +1,9 @@
 """Some utilities of dealing with bands. Copied from GIMS as of now; should be in its
 own dedicated FHI-aims python package (with the parsers, plotters etc.)"""
 
-from ase.dft.kpoints import resolve_kpt_path_string, kpoint_convert
-from ase.cell import Cell
 import numpy as np
+from ase.cell import Cell
+from ase.dft.kpoints import kpoint_convert, resolve_kpt_path_string
 
 # TODO add the same procedures but using pymatgen routines
 

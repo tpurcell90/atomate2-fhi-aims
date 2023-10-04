@@ -1,5 +1,6 @@
-from atomate2_temp.aims.utils.units import omega_to_THz
 from phonopy.units import VaspToTHz
+
+from atomate2_temp.aims.utils.units import omega_to_THz
 
 
 def get_factor(code: str):

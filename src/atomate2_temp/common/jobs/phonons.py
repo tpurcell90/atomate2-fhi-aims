@@ -10,7 +10,6 @@ import numpy as np
 from emmet.core.math import Matrix3D
 from jobflow import Flow, Response, job
 from phonopy import Phonopy
-
 from pymatgen.core import Structure
 from pymatgen.io.phonopy import get_phonopy_structure, get_pmg_structure
 from pymatgen.phonon.bandstructure import PhononBandStructureSymmLine
@@ -18,29 +17,28 @@ from pymatgen.phonon.dos import PhononDos
 from pymatgen.transformations.advanced_transformations import (
     CubicSupercellTransformation,
 )
-from pymatgen.phonon.bandstructure import PhononBandStructureSymmLine
-from pymatgen.phonon.dos import PhononDos
 
 from atomate2_temp.aims.jobs.phonons import (
-    PhononDisplacementMakerSocket as PhononDisplacementMakerAimsSocket,
     PhononDisplacementMaker as PhononDisplacementMakerAims,
 )
+from atomate2_temp.aims.jobs.phonons import (
+    PhononDisplacementMakerSocket as PhononDisplacementMakerAimsSocket,
+)
+from atomate2_temp.common.schemas.phonons import ForceConstants, PhononBSDOSDoc
+from atomate2_temp.common.utils.phonons import get_factor
 from atomate2_temp.vasp.jobs.phonons import (
     PhononDisplacementMaker as PhononDisplacementMakerVasp,
 )
-from atomate2_temp.common.utils.phonons import get_factor
-
-from atomate2_temp.common.schemas.phonons import ForceConstants, PhononBSDOSDoc
 
 if TYPE_CHECKING:
     from pathlib import Path
 
     import numpy as np
+    from atomate2.forcefields.jobs import ForceFieldStaticMaker
+    from atomate2.vasp.jobs.base import BaseVaspMaker
     from emmet.core.math import Matrix3D
 
-    from atomate2.forcefields.jobs import ForceFieldStaticMaker
     from atomate2_temp.aims.jobs.base import BaseAimsMaker
-    from atomate2.vasp.jobs.base import BaseVaspMaker
 
 
 logger = logging.getLogger(__name__)

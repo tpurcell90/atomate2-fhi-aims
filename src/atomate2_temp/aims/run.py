@@ -1,15 +1,15 @@
 """An FHI-aims jobflow runner"""
 from __future__ import annotations
 
-import logging
 import json
+import logging
 import os
-from os.path import expandvars
 import subprocess
+from os.path import expandvars
 from typing import Iterable
 
-from ase.calculators.socketio import SocketIOCalculator
 from ase.calculators.aims import Aims
+from ase.calculators.socketio import SocketIOCalculator
 from monty.json import MontyDecoder
 
 from atomate2_temp.aims.schemas.task import AimsTaskDocument

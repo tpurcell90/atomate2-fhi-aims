@@ -6,8 +6,8 @@ from glob import glob
 from pathlib import Path
 from typing import Sequence
 
-from atomate2.common.files import get_zfile, copy_files, gunzip_files
-from atomate2.utils.file_client import auto_fileclient, FileClient
+from atomate2.common.files import copy_files, get_zfile, gunzip_files
+from atomate2.utils.file_client import FileClient, auto_fileclient
 from atomate2.utils.path import strip_hostname
 
 from atomate2_temp.aims.sets.base import AimsInputGenerator
