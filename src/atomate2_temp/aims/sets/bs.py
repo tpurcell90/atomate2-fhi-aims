@@ -23,7 +23,9 @@ class BandStructureSetGenerator(AimsInputGenerator):
 
 @dataclass
 class GWSetGenerator(AimsInputGenerator):
-    """A generator for the input set for calculations employing GW self-energy correction"""
+    """
+    A generator for the input set for calculations employing GW self-energy correction
+    """
 
     calc_type: str = "GW"
     k_point_density: int = 20

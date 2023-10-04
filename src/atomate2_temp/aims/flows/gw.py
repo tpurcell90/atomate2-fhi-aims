@@ -34,8 +34,9 @@ class PeriodicGWConvergenceMaker(BaseAimsMaker):
     convergence_field: str
         An input parameter that changes to achieve convergence
     convergence_steps: list | tuple
-        An iterable of the possible values for the convergence field. If the iterable is depleted and the
-        convergence is not reached, that the job is failed
+        An iterable of the possible values for the convergence field.
+        If the iterable is depleted and the convergence is not reached,
+        that the job is failed
     """
 
     name: str = "GW convergence"

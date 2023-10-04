@@ -1,4 +1,7 @@
-"""A definition of base FHI-aims job Maker (closely resembling that of VASP and CP2K in atomate2)"""
+"""
+A definition of base FHI-aims job Maker
+(closely resembling that of VASP and CP2K in atomate2)
+"""
 
 from __future__ import annotations
 
@@ -126,9 +129,10 @@ class BaseAimsMaker(Maker):
 
 @dataclass
 class ConvergenceMaker(Maker):
-    """A job that performs convergence run for a given number of steps. Stops either when all steps are done,
-    or when the convergence criterion is reached, that is when the absolute difference between the subsequent values
-    of the convergence field is less than a given epsilon.
+    """A job that performs convergence run for a given number of steps. Stops either
+    when all steps are done, or when the convergence criterion is reached, that is when
+    the absolute difference between the subsequent values of the convergence field is
+    less than a given epsilon.
 
     Parameters
     ----------
@@ -143,8 +147,9 @@ class ConvergenceMaker(Maker):
     convergence_field: str
         An input parameter that changes to achieve convergence
     convergence_steps: list | tuple
-        An iterable of the possible values for the convergence field. If the iterable is depleted and the
-        convergence is not reached, that the job is failed
+        An iterable of the possible values for the convergence field.
+        If the iterable is depleted and the convergence is not reached,
+        that the job is failed
     """
 
     name: str = "Convergence job"
@@ -164,7 +169,8 @@ class ConvergenceMaker(Maker):
         prev_dir: str | Path = None,
     ):
         """
-        Runs several jobs with changing inputs consecutively to investigate convergence in the results
+        Runs several jobs with changing inputs consecutively to investigate
+        convergence in the results
 
         Parameters
         ----------
@@ -174,7 +180,7 @@ class ConvergenceMaker(Maker):
             An FHI-aims calculation directory in which previous run contents are stored
         """
         if isinstance(structure, Structure) or isinstance(structure, Molecule):
-            atoms = MSONableAtoms.from_pymatgen(atoms)
+            atoms = MSONableAtoms.from_pymatgen(structure)
         else:
             atoms = structure.copy()
 

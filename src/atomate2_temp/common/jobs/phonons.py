@@ -33,10 +33,8 @@ from atomate2_temp.vasp.jobs.phonons import (
 if TYPE_CHECKING:
     from pathlib import Path
 
-    import numpy as np
     from atomate2.forcefields.jobs import ForceFieldStaticMaker
     from atomate2.vasp.jobs.base import BaseVaspMaker
-    from emmet.core.math import Matrix3D
 
     from atomate2_temp.aims.jobs.base import BaseAimsMaker
 
@@ -49,7 +47,6 @@ __all__ = [
     "generate_phonon_displacements",
     "run_phonon_displacements",
     "generate_frequencies_eigenvectors",
-    "PhononDisplacementMaker",
 ]
 
 

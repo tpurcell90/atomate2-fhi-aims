@@ -304,7 +304,8 @@ class Calculation(BaseModel):
 
 def _get_output_file_paths(volumetric_files: List[str]) -> Dict[AimsObject, str]:
     """
-    Get the output file paths for FHI-aims output files from the list of volumetric files.
+    Get the output file paths for FHI-aims output files from the list
+    of volumetric files.
 
     Parameters
     ----------

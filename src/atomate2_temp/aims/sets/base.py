@@ -113,7 +113,8 @@ class AimsInputSet(InputSet):
     def set_parameters(self, *args, **kwargs) -> dict:
         """Set the parameters object for the AimsTemplate
 
-        This sets the parameters object that is passed to an AimsTempalte and resets the control.in file
+        This sets the parameters object that is passed to an AimsTempalte and
+        resets the control.in file
 
         One can pass a dictionary mapping the aims variables to their values or
         the aims variables as keyword arguments. A combination of the two
@@ -237,7 +238,8 @@ class AimsInputGenerator(InputGenerator):
 
         if prev_dir:
             # strip hostname from the directory (not good, works only with run_locally.
-            # Should be checked with Fireworks, will not for sure work with jobflow_remote)
+            # Should be checked with Fireworks, will not for sure work with
+            # jobflow_remote)
             prev_dir = prev_dir.split(":")[-1]
             prev_parameters = json.load(
                 open(f"{prev_dir}/parameters.json", "rt"), cls=MontyDecoder
