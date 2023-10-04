@@ -2,17 +2,16 @@
 from __future__ import annotations
 
 import warnings
+from pathlib import Path
+from typing import Any, Dict, Iterable
 
 import numpy as np
-from pathlib import Path
-
 from ase import Atom
 from ase.calculators.singlepoint import SinglePointDFTCalculator
 from ase.constraints import FixAtoms, FixCartesian
 from ase.io import ParseError
 from ase.utils import lazymethod, lazyproperty, reader
 
-from typing import Any, Iterable, Dict
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 LINE_NOT_FOUND = object()

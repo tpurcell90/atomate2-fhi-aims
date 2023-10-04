@@ -1,32 +1,31 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 import logging
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Sequence
 
-from jobflow import job, Response
+from jobflow import Response, job
 from monty.serialization import dumpfn
 from pymatgen.core import Structure
 
-from atomate2_temp.aims.jobs.base import BaseAimsMaker
-from atomate2_temp.aims.io.parsers import read_aims_output
-from atomate2_temp.aims.sets.bs import BandStructureSetGenerator, GWSetGenerator
-from atomate2_temp.aims.sets.base import AimsInputGenerator
-from atomate2_temp.aims.sets.core import (
-    StaticSetGenerator,
-    RelaxSetGenerator,
-    SocketIOSetGenerator,
-)
 from atomate2_temp.aims.files import (
+    cleanup_aims_outputs,
     copy_aims_outputs,
     write_aims_input_set,
-    cleanup_aims_outputs,
+)
+from atomate2_temp.aims.io.parsers import read_aims_output
+from atomate2_temp.aims.jobs.base import BaseAimsMaker
+from atomate2_temp.aims.run import run_aims_socket, should_stop_children
+from atomate2_temp.aims.schemas.task import AimsTaskDocument
+from atomate2_temp.aims.sets.base import AimsInputGenerator
+from atomate2_temp.aims.sets.bs import BandStructureSetGenerator, GWSetGenerator
+from atomate2_temp.aims.sets.core import (
+    RelaxSetGenerator,
+    SocketIOSetGenerator,
+    StaticSetGenerator,
 )
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
-from atomate2_temp.aims.schemas.task import AimsTaskDocument
-from atomate2_temp.aims.run import run_aims_socket, should_stop_children
-
 
 logger = logging.getLogger(__name__)
 """Core job makers for FHI-aims workflows"""

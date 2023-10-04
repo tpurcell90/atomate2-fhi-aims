@@ -3,15 +3,14 @@
 import os
 from datetime import datetime
 from pathlib import Path
-from typing import Union, List, Dict, Any, Tuple, Optional
-from emmet.core.math import Vector3D, Matrix3D
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
 from ase.spectrum.band_structure import BandStructure
 from ase.stress import voigt_6_to_full_3x3_stress
-
-from pydantic import BaseModel, Field
+from emmet.core.math import Matrix3D, Vector3D
 from jobflow.utils import ValueEnum
+from pydantic import BaseModel, Field
 from pymatgen.core.trajectory import Trajectory
 from pymatgen.electronic_structure.dos import Dos
 from pymatgen.io.common import VolumetricData

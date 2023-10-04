@@ -3,16 +3,16 @@
 import json
 import logging
 from pathlib import Path
-from typing import Union, List, Dict, Any, Type, TypeVar, Tuple, Optional
+from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union
 
 import numpy as np
-from emmet.core.math import Vector3D, Matrix3D
-from emmet.core.structure import StructureMetadata, MoleculeMetadata
+from emmet.core.math import Matrix3D, Vector3D
+from emmet.core.structure import MoleculeMetadata, StructureMetadata
 from emmet.core.tasks import get_uri
-from pydantic import Field, BaseModel
+from pydantic import BaseModel, Field
 from pymatgen.entries.computed_entries import ComputedEntry
 
-from atomate2_temp.aims.schemas.calculation import Status, AimsObject, Calculation
+from atomate2_temp.aims.schemas.calculation import AimsObject, Calculation, Status
 from atomate2_temp.aims.utils import datetime_str
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 

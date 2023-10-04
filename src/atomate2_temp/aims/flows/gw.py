@@ -5,15 +5,14 @@ from copy import deepcopy
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from jobflow import Flow
+from pymatgen.core import Molecule, Structure
+
+from atomate2_temp.aims.jobs.base import BaseAimsMaker, ConvergenceMaker
+from atomate2_temp.aims.jobs.core import BandStructureMaker, GWMaker, StaticMaker
 from atomate2_temp.aims.sets.bs import BandStructureSetGenerator, GWSetGenerator
 from atomate2_temp.aims.sets.core import StaticSetGenerator
-from jobflow import Flow
-
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
-from atomate2_temp.aims.jobs.base import BaseAimsMaker, ConvergenceMaker
-from atomate2_temp.aims.jobs.core import StaticMaker, BandStructureMaker, GWMaker
-
-from pymatgen.core import Structure, Molecule
 
 __all__ = [
     "PeriodicGWConvergenceMaker",

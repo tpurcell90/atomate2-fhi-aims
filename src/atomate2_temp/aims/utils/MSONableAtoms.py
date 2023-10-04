@@ -1,11 +1,8 @@
+import numpy as np
 from ase.atoms import Atoms
 from ase.calculators.singlepoint import SinglePointDFTCalculator
-
-import numpy as np
-
-from monty.json import MSONable, MontyDecoder
-
-from pymatgen.core import Structure, Molecule
+from monty.json import MontyDecoder, MSONable
+from pymatgen.core import Molecule, Structure
 from pymatgen.io.ase import AseAtomsAdaptor
 
 ASE_ADAPTOR = AseAtomsAdaptor()

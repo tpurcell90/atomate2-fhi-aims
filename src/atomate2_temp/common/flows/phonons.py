@@ -5,9 +5,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
+from atomate2.common.jobs.utils import structure_to_conventional, structure_to_primitive
 from jobflow import Flow, Maker
 
-from atomate2.common.jobs.utils import structure_to_conventional, structure_to_primitive
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 from atomate2_temp.common.jobs.phonons import (
     generate_frequencies_eigenvectors,
     generate_phonon_displacements,
@@ -15,15 +16,14 @@ from atomate2_temp.common.jobs.phonons import (
     get_total_energy_per_cell,
     run_phonon_displacements,
 )
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 if TYPE_CHECKING:
     from pathlib import Path
 
+    from atomate2.vasp.jobs.base import BaseVaspMaker
     from emmet.core.math import Matrix3D
     from pymatgen.core.structure import Structure
 
-    from atomate2.vasp.jobs.base import BaseVaspMaker
     from atomate2_temp.aims.jobs.base import BaseAimsMaker
 
 __all__ = ["PhononMaker"]
