@@ -164,9 +164,11 @@ class AimsInputSet(InputSet):
         for key in keys:
             if strict and key not in self._parameters:
                 raise ValueError(f"The key ({key}) is not in self._parameters")
+            elif key not in self._parameters:
+                continue
             del self._parameters[key]
 
-        return self.set_parameters(self._parameters)
+        return self.set_parameters(**self._parameters)
 
     def set_atoms(self, atoms: Atoms) -> Atoms:
         """Set the atoms object for this input set."""
@@ -175,8 +177,6 @@ class AimsInputSet(InputSet):
         _, aims_geometry_in = self.get_input_files()
         self.inputs[GEOMETRY_FILE_NAME] = aims_geometry_in
         self.__dict__.update(self.inputs)
-
-        return self.aims_input.set_structure(atoms)
 
     def deepcopy(self):
         """Deep copy of the input set."""

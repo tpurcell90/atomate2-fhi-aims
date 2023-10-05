@@ -1,9 +1,8 @@
 from dataclasses import dataclass, field
 from typing import TYPE_CHECKING
 
-from atomate2_temp.aims.flows.core import DoubleRelaxMaker
 from atomate2_temp.aims.jobs.base import BaseAimsMaker
-from atomate2_temp.aims.jobs.core import StaticMaker
+from atomate2_temp.aims.jobs.core import StaticMaker, RelaxMaker
 from atomate2_temp.aims.jobs.phonons import (
     PhononDisplacementMaker,
     PhononDisplacementMakerSocket,
@@ -36,7 +35,7 @@ class PhononMaker(BasePhononMaker):
 
     code: str = "aims"
     bulk_relax_maker: BaseAimsMaker | None = field(
-        default_factory=lambda: DoubleRelaxMaker.from_parmeters(dict())
+        default_factory=lambda: RelaxMaker.full_relaxation()
     )
     static_energy_maker: BaseAimsMaker | None = field(default_factory=StaticMaker)
     born_maker: BaseAimsMaker | None = None
