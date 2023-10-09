@@ -19,7 +19,7 @@ from fhi_aims_workflows.files import (
     cleanup_aims_outputs,
 )
 from fhi_aims_workflows.run import run_aims, should_stop_children
-from fhi_aims_workflows.schemas.task import AimsTaskDocument
+from fhi_aims_workflows.schemas.task import AimsTaskDocument, ConvergenceSummary
 from fhi_aims_workflows.sets.base import AimsInputGenerator
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
@@ -179,19 +179,13 @@ class ConvergenceMaker(Maker):
         if prev_dir is not None:
             prev_dir = prev_dir.split(":")[-1]
             convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
+            idx += 1
             if convergence_file.exists():
                 with open(convergence_file) as f:
                     data = json.load(f)
                     idx = data["idx"] + 1
                     # check for convergence
-                    if len(data["criterion_values"]) > 1:
-                        converged = (
-                            abs(
-                                data["criterion_values"][-1]
-                                - data["criterion_values"][-2]
-                            )
-                            < self.epsilon
-                        )
+                    converged = data["converged"]
 
         if idx < self.last_idx and not converged:
             # finding next jobs
@@ -205,6 +199,8 @@ class ConvergenceMaker(Maker):
                 },
                 dict_mod=True,
             )
+            next_base_job.append_name(append_str=f" {idx}")
+           
             update_file_job = self.update_convergence_file(
                 prev_dir=prev_dir,
                 job_dir=next_base_job.output.dir_name,
@@ -216,14 +212,18 @@ class ConvergenceMaker(Maker):
             replace_flow = Flow(
                 [next_base_job, update_file_job, next_job], output=next_base_job.output
             )
+            return Response(replace=replace_flow,
+                            output=replace_flow.output)
         else:
-            get_results_job = self.get_results(prev_dir=prev_dir)
+            get_results_job = self.get_results(calc_dir=prev_dir)
             replace_flow = Flow([get_results_job], output=get_results_job.output)
-        return Response(replace=replace_flow)
+            return Response(replace=replace_flow, 
+                            output=replace_flow.output)
+
 
     @job(name="Writing a convergence file")
     def update_convergence_file(self, prev_dir, job_dir, output):
-        idx = 0
+
         if prev_dir is not None:
             prev_dir = prev_dir.split(":")[-1]
             convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
@@ -231,19 +231,30 @@ class ConvergenceMaker(Maker):
                 with open(convergence_file) as f:
                     convergence_data = json.load(f)
                     idx = convergence_data["idx"] + 1
-            else:
-                convergence_data = {
-                    "criterion_name": self.criterion_name,
-                    "criterion_values": [],
-                    "convergence_field_name": self.convergence_field,
-                    "convergence_field_values": [],
-                    "idx": 0,
-                }
+        else:
+            idx = 0
+            convergence_data = {
+                "criterion_name": self.criterion_name,
+                "criterion_values": [],
+                "convergence_field_name": self.convergence_field,
+                "convergence_field_values": [],
+                "converged": False
+            }
         convergence_data["convergence_field_values"].append(self.convergence_steps[idx])
         convergence_data["criterion_values"].append(
             getattr(output.output, self.criterion_name)
         )
         convergence_data["idx"] = idx
+
+        if len(convergence_data["criterion_values"]) > 1:
+            # checking for convergence
+            convergence_data["converged"] = (
+                abs(
+                    convergence_data["criterion_values"][-1]
+                    - convergence_data["criterion_values"][-2]
+                )
+                < self.epsilon
+            )
 
         job_dir = job_dir.split(":")[-1]
         convergence_file = Path(job_dir) / CONVERGENCE_FILE_NAME
@@ -251,7 +262,7 @@ class ConvergenceMaker(Maker):
             json.dump(convergence_data, f)
 
     @job(name="Getting the results")
-    def get_results(self, prev_dir):
-        convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
-        with open(convergence_file) as f:
-            return json.load(f)
+    def get_results(self, calc_dir):
+        task_doc = AimsTaskDocument.from_directory(calc_dir)
+        summary = ConvergenceSummary.from_aims_calc_doc(task_doc)
+        return summary
