@@ -42,7 +42,7 @@ class DoubleRelaxMaker(Maker):
         self,
         structure: MSONableAtoms | Structure | Molecule,
         prev_dir: str | Path | None = None,
-    ):
+    ) -> Flow:
         """
         Create a flow with two chained relaxations.
 

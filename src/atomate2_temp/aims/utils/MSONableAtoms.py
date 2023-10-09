@@ -5,11 +5,19 @@ from monty.json import MontyDecoder, MSONable
 from pymatgen.core import Molecule, Structure
 from pymatgen.io.ase import AseAtomsAdaptor
 
+from typing import Dict, Any
+
 ASE_ADAPTOR = AseAtomsAdaptor()
 
 
 class MSONableAtoms(Atoms, MSONable):
-    def as_dict(self):
+    def as_dict(self) -> Dict[str, Any]:
+        """Represent an ASE Atoms object as a dict
+
+        Returns
+        -------
+        The dictionary representation of the Atoms object
+        """
         d = {"@module": self.__class__.__module__, "@class": self.__class__.__name__}
 
         for key, val in self.todict().items():
@@ -21,7 +29,14 @@ class MSONableAtoms(Atoms, MSONable):
         return d
 
     @classmethod
-    def from_dict(cls, d):
+    def from_dict(cls, d: Dict[str, Any]):
+        """Create the Atoms object from the dictionary
+
+        Parameters
+        ----------
+        d: Dict[str, Any]
+            The dictionary representation of the Atoms object
+        """
         decoded = {
             k: MontyDecoder().process_decoded(v)
             for k, v in d.items()
@@ -38,14 +53,17 @@ class MSONableAtoms(Atoms, MSONable):
 
     @classmethod
     def from_pymatgen(cls, structure: Structure | Molecule):
+        """Create an Atoms object from a pymatgen object"""
         return ASE_ADAPTOR.get_atoms(structure)
 
     @property
-    def structure(self):
+    def structure(self) -> Structure:
+        """The pymatgen Structure of the Atoms object"""
         return ASE_ADAPTOR.get_structure(self)
 
     @property
-    def pymatgen(self):
+    def pymatgen(self) -> Structure | Molecule:
+        """The pymatgen Structure or Molecule of the Atoms object"""
         if np.any(self.pbc):
             return ASE_ADAPTOR.get_structure(self)
 

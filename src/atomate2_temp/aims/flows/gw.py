@@ -21,7 +21,8 @@ __all__ = [
 
 @dataclass
 class PeriodicGWConvergenceMaker(BaseAimsMaker):
-    """A maker to perform a GW workflow with automatic convergence in FHI-aims.
+    """
+    A maker to perform a GW workflow with automatic convergence in FHI-aims.
 
     Parameters
     ----------
@@ -49,7 +50,7 @@ class PeriodicGWConvergenceMaker(BaseAimsMaker):
         self,
         structure: MSONableAtoms | Structure | Molecule,
         prev_dir: str | Path | None = None,
-    ):
+    ) -> Flow:
         """
         Create a flow from the DFT ground state and subsequent GW calculation.
 

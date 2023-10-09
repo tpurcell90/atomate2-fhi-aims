@@ -16,7 +16,7 @@ def prepare_band_input(cell: Cell, density=20):
 
     cell: object
         ASE cell object
-    density: int
+    density: float
         Number of kpoints per Angstrom. Default: 20
     """
     bp = cell.bandpath()

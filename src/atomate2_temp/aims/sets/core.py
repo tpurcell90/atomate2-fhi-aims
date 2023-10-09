@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict
 
-from ase import Atoms
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 from atomate2_temp.aims.sets.base import AimsInputGenerator
 
@@ -16,27 +16,31 @@ __all__ = [
 
 @dataclass
 class StaticSetGenerator(AimsInputGenerator):
-    """Common class for ground-state generators."""
+    """Common class for ground-state generators.
+
+    Parameters
+    ----------
+    calc_type: str
+        The type of calculation
+    """
 
     calc_type: str = "static"
 
     def get_parameter_updates(
-        self, atoms: Atoms, prev_parameters: Dict[str, Any]
-    ) -> dict:
-        """
-        Updates the parameters for a given calculation type
+        self, atoms: MSONableAtoms, prev_parameters: Dict[str, Any]
+    ) -> Dict[str, Any]:
+        """Get the parameter updates for the calculation
 
         Parameters
         ----------
-        atoms : Atoms
-            ASE Atoms object.
-        prev_parameters
-            Previous calculation parameters.
+        atoms: MSONableAtoms
+            The structure to calculate the bands for
+        prev_parameters: Dict[str, Any]
+            The previous parameters
 
         Returns
         -------
-        dict
-            A dictionary of updates to apply.
+        The updated for the parameters for the output section of FHI-aims
         """
         return prev_parameters
 
@@ -47,6 +51,17 @@ class RelaxSetGenerator(AimsInputGenerator):
     Class to generate FHI-aims relax sets.
 
     I.e., sets for optimization of internal and lattice coordinates.
+
+    Parameters
+    ----------
+    calc_type: str
+        The type of calculation
+    relax_cell: bool
+        If True then relax the unit cell from the structure
+    max_force: float
+        Maximum allowed force in the calculation
+    method: str
+        Method used for the geometry optimization
     """
 
     calc_type: str = "relaxation"
@@ -55,22 +70,20 @@ class RelaxSetGenerator(AimsInputGenerator):
     method: str = "trm"
 
     def get_parameter_updates(
-        self, atoms: Atoms, prev_parameters: Dict[str, Any]
+        self, atoms: MSONableAtoms, prev_parameters: Dict[str, Any]
     ) -> dict:
-        """
-        Updates the parameters for a given calculation type
+        """Get the parameter updates for the calculation
 
         Parameters
         ----------
-        atoms : Atoms
-            ASE Atoms object.
-        prev_parameters
-            Previous calculation parameters.
+        atoms: MSONableAtoms
+            The structure to calculate the bands for
+        prev_parameters: Dict[str, Any]
+            The previous parameters
 
         Returns
         -------
-        dict
-            A dictionary of updates to apply.
+        The updated for the parameters for the output section of FHI-aims
         """
         updates = {"relax_geometry": f"{self.method} {self.max_force:e}"}
         if any(atoms.pbc) and self.relax_cell:
@@ -83,29 +96,37 @@ class RelaxSetGenerator(AimsInputGenerator):
 
 @dataclass
 class SocketIOSetGenerator(AimsInputGenerator):
-    """Class to generate FHI-aims input sets for running with the socket"""
+    """Class to generate FHI-aims input sets for running with the socket
+
+    Parameters
+    ----------
+    calc_type: str
+        The type of calculation
+    host: str
+        The hostname for the server the socket is on
+    port: int
+        The port the socket server is listening on
+    """
 
     calc_type: str = "multi_scf"
     host: str = "localhost"
     port: int = 12345
 
     def get_parameter_updates(
-        self, atoms: Atoms, prev_parameters: Dict[str, Any]
+        self, atoms: MSONableAtoms, prev_parameters: Dict[str, Any]
     ) -> dict:
-        """
-        Updates the parameters for a given calculation type
+        """Get the parameter updates for the calculation
 
         Parameters
         ----------
-        atoms : Atoms
-            ASE Atoms object.
-        prev_parameters
-            Previous calculation parameters.
+        atoms: MSONableAtoms
+            The structure to calculate the bands for
+        prev_parameters: Dict[str, Any]
+            The previous parameters
 
         Returns
         -------
-        dict
-            A dictionary of updates to apply.
+        The updated for the parameters for the output section of FHI-aims
         """
         updates = {"use_pimd_wrapper": (self.host, self.port)}
 
