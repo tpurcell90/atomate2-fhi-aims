@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 
 def run_aims(
     aims_cmd: str = None,
-    # aims_job_kwargs: Dict[str, Any] = None,
 ):
     """
     Run FHI-aims.
@@ -29,13 +28,9 @@ def run_aims(
     ----------
     aims_cmd : str
         The command used to run FHI-aims (defaults to ASE_AIMS_COMMAND env variable).
-    # aims_job_kwargs : dict
-    #     Keyword arguments that are passed to :obj:`.AimsJob`.
     """
-    aims_cmd = aims_cmd or os.getenv("ASE_AIMS_COMMAND")
-    if not aims_cmd:
-        raise RuntimeError("No aims.x command found")
-    # aims_job_kwargs = aims_job_kwargs or {}
+    if aims_cmd is None:
+        aims_cmd = os.getenv("ASE_AIMS_COMMAND", "aims.x")
 
     aims_cmd = expandvars(aims_cmd)
 
@@ -95,7 +90,7 @@ def run_aims_socket(atoms_to_calculate: Iterable[MSONableAtoms], aims_cmd: str =
     if aims_cmd:
         parameters["aims_command"] = aims_cmd
     elif "aims_command" not in parameters:
-        aims_cmd = os.getenv("ASE_AIMS_COMMAND")
+        aims_cmd = os.getenv("ASE_AIMS_COMMAND", "aims.x")
 
     calculator = Aims(**parameters)
     port = parameters["use_pimd_wrapper"][1]

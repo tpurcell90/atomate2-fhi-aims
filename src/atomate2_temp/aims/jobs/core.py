@@ -37,8 +37,12 @@ class StaticMaker(BaseAimsMaker):
 
     Parameters
     ----------
-    name : str
+    calc_type: str
+        The type key for the calculation
+    name: str
         The job name
+    input_set_generator: AimsInputGenerator
+        The InputGenerator for the calculation
     """
 
     calc_type: str = "scf"
@@ -48,11 +52,21 @@ class StaticMaker(BaseAimsMaker):
 
 @dataclass
 class RelaxMaker(BaseAimsMaker):
-    """Maker to create relaxation calculations."""
+    """Maker to create relaxation calculations.
+
+    Parameters
+    ----------
+    calc_type: str
+        The type key for the calculation
+    name: str
+        The job name
+    input_set_generator: AimsInputGenerator
+        The InputGenerator for the calculation
+    """
 
     calc_type: str = "relax"
-    input_set_generator: AimsInputGenerator = field(default_factory=RelaxSetGenerator)
     name: str = "Relaxation calculation"
+    input_set_generator: AimsInputGenerator = field(default_factory=RelaxSetGenerator)
 
     @classmethod
     def fixed_cell_relaxation(cls, *args, **kwargs):
@@ -70,6 +84,22 @@ class RelaxMaker(BaseAimsMaker):
 
 @dataclass
 class SocketIOStaticMaker(BaseAimsMaker):
+    """Maker for the SocketIO calculator in FHI-aims
+
+    Parameters
+    ----------
+    calc_type: str
+        The type key for the calculation
+    name: str
+        The job name
+    host: str
+        The name of the host to maitain the socket server on
+    port: int
+        The port number the socket server will listen on
+    input_set_generator: SocketIOSetGenerator
+        The InputGenerator for the calculation
+    """
+
     calc_type: str = "multi_scf"
     name: str = "SCF Calculations Socket"
     host: str = "localhost"
@@ -83,7 +113,7 @@ class SocketIOStaticMaker(BaseAimsMaker):
         self,
         structure: Sequence[MSONableAtoms | Structure],
         prev_dir: str | Path | None = None,
-    ):
+    ) -> Response:
         """
         Run an FHI-aims calculation on multiple atoms object using the socket
         communicator.
@@ -94,9 +124,12 @@ class SocketIOStaticMaker(BaseAimsMaker):
             The list of atoms objects to run FHI-aims on
         prev_dir : str or Path or None
             A previous FHI-aims calculation directory to copy output files from.
+
+        Returns
+        -------
+        The output response for the calculations
         """
         # copy previous inputs
-
         if not isinstance(structure, Sequence):
             structure = [MSONableAtoms(structure)]
         atoms = [
@@ -158,8 +191,19 @@ class SocketIOStaticMaker(BaseAimsMaker):
 
 @dataclass
 class BandStructureMaker(BaseAimsMaker):
-    """A job Maker for a band structure calculation"""
+    """A job Maker for a band structure calculation
 
+    Parameters
+    ----------
+    calc_type: str
+        The type key for the calculation
+    name: str
+        The job name
+    input_set_generator: BandStructureSetGenerator
+        The InputGenerator for the calculation
+    """
+
+    calc_type = "band_structure"
     name: str = "bands"
     input_set_generator: BandStructureSetGenerator = field(
         default_factory=BandStructureSetGenerator
@@ -168,7 +212,18 @@ class BandStructureMaker(BaseAimsMaker):
 
 @dataclass
 class GWMaker(BaseAimsMaker):
-    """A job Maker for a GW band structure calculation"""
+    """A job Maker for a GW band structure calculation
 
+    Parameters
+    ----------
+    calc_type: str
+        The type key for the calculation
+    name: str
+        The job name
+    input_set_generator: GWSetGenerator
+        The InputGenerator for the calculation
+    """
+
+    calc_type = "gw"
     name: str = "GW"
     input_set_generator: GWSetGenerator = field(default_factory=GWSetGenerator)

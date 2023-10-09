@@ -124,6 +124,8 @@ class BasePhononMaker(Maker):
         in the future
     store_force_constants: bool
         if True, force constants will be stored
+    socket: bool
+        If True, use the socket for the calculation
     """
 
     name: str = "phonon"

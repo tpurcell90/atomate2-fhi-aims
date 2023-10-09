@@ -14,6 +14,8 @@ from jobflow import Flow, Maker, Response, job
 from monty.serialization import dumpfn
 from pymatgen.core import Molecule, Structure
 
+from typing import Dict, Any
+
 from atomate2_temp.aims.files import (
     cleanup_aims_outputs,
     copy_aims_outputs,
@@ -62,12 +64,12 @@ class BaseAimsMaker(Maker):
 
     name: str = "base"
     input_set_generator: AimsInputGenerator = field(default_factory=AimsInputGenerator)
-    write_input_set_kwargs: dict = field(default_factory=dict)
-    copy_aims_kwargs: dict = field(default_factory=dict)
-    run_aims_kwargs: dict = field(default_factory=dict)
-    task_document_kwargs: dict = field(default_factory=dict)
-    stop_children_kwargs: dict = field(default_factory=dict)
-    write_additional_data: dict = field(default_factory=dict)
+    write_input_set_kwargs: Dict[str, Any] = field(default_factory=dict)
+    copy_aims_kwargs: Dict[str, Any] = field(default_factory=dict)
+    run_aims_kwargs: Dict[str, Any] = field(default_factory=dict)
+    task_document_kwargs: Dict[str, Any] = field(default_factory=dict)
+    stop_children_kwargs: Dict[str, Any] = field(default_factory=dict)
+    write_additional_data: Dict[str, Any] = field(default_factory=dict)
     store_output_data: bool = True
 
     @job
@@ -81,8 +83,8 @@ class BaseAimsMaker(Maker):
 
         Parameters
         ----------
-        atoms : MSONableAtoms
-            An ASE Atoms or pymatgen Structure object.
+        structure : MSONableAtoms or Structure or Molecule
+            An ASE Atoms or pymatgen Structure object to create the calculation for.
         prev_dir : str or Path or None
             A previous FHI-aims calculation directory to copy output files from.
         """
@@ -178,17 +180,21 @@ class ConvergenceMaker(Maker):
         self,
         structure: MSONableAtoms | Structure | Molecule,
         prev_dir: str | Path = None,
-    ):
+    ) -> Response:
         """
         Runs several jobs with changing inputs consecutively to investigate
         convergence in the results
 
         Parameters
         ----------
-        atoms : MSONableAtoms
-            a structure to run a job
+        atoms : MSONableAtoms or Structure or Molecule
+            The structure to run the job for
         prev_dir: str | None
             An FHI-aims calculation directory in which previous run contents are stored
+
+        Returns
+        -------
+        The output response for the job
         """
         if isinstance(structure, Structure) or isinstance(structure, Molecule):
             atoms = MSONableAtoms.from_pymatgen(structure)
@@ -243,7 +249,16 @@ class ConvergenceMaker(Maker):
             return summary
 
     @job(name="Writing a convergence file")
-    def update_convergence_file(self, prev_dir, job_dir, output):
+    def update_convergence_file(
+        self, prev_dir: str | Path, job_dir: str | Path, output
+    ):
+        """Write a convergence file
+
+        Parameters
+        ----------
+        TO DO: fill out
+        """
+        idx = 0
         if prev_dir is not None:
             prev_dir = prev_dir.split(":")[-1]
             convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
@@ -280,3 +295,20 @@ class ConvergenceMaker(Maker):
         convergence_file = Path(job_dir) / CONVERGENCE_FILE_NAME
         with open(convergence_file, "w") as f:
             json.dump(convergence_data, f)
+
+    @job(name="Getting the results")
+    def get_results(self, prev_dir: Path | str) -> Dict[str, Any]:
+        """Get the results for a calculation from a given directory
+
+        Parameters
+        ----------
+        prev_dir: Path or str
+            The calculation directory to get the results for
+
+        Results
+        -------
+        The results dictionary loaded from the JSON file
+        """
+        convergence_file = Path(prev_dir) / CONVERGENCE_FILE_NAME
+        with open(convergence_file) as f:
+            return json.load(f)
