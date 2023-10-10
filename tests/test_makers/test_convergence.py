@@ -3,7 +3,7 @@
 
 import pytest
 
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 
 def test_convergence(mock_aims, Si, species_dir):
@@ -11,9 +11,9 @@ def test_convergence(mock_aims, Si, species_dir):
 
     from jobflow import run_locally
 
-    from fhi_aims_workflows.jobs.core import StaticMaker, StaticSetGenerator
-    from fhi_aims_workflows.jobs.base import ConvergenceMaker
-    from fhi_aims_workflows.schemas.task import ConvergenceSummary
+    from atomate2_temp.aims.jobs.core import StaticMaker, StaticSetGenerator
+    from atomate2_temp.aims.jobs.base import ConvergenceMaker
+    from atomate2_temp.aims.schemas.task import ConvergenceSummary
 
     # mapping from job name to directory containing test files
     ref_paths = {

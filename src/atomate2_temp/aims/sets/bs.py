@@ -40,10 +40,8 @@ class BandStructureSetGenerator(AimsInputGenerator):
         The updated for the parameters for the output section of FHI-aims
         """
         updated_outputs = prev_parameters.get("output", list())
-        updated_outputs["outputs"] += prepare_band_input(
-            atoms.cell, self.k_point_density
-        )
-        return updated_outputs
+        updated_outputs += prepare_band_input(atoms.cell, self.k_point_density)
+        return {"output": updated_outputs}
 
 
 @dataclass

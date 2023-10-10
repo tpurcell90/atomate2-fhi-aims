@@ -1,16 +1,16 @@
 """Test core FHI-aims workflows"""
 import pytest
 
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
 
 def test_double_relax(mock_aims, Si, species_dir):
     """A test for the double relaxation flow"""
-    
+
     from jobflow import run_locally
 
-    from fhi_aims_workflows.flows.core import DoubleRelaxMaker
-    from fhi_aims_workflows.schemas.task import AimsTaskDocument
+    from atomate2_temp.aims.flows.core import DoubleRelaxMaker
+    from atomate2_temp.aims.schemas.task import AimsTaskDocument
 
     # mapping from job name to directory containing test files
     ref_paths = {
