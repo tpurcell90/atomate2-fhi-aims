@@ -13,7 +13,7 @@ from atomate2_temp.common.flows.phonons import BasePhononMaker
 @dataclass
 class PhononMaker(BasePhononMaker):
     """
-    Maker to calculate harmonic phonons with VASP and Phonopy.
+    Maker to calculate harmonic phonons with FHI-aims and Phonopy.
 
     Overwrites the default Makers for the common PhononMaker
 

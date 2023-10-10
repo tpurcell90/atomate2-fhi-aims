@@ -1,4 +1,4 @@
-"""Module with common file names and classes used for Abinit flows."""
+"""Module with common file names and classes used for FHI-aims flows."""
 
 import contextlib
 import os

@@ -18,17 +18,9 @@ from pymatgen.transformations.advanced_transformations import (
     CubicSupercellTransformation,
 )
 
-from atomate2_temp.aims.jobs.phonons import (
-    PhononDisplacementMaker as PhononDisplacementMakerAims,
-)
-from atomate2_temp.aims.jobs.phonons import (
-    PhononDisplacementMakerSocket as PhononDisplacementMakerAimsSocket,
-)
 from atomate2_temp.common.schemas.phonons import ForceConstants, PhononBSDOSDoc
 from atomate2_temp.common.utils.phonons import get_factor
-from atomate2_temp.vasp.jobs.phonons import (
-    PhononDisplacementMaker as PhononDisplacementMakerVasp,
-)
+
 
 if TYPE_CHECKING:
     from pathlib import Path
@@ -270,8 +262,7 @@ def run_phonon_displacements(
     displacements,
     structure: Structure,
     supercell_matrix: Matrix3D,
-    code: str = None,
-    phonon_maker: BaseVaspMaker | ForceFieldStaticMaker | BaseAimsMaker = None,
+    phonon_maker: BaseVaspMaker | ForceFieldStaticMaker | BaseAimsMaker,
     prev_dir: str | Path = None,
     socket: bool = False,
 ):
@@ -289,25 +280,13 @@ def run_phonon_displacements(
         Fully optimized structure used for phonon computations
     supercell_matrix: Matrix3D
         supercell matrix for meta data
-    phonon_maker : .BaseVaspMaker
-        A VaspMaker to use to generate the elastic relaxation jobs.
+    phonon_maker : BaseVaspMaker or ForceFieldStaticMaker or BaseAimsMaker
+        A maker to use to generate dispacement calculations
+    prev_dir: str or Path
+        The previous working directory
+    socket: bool
+        If True use the socket-io interface to increase performance
     """
-    # Think of a way to make this less messy, maybe raise error if phonon_maker is None?
-    if phonon_maker is None:
-        if code == "aims":
-            if socket:
-                phonon_maker = PhononDisplacementMakerAimsSocket()
-            else:
-                phonon_maker = PhononDisplacementMakerAims()
-        elif code == "vasp":
-            if socket:
-                raise ValueError("Socket calculations are not supported for vasp.")
-            phonon_maker = PhononDisplacementMakerVasp()
-        else:
-            raise ValueError(
-                f"No value passed to phonon_maker and {code} is not a supported code for phonopy calculatiosn, can't calculate forces for displaced geometeries."
-            )
-
     phonon_jobs = []
     outputs: dict[str, list] = {
         "displacement_number": [],
