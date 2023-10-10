@@ -6,7 +6,7 @@ import pytest
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 
-def test_convergence(Si, species_dir):
+def test_convergence(mock_aims, Si, species_dir):
     """A test for the convergence job"""
     
     from jobflow import run_locally
@@ -46,7 +46,7 @@ def test_convergence(Si, species_dir):
     fake_run_kwargs = {}
 
     # automatically use fake AIMS
-    # mock_aims(ref_paths, fake_run_kwargs)
+    mock_aims(ref_paths, fake_run_kwargs)
 
     # generate job
     job = ConvergenceMaker(**parameters).make(MSONableAtoms(Si))
@@ -55,7 +55,7 @@ def test_convergence(Si, species_dir):
     responses = run_locally(job, create_folders=True, ensure_success=True)
 
     # a very nasty hack! 
-    # but otherwise I do not know how to get the uuid of the last job in na dynamic workflow
+    # but otherwise I do not know how to get the uuid of the last job in a dynamic workflow
     uuid = list(responses.keys())[-1]
     output = responses[uuid][1].output
     # validate output
