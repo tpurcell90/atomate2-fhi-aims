@@ -4,7 +4,6 @@ import pytest
 from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
 
 
-
 def test_double_relax(mock_aims, Si, species_dir):
     """A test for the double relaxation flow"""
     

@@ -56,7 +56,9 @@ def test_convergence(mock_aims, Si, species_dir):
 
     # a very nasty hack! 
     # but otherwise I do not know how to get the uuid of the last job in a dynamic workflow
-    uuid = list(responses.keys())[-1]
-    output = responses[uuid][1].output
+    output = responses[job.job_uuids[-1]][1].output
     # validate output
     assert output.converged == True
+    assert output.convergence_field_value == [5, 5, 5]
+    assert output.actual_epsilon == pytest.approx(0.0614287)
+    
