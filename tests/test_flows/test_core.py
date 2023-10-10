@@ -1,10 +1,13 @@
 """Test core FHI-aims workflows"""
 import pytest
+import os
 
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
+cwd = os.getcwd()
 
-def test_double_relax(mock_aims, Si, species_dir):
+
+def test_double_relax(mock_aims, tmp_path, Si, species_dir):
     """A test for the double relaxation flow"""
 
     from jobflow import run_locally
@@ -30,7 +33,9 @@ def test_double_relax(mock_aims, Si, species_dir):
     flow = DoubleRelaxMaker.from_parameters(parameters).make(MSONableAtoms(Si))
 
     # Run the flow or job and ensure that it finished running successfully
+    os.chdir(tmp_path)
     responses = run_locally(flow, create_folders=True, ensure_success=True)
+    os.chdir(cwd)
 
     # validate output
     output1 = responses[flow.jobs[0].uuid][1].output

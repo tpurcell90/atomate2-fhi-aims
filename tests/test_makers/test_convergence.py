@@ -2,11 +2,14 @@
 """
 
 import pytest
+import os
 
 from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
 
+cwd = os.getcwd()
 
-def test_convergence(mock_aims, Si, species_dir):
+
+def test_convergence(mock_aims, tmp_path, Si, species_dir):
     """A test for the convergence job"""
 
     from jobflow import run_locally
@@ -44,7 +47,9 @@ def test_convergence(mock_aims, Si, species_dir):
     flow = ConvergenceMaker(**parameters).make(MSONableAtoms(Si))
 
     # Run the job and ensure that it finished running successfully
+    os.chdir(tmp_path)
     responses = run_locally(flow, create_folders=True, ensure_success=True)
+    os.chdir(cwd)
 
     # a very nasty hack!
     # but otherwise I do not know how to get the uuid of the last job in a
