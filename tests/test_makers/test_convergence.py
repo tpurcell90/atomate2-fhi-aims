@@ -54,5 +54,9 @@ def test_convergence(Si, species_dir):
     # Run the job and ensure that it finished running successfully
     responses = run_locally(job, create_folders=True, ensure_success=True)
 
+    # a very nasty hack! 
+    # but otherwise I do not know how to get the uuid of the last job in na dynamic workflow
+    uuid = list(responses.keys())[-1]
+    output = responses[uuid][1].output
     # validate output
-    # assert job.output.converged == True
+    assert output.converged == True

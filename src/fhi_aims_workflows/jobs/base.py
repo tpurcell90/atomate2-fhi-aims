@@ -161,8 +161,19 @@ class ConvergenceMaker(Maker):
     def __post_init__(self):
         self.last_idx = len(self.convergence_steps)
 
+    def make(self, atoms):
+        """ A top-level flow controlling convergence iteration
+
+        Parameters
+        ----------
+            atoms : MSONableAtoms
+                a structure to run a job
+        """
+        convergence_job = self.convergence_iteration(atoms)       
+        return Flow([convergence_job], output=convergence_job.output)
+    
     @job
-    def make(self, atoms, prev_dir: str | Path = None):
+    def convergence_iteration(self, atoms, prev_dir: str | Path = None):
         """
         Runs several jobs with changing inputs consecutively to investigate convergence in the results
 
@@ -207,19 +218,17 @@ class ConvergenceMaker(Maker):
                 output=next_base_job.output,
             )
 
-            next_job = self.make(atoms, prev_dir=next_base_job.output.dir_name)
+            next_job = self.convergence_iteration(atoms, prev_dir=next_base_job.output.dir_name)
 
             replace_flow = Flow(
                 [next_base_job, update_file_job, next_job], output=next_base_job.output
             )
-            return Response(replace=replace_flow,
+            return Response(detour=replace_flow,
                             output=replace_flow.output)
         else:
-            get_results_job = self.get_results(calc_dir=prev_dir)
-            replace_flow = Flow([get_results_job], output=get_results_job.output)
-            return Response(replace=replace_flow, 
-                            output=replace_flow.output)
-
+            task_doc = AimsTaskDocument.from_directory(prev_dir)
+            summary = ConvergenceSummary.from_aims_calc_doc(task_doc)
+            return summary
 
     @job(name="Writing a convergence file")
     def update_convergence_file(self, prev_dir, job_dir, output):
@@ -260,9 +269,3 @@ class ConvergenceMaker(Maker):
         convergence_file = Path(job_dir) / CONVERGENCE_FILE_NAME
         with open(convergence_file, "w") as f:
             json.dump(convergence_data, f)
-
-    @job(name="Getting the results")
-    def get_results(self, calc_dir):
-        task_doc = AimsTaskDocument.from_directory(calc_dir)
-        summary = ConvergenceSummary.from_aims_calc_doc(task_doc)
-        return summary
