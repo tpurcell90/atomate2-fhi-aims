@@ -106,7 +106,6 @@ def mock_aims(monkeypatch, ref_path, should_mock_aims):
         input_files = ['control.in', 'geometry.in', 'parameters.json']
         name = CURRENT_JOB.job.name
         ref_dir = ref_path / _REF_PATHS[name]
-        print(f"HELLO! {args} {kwargs} {ref_dir} {Path.cwd()}")
         # running aims
         fhi_aims_workflows.run.run_aims()
         # copy output files
@@ -147,8 +146,8 @@ def mock_aims(monkeypatch, ref_path, should_mock_aims):
 def fake_run_aims(
     ref_path: Union[str, Path],
     input_settings: Sequence[str] = (),
-    check_inputs: Sequence[Literal["aims.inp"]] = _VFILES,
-    clear_inputs: bool = True,
+    check_inputs: Sequence[Literal["control.in"]] = _VFILES,
+    clear_inputs: bool = False,
 ):
     """
     Emulate running aims and validate aims input files.
