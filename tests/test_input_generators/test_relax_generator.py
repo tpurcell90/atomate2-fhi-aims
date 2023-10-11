@@ -1,4 +1,4 @@
-from fhi_aims_workflows.sets.core import RelaxSetGenerator
+from atomate2_temp.aims.sets.core import RelaxSetGenerator
 
 import os
 from tests import compare_files

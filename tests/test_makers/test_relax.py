@@ -1,12 +1,11 @@
-
 import os
 import pytest
 
 from jobflow import run_locally
 
-from fhi_aims_workflows.jobs.core import RelaxMaker
-from fhi_aims_workflows.schemas.task import AimsTaskDocument
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.jobs.core import RelaxMaker
+from atomate2_temp.aims.schemas.task import AimsTaskDocument
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 
 cwd = os.getcwd()

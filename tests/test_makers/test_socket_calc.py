@@ -1,7 +1,6 @@
-
 import pytest
 
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 import os
 
 
@@ -9,12 +8,11 @@ cwd = os.getcwd()
 
 
 def test_static_socket_maker(Si, species_dir, mock_aims, tmp_path):
-
     from jobflow import run_locally
 
-    from fhi_aims_workflows.jobs.core import SocketIOStaticMaker
-    from fhi_aims_workflows.schemas.task import AimsTaskDocument
-    from fhi_aims_workflows.sets.core import SocketIOSetGenerator
+    from atomate2_temp.aims.jobs.core import SocketIOStaticMaker
+    from atomate2_temp.aims.schemas.task import AimsTaskDocument
+    from atomate2_temp.aims.sets.core import SocketIOSetGenerator
 
     atoms = MSONableAtoms(Si)
     atoms_list = [atoms, atoms.copy(), atoms.copy()]

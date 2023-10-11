@@ -2,18 +2,21 @@
 """
 
 import pytest
+import os
 
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
+
+cwd = os.getcwd()
 
 
-def test_convergence(mock_aims, Si, species_dir):
+def test_convergence(mock_aims, tmp_path, Si, species_dir):
     """A test for the convergence job"""
 
     from jobflow import run_locally
 
-    from fhi_aims_workflows.jobs.core import StaticMaker, StaticSetGenerator
-    from fhi_aims_workflows.jobs.base import ConvergenceMaker
-    from fhi_aims_workflows.schemas.task import ConvergenceSummary
+    from atomate2_temp.aims.jobs.core import StaticMaker, StaticSetGenerator
+    from atomate2_temp.aims.jobs.base import ConvergenceMaker
+    from atomate2_temp.aims.schemas.task import ConvergenceSummary
 
     # mapping from job name to directory containing test files
     ref_paths = {
@@ -44,7 +47,9 @@ def test_convergence(mock_aims, Si, species_dir):
     flow = ConvergenceMaker(**parameters).make(MSONableAtoms(Si))
 
     # Run the job and ensure that it finished running successfully
+    os.chdir(tmp_path)
     responses = run_locally(flow, create_folders=True, ensure_success=True)
+    os.chdir(cwd)
 
     # a very nasty hack!
     # but otherwise I do not know how to get the uuid of the last job in a

@@ -3,7 +3,7 @@ requires = ["setuptools >= 42", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "aims_workflows"
+name = "atomate2-aims"
 description = "A collection of materials science workflows written for FHI-aims based on atomate2"
 readme = "README.md"
 keywords = ["automated", "dft", "high-throughput", "fhi-aims", "workflow"]

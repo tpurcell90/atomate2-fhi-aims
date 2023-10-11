@@ -3,18 +3,17 @@ import os
 
 import pytest
 
-from fhi_aims_workflows.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 cwd = os.getcwd()
 
 
 def test_static_maker(Si, tmp_path, mock_aims, species_dir):
-
     from jobflow import run_locally
 
-    from fhi_aims_workflows.jobs.core import StaticMaker
-    from fhi_aims_workflows.schemas.task import AimsTaskDocument
-    from fhi_aims_workflows.sets.core import StaticSetGenerator
+    from atomate2_temp.aims.jobs.core import StaticMaker
+    from atomate2_temp.aims.schemas.task import AimsTaskDocument
+    from atomate2_temp.aims.sets.core import StaticSetGenerator
 
     # mapping from job name to directory containing test files
     ref_paths = {"base": "static-si"}
