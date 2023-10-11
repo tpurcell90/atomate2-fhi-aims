@@ -25,7 +25,7 @@ from atomate2_temp.aims.sets.core import (
     SocketIOSetGenerator,
     StaticSetGenerator,
 )
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 logger = logging.getLogger(__name__)
 """Core job makers for FHI-aims workflows"""

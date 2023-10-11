@@ -13,7 +13,7 @@ from ase.calculators.socketio import SocketIOCalculator
 from monty.json import MontyDecoder
 
 from atomate2_temp.aims.schemas.task import AimsTaskDocument
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 logger = logging.getLogger(__name__)
 

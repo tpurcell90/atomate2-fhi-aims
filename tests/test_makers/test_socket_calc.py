@@ -1,6 +1,6 @@
 import pytest
 
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 import os
 
 
@@ -8,7 +8,6 @@ cwd = os.getcwd()
 
 
 def test_static_socket_maker(Si, species_dir, mock_aims, tmp_path):
-
     from jobflow import run_locally
 
     from atomate2_temp.aims.jobs.core import SocketIOStaticMaker

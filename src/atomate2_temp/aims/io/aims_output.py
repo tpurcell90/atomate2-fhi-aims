@@ -9,7 +9,7 @@ from emmet.core.math import Matrix3D, Vector3D
 from monty.json import MontyDecoder, MSONable
 
 from atomate2_temp.aims.io.parsers import read_aims_header_info, read_aims_output
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 
 class AimsOutput(MSONable):

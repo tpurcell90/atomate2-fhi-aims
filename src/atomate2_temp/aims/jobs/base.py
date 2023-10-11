@@ -24,7 +24,7 @@ from atomate2_temp.aims.files import (
 from atomate2_temp.aims.run import run_aims, should_stop_children
 from atomate2_temp.aims.schemas.task import AimsTaskDocument, ConvergenceSummary
 from atomate2_temp.aims.sets.base import AimsInputGenerator
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 logger = logging.getLogger(__name__)
 CONVERGENCE_FILE_NAME = "convergence.json"  # make it a constant?

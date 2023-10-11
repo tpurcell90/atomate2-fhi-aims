@@ -3,13 +3,12 @@ import os
 
 import pytest
 
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 cwd = os.getcwd()
 
 
 def test_static_maker(Si, tmp_path, mock_aims, species_dir):
-
     from jobflow import run_locally
 
     from atomate2_temp.aims.jobs.core import StaticMaker

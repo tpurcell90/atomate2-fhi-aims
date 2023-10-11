@@ -4,7 +4,7 @@
 import pytest
 import os
 
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 cwd = os.getcwd()
 

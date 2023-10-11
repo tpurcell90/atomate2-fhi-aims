@@ -12,7 +12,7 @@ from ase.constraints import FixAtoms, FixCartesian
 from ase.io import ParseError
 from ase.utils import lazymethod, lazyproperty, reader
 
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 LINE_NOT_FOUND = object()
 

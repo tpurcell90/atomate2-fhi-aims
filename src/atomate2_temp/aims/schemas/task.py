@@ -14,7 +14,7 @@ from pymatgen.entries.computed_entries import ComputedEntry
 
 from atomate2_temp.aims.schemas.calculation import AimsObject, Calculation, Status
 from atomate2_temp.aims.utils import datetime_str
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 _T = TypeVar("_T", bound="AimsTaskDocument")
 _VOLUMETRIC_FILES = ("total_density", "spin_density", "eigenstate_density")
@@ -183,21 +183,33 @@ class OutputSummary(BaseModel):
             trajectory=calc_doc.output.atomic_steps,
         )
 
+
 class ConvergenceSummary(BaseModel):
     """Summary of the outputs for an FHI-aims convergence calculation."""
 
     structure: MSONableAtoms = Field(None, description="The output structure object")
     converged: bool = Field(None, description="Is convergence achieved?")
 
-    convergence_criterion_name: str = Field(None, description="The output name of the convergence criterion")
-    convergence_field_name: str = Field(None, description="The name of the input setting to study convergence against")
-    convergence_criterion_value: float = Field(None, description="The output value of the convergence criterion")
-    convergence_field_value: Any = Field(None, 
-                                         description="The last value of the input setting to study convergence against")
+    convergence_criterion_name: str = Field(
+        None, description="The output name of the convergence criterion"
+    )
+    convergence_field_name: str = Field(
+        None, description="The name of the input setting to study convergence against"
+    )
+    convergence_criterion_value: float = Field(
+        None, description="The output value of the convergence criterion"
+    )
+    convergence_field_value: Any = Field(
+        None,
+        description="The last value of the input setting to study convergence against",
+    )
     asked_epsilon: float = Field(
-        None, 
-        description="The difference in the values for the convergence criteria that was asked for")
-    actual_epsilon: float = Field(None, description="The actual difference in the convergence criteria values")
+        None,
+        description="The difference in the values for the convergence criteria that was asked for",
+    )
+    actual_epsilon: float = Field(
+        None, description="The actual difference in the convergence criteria values"
+    )
 
     @classmethod
     def from_aims_calc_doc(cls, calc_doc: Calculation) -> "ConvergenceSummary":
@@ -216,25 +228,30 @@ class ConvergenceSummary(BaseModel):
         """
 
         from fhi_aims_workflows.jobs.base import CONVERGENCE_FILE_NAME
+
         job_dir = calc_doc.dir_name.split(":")[-1]
 
         convergence_file = Path(job_dir) / CONVERGENCE_FILE_NAME
         if not convergence_file.exists():
-            raise ValueError(f'Did not find the convergence json file {CONVERGENCE_FILE_NAME} in {calc_doc.dir_name}')
-        
+            raise ValueError(
+                f"Did not find the convergence json file {CONVERGENCE_FILE_NAME} in {calc_doc.dir_name}"
+            )
+
         with open(convergence_file) as f:
             convergence_data = json.load(f)
 
         return cls(
             structure=calc_doc.output.structure,
-            converged=convergence_data['converged'],
-            convergence_criterion_name=convergence_data['criterion_name'],
-            convergence_field_name=convergence_data['convergence_field_name'],
-            convergence_criterion_value=convergence_data['criterion_values'][-1],
-            convergence_field_value=convergence_data['convergence_field_values'][-1],
+            converged=convergence_data["converged"],
+            convergence_criterion_name=convergence_data["criterion_name"],
+            convergence_field_name=convergence_data["convergence_field_name"],
+            convergence_criterion_value=convergence_data["criterion_values"][-1],
+            convergence_field_value=convergence_data["convergence_field_values"][-1],
             asked_epsilon=None,
             actual_epsilon=abs(
-                convergence_data['criterion_values'][-2] - convergence_data['criterion_values'][-1])
+                convergence_data["criterion_values"][-2]
+                - convergence_data["criterion_values"][-1]
+            ),
         )
 
 

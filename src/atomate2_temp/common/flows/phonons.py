@@ -8,7 +8,7 @@ from typing import TYPE_CHECKING
 from atomate2.common.jobs.utils import structure_to_conventional, structure_to_primitive
 from jobflow import Flow, Maker
 
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 from atomate2_temp.common.jobs.phonons import (
     generate_frequencies_eigenvectors,
     generate_phonon_displacements,

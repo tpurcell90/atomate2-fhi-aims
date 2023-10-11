@@ -12,7 +12,7 @@ from atomate2_temp.aims.jobs.base import BaseAimsMaker, ConvergenceMaker
 from atomate2_temp.aims.jobs.core import BandStructureMaker, GWMaker, StaticMaker
 from atomate2_temp.aims.sets.bs import BandStructureSetGenerator, GWSetGenerator
 from atomate2_temp.aims.sets.core import StaticSetGenerator
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 __all__ = [
     "PeriodicGWConvergenceMaker",

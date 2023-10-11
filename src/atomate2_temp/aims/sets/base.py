@@ -23,7 +23,7 @@ from atomate2_temp.aims.utils.common import (
     TMPDIR_NAME,
     cwd,
 )
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 DEFAULT_AIMS_PROPERTIES = [
     "energy",

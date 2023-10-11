@@ -11,7 +11,7 @@ from atomate2.utils.file_client import FileClient, auto_fileclient
 from atomate2.utils.path import strip_hostname
 
 from atomate2_temp.aims.sets.base import AimsInputGenerator
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 logger = logging.getLogger(__name__)
 

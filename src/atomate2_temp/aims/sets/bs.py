@@ -5,7 +5,7 @@ from typing import Any, Dict, Sequence
 
 from atomate2_temp.aims.sets.base import AimsInputGenerator
 from atomate2_temp.aims.utils.bands import prepare_band_input
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 
 @dataclass

@@ -1,13 +1,12 @@
 """Test various makers"""
 import os
 
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 cwd = os.getcwd()
 
 
 def test_phonon_flow(Si, tmp_path, mock_aims, species_dir):
-
     import numpy as np
 
     from jobflow import run_locally
@@ -77,7 +76,6 @@ def test_phonon_flow(Si, tmp_path, mock_aims, species_dir):
 
 
 def test_phonon_socket_flow(Si, tmp_path, mock_aims, species_dir):
-
     import numpy as np
 
     from jobflow import run_locally

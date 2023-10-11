@@ -11,7 +11,7 @@ from pymatgen.core import Molecule, Structure
 from atomate2_temp.aims.jobs.base import BaseAimsMaker
 from atomate2_temp.aims.jobs.core import RelaxMaker
 from atomate2_temp.aims.sets.core import RelaxSetGenerator
-from atomate2_temp.aims.utils.MSONableAtoms import MSONableAtoms
+from atomate2_temp.aims.utils.msonable_atoms import MSONableAtoms
 
 __all__ = [
     "DoubleRelaxMaker",
